@@ -8,12 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		D8E604C622327C82000E8AEA /* Acheron.h in Headers */ = {isa = PBXBuildFile; fileRef = D8E604C422327C81000E8AEA /* Acheron.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D8E604D022327E2A000E8AEA /* CALayer+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */; };
+		D8E604D222327E47000E8AEA /* CGPoint+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604D122327E47000E8AEA /* CGPoint+Acheron.swift */; };
+		D8E604D422327E63000E8AEA /* UIColor+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604D322327E63000E8AEA /* UIColor+Acheron.swift */; };
+		D8E604D622327E84000E8AEA /* UIControl+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604D522327E84000E8AEA /* UIControl+Acheron.swift */; };
+		D8E604D922327EC3000E8AEA /* UIView+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604D822327EC3000E8AEA /* UIView+Acheron.swift */; };
+		D8E604DB22327EEE000E8AEA /* UIViewController+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604DA22327EEE000E8AEA /* UIViewController+Acheron.swift */; };
+		D8E604DD22327F22000E8AEA /* Pen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604DC22327F22000E8AEA /* Pen.swift */; };
+		D8E604DF22327F3E000E8AEA /* RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604DE22327F3E000E8AEA /* RGB.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D8E604C122327C81000E8AEA /* Acheron.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Acheron.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8E604C422327C81000E8AEA /* Acheron.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Acheron.h; sourceTree = "<group>"; };
 		D8E604C522327C82000E8AEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Acheron.swift"; sourceTree = "<group>"; };
+		D8E604D122327E47000E8AEA /* CGPoint+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Acheron.swift"; sourceTree = "<group>"; };
+		D8E604D322327E63000E8AEA /* UIColor+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Acheron.swift"; sourceTree = "<group>"; };
+		D8E604D522327E84000E8AEA /* UIControl+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Acheron.swift"; sourceTree = "<group>"; };
+		D8E604D822327EC3000E8AEA /* UIView+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Acheron.swift"; sourceTree = "<group>"; };
+		D8E604DA22327EEE000E8AEA /* UIViewController+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Acheron.swift"; sourceTree = "<group>"; };
+		D8E604DC22327F22000E8AEA /* Pen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pen.swift; sourceTree = "<group>"; };
+		D8E604DE22327F3E000E8AEA /* RGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RGB.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,10 +62,50 @@
 		D8E604C322327C81000E8AEA /* Acheron */ = {
 			isa = PBXGroup;
 			children = (
-				D8E604C422327C81000E8AEA /* Acheron.h */,
-				D8E604C522327C82000E8AEA /* Info.plist */,
+				D8E604E022327F8A000E8AEA /* Extensions */,
+				D8E604E122327F91000E8AEA /* Utility */,
+				D8E604E422327FB8000E8AEA /* Widgets */,
+				D8E604E222327F98000E8AEA /* Global */,
 			);
 			path = Acheron;
+			sourceTree = "<group>";
+		};
+		D8E604E022327F8A000E8AEA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */,
+				D8E604D122327E47000E8AEA /* CGPoint+Acheron.swift */,
+				D8E604D322327E63000E8AEA /* UIColor+Acheron.swift */,
+				D8E604D522327E84000E8AEA /* UIControl+Acheron.swift */,
+				D8E604D822327EC3000E8AEA /* UIView+Acheron.swift */,
+				D8E604DA22327EEE000E8AEA /* UIViewController+Acheron.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		D8E604E122327F91000E8AEA /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				D8E604DC22327F22000E8AEA /* Pen.swift */,
+				D8E604DE22327F3E000E8AEA /* RGB.swift */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+		D8E604E222327F98000E8AEA /* Global */ = {
+			isa = PBXGroup;
+			children = (
+				D8E604C522327C82000E8AEA /* Info.plist */,
+				D8E604C422327C81000E8AEA /* Acheron.h */,
+			);
+			name = Global;
+			sourceTree = "<group>";
+		};
+		D8E604E422327FB8000E8AEA /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Widgets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,6 +151,7 @@
 				TargetAttributes = {
 					D8E604C022327C81000E8AEA = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1010;
 					};
 				};
 			};
@@ -130,6 +187,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8E604D622327E84000E8AEA /* UIControl+Acheron.swift in Sources */,
+				D8E604D922327EC3000E8AEA /* UIView+Acheron.swift in Sources */,
+				D8E604D022327E2A000E8AEA /* CALayer+Acheron.swift in Sources */,
+				D8E604DB22327EEE000E8AEA /* UIViewController+Acheron.swift in Sources */,
+				D8E604D222327E47000E8AEA /* CGPoint+Acheron.swift in Sources */,
+				D8E604DD22327F22000E8AEA /* Pen.swift in Sources */,
+				D8E604D422327E63000E8AEA /* UIColor+Acheron.swift in Sources */,
+				D8E604DF22327F3E000E8AEA /* RGB.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +326,7 @@
 		D8E604CA22327C82000E8AEA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -278,6 +344,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.aepryus.Acheron;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -286,6 +353,7 @@
 		D8E604CB22327C82000E8AEA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
