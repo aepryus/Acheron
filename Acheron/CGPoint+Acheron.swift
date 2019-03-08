@@ -18,6 +18,9 @@ public extension CGPoint {
 	public static func * (a: CGPoint, b: CGFloat) -> CGPoint {
 		return CGPoint(x: a.x*b, y: a.y*b)
 	}
+	public static func * (a: CGFloat, b: CGPoint) -> CGPoint {
+		return CGPoint(x: a*b.x, y: a*b.y)
+	}
 	public static func / (a: CGPoint, b: CGFloat) -> CGPoint {
 		return CGPoint(x: a.x/b, y: a.y/b)
 	}
@@ -25,14 +28,14 @@ public extension CGPoint {
 	func perpendicular() -> CGPoint {
 		return CGPoint(x: y, y: -x)
 	}
-	func lenSq() -> CGFloat {
+	func lengthSquared() -> CGFloat {
 		return x*x+y*y
 	}
-	func len() -> CGFloat {
-		return sqrt(lenSq())
+	func length() -> CGFloat {
+		return sqrt(lengthSquared())
 	}
 	func unit() -> CGPoint {
-		let l = len()
+		let l = length()
 		return CGPoint(x: x/l, y: y/l)
 	}
 }
