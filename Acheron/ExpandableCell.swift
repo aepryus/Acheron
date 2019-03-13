@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class ExpandableCell: UITableViewCell {
+open class ExpandableCell: UITableViewCell {
 	weak var expandableTableView: ExpandableTableView!
 	private let baseView: UIView = UIView()
 	
@@ -22,7 +22,7 @@ public class ExpandableCell: UITableViewCell {
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(onTap))
 		baseView.addGestureRecognizer(gesture)
 	}
-	required init?(coder aDecoder: NSCoder) {fatalError()}
+	public required init?(coder aDecoder: NSCoder) {fatalError()}
 	
 	var indexPath: IndexPath? {
 		return expandableTableView.indexPath(for: self)
@@ -41,7 +41,7 @@ public class ExpandableCell: UITableViewCell {
 	}
 	
 // UIView ==========================================================================================
-	override public func layoutSubviews() {
+	override open func layoutSubviews() {
 		var baseHeight: CGFloat = 0
 		if let indexPath = indexPath {
 			baseHeight = expandableTableView.expandableTableViewDelegate.expandableTableView(expandableTableView, baseHeightForRowAt: indexPath)
@@ -50,10 +50,10 @@ public class ExpandableCell: UITableViewCell {
 		}
 		baseView.frame = CGRect(x: 0, y: 0, width: width, height: baseHeight)
 	}
-	override public func addSubview(_ view: UIView) {
+	override open func addSubview(_ view: UIView) {
 		baseView.addSubview(view)
 	}
-	override public var backgroundColor: UIColor? {
+	override open var backgroundColor: UIColor? {
 		set {
 			baseView.backgroundColor = newValue
 			// Apple is doing something weird under the covers here.
