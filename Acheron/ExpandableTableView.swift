@@ -42,14 +42,14 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	var currentExpandedView: UIView? = nil
 	var expandedViews: [UIView] = []
 	
-	init(delegate: ExpandableTableViewDelegate) {
+	public init(delegate: ExpandableTableViewDelegate) {
 		expandableTableViewDelegate = delegate
 		super.init()
 		backgroundColor = UIColor.clear
 		self.delegate = self
 		dataSource = self
 	}
-	required init?(coder aDecoder: NSCoder) {fatalError()}
+	public required init?(coder aDecoder: NSCoder) {fatalError()}
 	
 	func toggle(cell: ExpandableCell) {
 		guard let indexPath = self.indexPath(for: cell) else {fatalError()}
