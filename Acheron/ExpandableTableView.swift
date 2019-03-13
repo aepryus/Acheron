@@ -34,13 +34,13 @@ public extension ExpandableTableViewDelegate {
 }
 
 public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewDataSource {
-	var baseHeight: CGFloat = 60
-	var expansionHeight: CGFloat = 60
-	unowned var expandableTableViewDelegate: ExpandableTableViewDelegate
+	public var baseHeight: CGFloat = 60
+	public var expansionHeight: CGFloat = 60
+	public unowned var expandableTableViewDelegate: ExpandableTableViewDelegate
 	var expandedPath: IndexPath? = nil
 	
-	var currentExpandedView: UIView? = nil
-	var expandedViews: [UIView] = []
+	private var currentExpandedView: UIView? = nil
+	private var expandedViews: [UIView] = []
 	
 	public init(delegate: ExpandableTableViewDelegate) {
 		expandableTableViewDelegate = delegate
