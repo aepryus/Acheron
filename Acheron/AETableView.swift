@@ -8,8 +8,8 @@
 
 import UIKit
 
-class AETableView: UITableView {
-	init() {
+public class AETableView: UITableView {
+	public init() {
 		super.init(frame: CGRect.zero, style: .plain)
 		
 		separatorStyle = .none

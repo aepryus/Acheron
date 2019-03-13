@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ExpandableCell: UITableViewCell {
+public class ExpandableCell: UITableViewCell {
 	weak var expandableTableView: ExpandableTableView!
 	private let baseView: UIView = UIView()
 	
@@ -35,13 +35,13 @@ class ExpandableCell: UITableViewCell {
 		super.addSubview(view)
 	}
 	
-	// Events ==========================================================================================
+// Events ==========================================================================================
 	@objc func onTap() {
 		expandableTableView.toggle(cell: self)
 	}
 	
-	// UIView ==========================================================================================
-	override func layoutSubviews() {
+// UIView ==========================================================================================
+	override public func layoutSubviews() {
 		var baseHeight: CGFloat = 0
 		if let indexPath = indexPath {
 			baseHeight = expandableTableView.expandableTableViewDelegate.expandableTableView(expandableTableView, baseHeightForRowAt: indexPath)
@@ -50,10 +50,10 @@ class ExpandableCell: UITableViewCell {
 		}
 		baseView.frame = CGRect(x: 0, y: 0, width: width, height: baseHeight)
 	}
-	override func addSubview(_ view: UIView) {
+	override public func addSubview(_ view: UIView) {
 		baseView.addSubview(view)
 	}
-	override var backgroundColor: UIColor? {
+	override public var backgroundColor: UIColor? {
 		set {
 			baseView.backgroundColor = newValue
 			// Apple is doing something weird under the covers here.

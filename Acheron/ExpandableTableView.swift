@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ExpandableTableViewDelegate: class {
+public protocol ExpandableTableViewDelegate: class {
 	func expandableTableView(_ tableView: ExpandableTableView, numberOfRowsInSection section: Int) -> Int
 	func expandableTableView(_ tableView: ExpandableTableView, cellForRowAt indexPath: IndexPath) -> ExpandableCell
 	func expandableTableView(_ tableView: ExpandableTableView, expansionForRowAt indexPath: IndexPath) -> UIView
@@ -16,7 +16,7 @@ protocol ExpandableTableViewDelegate: class {
 	func expandableTableView(_ tableView: ExpandableTableView, expansionHeightForRowAt indexPath: IndexPath) -> CGFloat
 	func expandableTableView(_ tableView: ExpandableTableView, expandableRowAt indexPath: IndexPath) -> Bool
 }
-extension ExpandableTableViewDelegate {
+public extension ExpandableTableViewDelegate {
 	func expandableTableView(_ tableView: ExpandableTableView, expansionForRowAt indexPath: IndexPath) -> UIView {
 		let view = UIView()
 		view.backgroundColor = UIColor.blue.tint(0.5)
@@ -33,7 +33,7 @@ extension ExpandableTableViewDelegate {
 	}
 }
 
-class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewDataSource {
+public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewDataSource {
 	var baseHeight: CGFloat = 60
 	var expansionHeight: CGFloat = 60
 	unowned var expandableTableViewDelegate: ExpandableTableViewDelegate
@@ -80,8 +80,8 @@ class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewDataSour
 		endUpdates()
 	}
 	
-	// UITableViewDelegate =============================================================================
-	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+// UITableViewDelegate =============================================================================
+	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		var height: CGFloat = expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, baseHeightForRowAt:indexPath)
 		
 		if let expandedPath = expandedPath, expandedPath == indexPath {
@@ -91,11 +91,11 @@ class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewDataSour
 		return height
 	}
 	
-	// UITableViewDataSource ===========================================================================
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+// UITableViewDataSource ===========================================================================
+	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, numberOfRowsInSection: section)
 	}
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, cellForRowAt: indexPath)
 		cell.expandableTableView = self
 		return cell
