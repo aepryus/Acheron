@@ -11,7 +11,7 @@ import UIKit
 public enum Screen {
 	case dim320x480, dim320x568, dim375x667, dim414x736, dim375x812, dim414x896, dim1024x768, dim1112x834, dim1366x1024, dimOther
 	
-	// Static ==========================================================================================
+// Static ==========================================================================================
 	public static var this: Screen {
 		let size = UIScreen.main.bounds.size
 		if size.width == 320 && size.height == 480 {return .dim320x480}			// 0.67

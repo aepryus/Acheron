@@ -71,7 +71,7 @@ public struct RGB {
 		return uiColor.cgColor
 	}
 	
-	// Static ==========================================================================================
+// Static ==========================================================================================
 	public static var black = RGB(r: 0, g: 0, b: 0, a: 1)
 	public static var white = RGB(r: 1, g: 1, b: 1, a: 1)
 	public static var grey = RGB(r: 0.5, g: 0.5, b: 0.5, a: 1)
