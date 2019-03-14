@@ -53,6 +53,9 @@ open class ExpandableCell: UITableViewCell {
 	override open func addSubview(_ view: UIView) {
 		baseView.addSubview(view)
 	}
+	override open func addGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
+		baseView.addGestureRecognizer(gestureRecognizer)
+	}
 	override open var backgroundColor: UIColor? {
 		set {
 			baseView.backgroundColor = newValue
