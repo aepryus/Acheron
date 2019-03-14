@@ -36,7 +36,7 @@ open class ExpandableCell: UITableViewCell {
 	}
 	
 // Events ==========================================================================================
-	@objc private func onTap() {
+	@objc func onTap() {
 		expandableTableView.toggle(cell: self)
 	}
 	
