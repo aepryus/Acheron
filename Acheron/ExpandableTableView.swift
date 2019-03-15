@@ -83,7 +83,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		expandedPath = nil
 		currentExpandedView = nil
 		reloadData()
-		layoutSubviews()
+		layoutIfNeeded()
 	}
 	
 // UITableViewDelegate =============================================================================
