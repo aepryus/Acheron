@@ -40,6 +40,9 @@ public enum Screen {
 		return !iPhone
 	}
 	
+	public static var bounds: CGRect {
+		return UIScreen.main.bounds
+	}
 	public static var width: CGFloat {
 		return UIScreen.main.bounds.size.width
 	}
