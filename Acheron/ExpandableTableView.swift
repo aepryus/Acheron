@@ -79,6 +79,10 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		}
 		endUpdates()
 	}
+	func collapseSilent() {
+		expandedPath = nil
+		currentExpandedView = nil
+	}
 	
 // UITableViewDelegate =============================================================================
 	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
