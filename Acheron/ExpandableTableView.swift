@@ -79,7 +79,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		}
 		endUpdates()
 	}
-	func collapseSilent() {
+	public func collapseSilent() {
 		expandedPath = nil
 		currentExpandedView = nil
 	}
