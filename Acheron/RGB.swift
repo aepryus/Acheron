@@ -9,28 +9,28 @@
 import UIKit
 
 public struct RGB {
-	let r: Float
-	let g: Float
-	let b: Float
-	let a: Float
+	let r: CGFloat
+	let g: CGFloat
+	let b: CGFloat
+	let a: CGFloat
 	public let uiColor: UIColor
 	
-	private init (r: Float, g: Float, b: Float, a: Float, uiColor: UIColor) {
+	private init (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat, uiColor: UIColor) {
 		self.r = r
 		self.g = g
 		self.b = b
 		self.a = a
 		self.uiColor = uiColor
 	}
-	public init (r: Float, g: Float, b: Float, a: Float) {
+	public init (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
 		let uiColor = UIColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
 		self.init(r: r, g: g, b: b, a: a, uiColor: uiColor)
 	}
-	public init (r: Float, g: Float, b: Float) {
+	public init (r: CGFloat, g: CGFloat, b: CGFloat) {
 		self.init(r: r, g: g, b: b, a: 1)
 	}
 	public init (r: Int, g: Int, b: Int) {
-		self.init(r: Float(r)/255.0, g: Float(g)/255.0, b: Float(b)/255.0)
+		self.init(r: CGFloat(r)/255, g: CGFloat(g)/255, b: CGFloat(b)/255)
 	}
 	public init (uiColor: UIColor) {
 		var color = uiColor
@@ -41,7 +41,7 @@ public struct RGB {
 		else if color == UIColor.black		{color = UIColor(red: 0/6, green: 0/6, blue: 0/6, alpha: 1)}
 		
 		let c = color.cgColor.components!
-		self.init(r: Float(c[0]), g: Float(c[1]), b: Float(c[2]), a: Float(c[3]), uiColor: color)
+		self.init(r: c[0], g: c[1], b: c[2], a: c[3], uiColor: color)
 	}
 	
 	public static func + (p: RGB, q: RGB) -> RGB {
@@ -50,20 +50,20 @@ public struct RGB {
 	public static func - (p: RGB, q: RGB) -> RGB {
 		return RGB(r: p.r-q.r, g: p.g-q.g, b: p.b-q.b, a: p.a-q.a)
 	}
-	public static func * (p: RGB, q: Float) -> RGB {
+	public static func * (p: RGB, q: CGFloat) -> RGB {
 		return RGB(r: p.r*q, g: p.g*q, b: p.b*q, a: p.a*q)
 	}
 	
-	public func blend (rgb: RGB, percent: Float) -> RGB {
+	public func blend (rgb: RGB, percent: CGFloat) -> RGB {
 		return self + (rgb - self) * percent
 	}
-	public func tint(_ percent: Float) -> RGB {
+	public func tint(_ percent: CGFloat) -> RGB {
 		return blend(rgb: RGB.white, percent: percent)
 	}
-	public func tone(_ percent: Float) -> RGB {
+	public func tone(_ percent: CGFloat) -> RGB {
 		return blend(rgb: RGB.grey, percent: percent)
 	}
-	public func shade(_ percent: Float) -> RGB {
+	public func shade(_ percent: CGFloat) -> RGB {
 		return blend(rgb: RGB.black, percent: percent)
 	}
 	
@@ -76,13 +76,13 @@ public struct RGB {
 	public static var white = RGB(r: 1, g: 1, b: 1, a: 1)
 	public static var grey = RGB(r: 0.5, g: 0.5, b: 0.5, a: 1)
 	
-	public static func tint (color: UIColor, percent: Float) -> UIColor {
+	public static func tint (color: UIColor, percent: CGFloat) -> UIColor {
 		return RGB(uiColor: color).blend(rgb: white, percent: percent).uiColor
 	}
-	public static func tone (color: UIColor, percent: Float) -> UIColor {
+	public static func tone (color: UIColor, percent: CGFloat) -> UIColor {
 		return RGB(uiColor: color).blend(rgb: grey, percent: percent).uiColor
 	}
-	public static func shade (color: UIColor, percent: Float) -> UIColor {
+	public static func shade (color: UIColor, percent: CGFloat) -> UIColor {
 		return RGB(uiColor: color).blend(rgb: black, percent: percent).uiColor
 	}
 }

@@ -38,11 +38,14 @@ public class Pen {
 		self.init(font: UIFont.systemFont(ofSize: 12))
 	}
 	
+	public subscript(index: NSAttributedString.Key) -> Any? {
+		get {return attributes[index]}
+		set(newValue) {attributes[index] = newValue}
+	}
+	
 	public func copy() -> Pen {
 		let pen = Pen(font: font)
-		pen.color = color
-		pen.alignment = alignment
-		pen.style = style.mutableCopy() as! NSMutableParagraphStyle
+		pen.attributes = attributes
 		return pen
 	}
 }

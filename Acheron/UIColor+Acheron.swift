@@ -10,10 +10,10 @@ extension UIColor {
 	public func alpha(_ alpha: CGFloat) -> UIColor {
 		return withAlphaComponent(alpha)
 	}
-	public func shade(_ percent: Float) -> UIColor {
+	public func shade(_ percent: CGFloat) -> UIColor {
 		return RGB.shade(color: self, percent: percent)
 	}
-	public func tint(_ percent: Float) -> UIColor {
+	public func tint(_ percent: CGFloat) -> UIColor {
 		return RGB.tint(color: self, percent: percent)
 	}
 	
