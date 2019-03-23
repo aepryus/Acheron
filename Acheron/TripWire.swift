@@ -8,16 +8,16 @@
 
 import UIKit
 
-class TripWire: UIView {
-	var onTrip: ()->()
+public class TripWire: UIView {
+	public var onTrip: ()->()
 	
-	init(frame: CGRect = CGRect.zero, onTrip: @escaping ()->()) {
+	public init(frame: CGRect = CGRect.zero, onTrip: @escaping ()->()) {
 		self.onTrip = onTrip
 		super.init(frame: frame == CGRect.zero ? UIScreen.main.bounds : frame)
 	}
 	required init?(coder aDecoder: NSCoder) {fatalError()}
 	
-	override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+	override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
 		let view = super.hitTest(point, with: event)
 		if view !== self {return view}
 		removeFromSuperview()
