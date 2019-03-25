@@ -12,7 +12,6 @@ public extension UIImageView {
 	static var images: [String:UIImage] = [:]
 	static var imageViewSets: [String:Set<UIImageView>] = [:]
 	static var urlLookup: [UInt:String] = [:]
-	static let lock: String = "lock"
 	
 	var identifier: UInt {
 		return UInt(bitPattern: ObjectIdentifier(self))
