@@ -12,6 +12,7 @@ public extension UIImageView {
 	static var images: [String:UIImage] = [:]
 	static var imageViewSets: [String:Set<UIImageView>] = [:]
 	static var urlLookup: [UInt:String] = [:]
+	static let lock: String = "lock"
 	
 	var identifier: UInt {
 		return UInt(bitPattern: ObjectIdentifier(self))
@@ -23,17 +24,16 @@ public extension UIImageView {
 
 		let oldURL: String? = UIImageView.urlLookup[identifier]
 		if let oldURL = oldURL, oldURL != url {
-			UIImageView.imageViewSets[oldURL]!.remove(self)
+			UIImageView.imageViewSets[oldURL]?.remove(self)
 		}
 		UIImageView.urlLookup[identifier] = url
 
-		var imageViews: Set<UIImageView>? = UIImageView.imageViewSets[url]
-		if imageViews != nil {
-			imageViews!.insert(self)
-			return
-		}
-		imageViews = Set<UIImageView>([self])
+		let needsRequest: Bool = UIImageView.imageViewSets[url] == nil
+		var imageViews: Set<UIImageView> = UIImageView.imageViewSets[url] ?? Set<UIImageView>()
+		imageViews.insert(self)
 		UIImageView.imageViewSets[url] = imageViews
+		
+		guard needsRequest else {return}
 		
 		let request = URLRequest(url: URL(string: url)!)
 		NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { (response: URLResponse?, data: Data?, error: Error?) in
