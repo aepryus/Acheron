@@ -44,7 +44,6 @@ extension UIImageView {
 			imageViewSet.forEach {$0.image = image}
 			complete()
 		}
-		
 	}
 	func loadImage(url: String) {
 		loadImage(url: url, {})
