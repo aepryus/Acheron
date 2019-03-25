@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension UIImageView {
+public extension UIImageView {
 	static var images: [String:UIImage] = [:]
 	static var imageViewSets: [String:Set<UIImageView>] = [:]
 	static var urlLookup: [UInt:String] = [:]
@@ -17,7 +17,7 @@ extension UIImageView {
 		return UInt(bitPattern: ObjectIdentifier(self))
 	}
 	
-	func loadImage(url: String,_ complete: @escaping ()->()) {
+	public func loadImage(url: String,_ complete: @escaping ()->()) {
 		self.image = UIImageView.images[url]
 		guard self.image == nil else {return}
 
@@ -45,7 +45,7 @@ extension UIImageView {
 			complete()
 		}
 	}
-	func loadImage(url: String) {
+	public func loadImage(url: String) {
 		loadImage(url: url, {})
 	}
 }
