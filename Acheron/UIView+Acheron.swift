@@ -120,9 +120,7 @@ public extension UIView {
 	}
 	
 	public func pointOnScreen(_ point: CGPoint) -> CGPoint {
-		let next = frame.origin + point
-		guard let view = superview else {return next}
-		return view.pointOnScreen(next)
+		return convert(point, to: UIApplication.shared.keyWindow)
 	}
 	public func rectOnScreen(_ rect: CGRect) -> CGRect {
 		return CGRect(origin: pointOnScreen(rect.origin), size: rect.size)
