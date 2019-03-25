@@ -28,10 +28,12 @@ public extension UIImageView {
 		}
 		UIImageView.urlLookup[identifier] = url
 
-		let needsRequest: Bool = UIImageView.imageViewSets[url] == nil
-		var imageViews: Set<UIImageView> = UIImageView.imageViewSets[url] ?? Set<UIImageView>()
-		imageViews.insert(self)
-		UIImageView.imageViewSets[url] = imageViews
+		var needsRequest: Bool = false
+		if UIImageView.imageViewSets[url] == nil {
+			needsRequest = true
+			UIImageView.imageViewSets[url] = Set<UIImageView>()
+		}
+		UIImageView.imageViewSets[url]!.insert(self)
 		
 		guard needsRequest else {return}
 		
