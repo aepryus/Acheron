@@ -17,9 +17,10 @@ public extension UIImageView {
 		return UInt(bitPattern: ObjectIdentifier(self))
 	}
 	
-	func loadImage(url: String,_ complete: @escaping ()->()) {
+	func loadImage(url: String, placeholder: UIImage? = nil,_ complete: @escaping ()->()) {
 		self.image = UIImageView.images[url]
 		guard self.image == nil else {return}
+		self.image = placeholder
 
 		let oldURL: String? = UIImageView.urlLookup[identifier]
 		if let oldURL = oldURL, oldURL != url {
@@ -48,10 +49,17 @@ public extension UIImageView {
 		}
 	}
 	@objc func loadImage(url: String) {
-		loadImage(url: url, {})
+		loadImage(url: url, placeholder: nil, {})
+	}
+	@objc func loadImage(url: String, placeholder: UIImage?) {
+		loadImage(url: url, placeholder: placeholder, {})
 	}
 	@objc func loadImage(atURL: URL?) {
 		guard let atURL = atURL else {return}
-		loadImage(url: atURL.absoluteString, {})
+		loadImage(url: atURL.absoluteString, placeholder: nil, {})
+	}
+	@objc func loadImage(atURL: URL?, placeholder: UIImage?) {
+		guard let atURL = atURL else {return}
+		loadImage(url: atURL.absoluteString, placeholder: placeholder, {})
 	}
 }
