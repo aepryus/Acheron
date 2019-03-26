@@ -9,19 +9,19 @@
 import UIKit
 
 public extension CGPoint {
-	public static func + (a: CGPoint, b: CGPoint) -> CGPoint {
+	static func + (a: CGPoint, b: CGPoint) -> CGPoint {
 		return CGPoint(x: a.x+b.x, y: a.y+b.y)
 	}
-	public static func - (a: CGPoint, b: CGPoint) -> CGPoint {
+	static func - (a: CGPoint, b: CGPoint) -> CGPoint {
 		return CGPoint(x: a.x-b.x, y: a.y-b.y)
 	}
-	public static func * (a: CGPoint, b: CGFloat) -> CGPoint {
+	static func * (a: CGPoint, b: CGFloat) -> CGPoint {
 		return CGPoint(x: a.x*b, y: a.y*b)
 	}
-	public static func * (a: CGFloat, b: CGPoint) -> CGPoint {
+	static func * (a: CGFloat, b: CGPoint) -> CGPoint {
 		return CGPoint(x: a*b.x, y: a*b.y)
 	}
-	public static func / (a: CGPoint, b: CGFloat) -> CGPoint {
+	static func / (a: CGPoint, b: CGFloat) -> CGPoint {
 		return CGPoint(x: a.x/b, y: a.y/b)
 	}
 	

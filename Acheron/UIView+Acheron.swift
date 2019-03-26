@@ -60,7 +60,7 @@ public enum Screen {
 
 public extension UIView {
 	
-	public var s: CGFloat {
+	var s: CGFloat {
 		return Screen.s
 	}
 	
@@ -72,57 +72,57 @@ public extension UIView {
 		}
 	}
 	
-	public func center(offset: UIOffset, size: CGSize) {
+	func center(offset: UIOffset, size: CGSize) {
 		self.frame = CGRect(x: (parent.width-size.width)/2+offset.horizontal, y: (parent.height-size.height)/2+offset.vertical, width: size.width, height: size.height)
 	}
-	public func right(offset: UIOffset, size: CGSize) {
+	func right(offset: UIOffset, size: CGSize) {
 		self.frame = CGRect(x: parent.width-size.width+offset.horizontal, y: (parent.height-size.height)/2+offset.vertical, width: size.width, height: size.height)
 	}
-	public func left(offset: UIOffset, size: CGSize) {
+	func left(offset: UIOffset, size: CGSize) {
 		self.frame = CGRect(x: offset.horizontal, y: (parent.height-size.height)/2+offset.vertical, width: size.width, height: size.height)
 	}
-	public func top(offset: UIOffset, size: CGSize) {
+	func top(offset: UIOffset, size: CGSize) {
 		self.frame = CGRect(x: (parent.width-size.width)/2+offset.horizontal, y: offset.vertical, width: size.width, height: size.height)
 	}
-	public func bottom(offset: UIOffset, size: CGSize) {
+	func bottom(offset: UIOffset, size: CGSize) {
 		self.frame = CGRect(x: (parent.width-size.width)/2+offset.horizontal, y: parent.height-size.height+offset.vertical, width: size.width, height: size.height)
 	}
-	public func topLeft(offset: UIOffset, size: CGSize) {
+	func topLeft(offset: UIOffset, size: CGSize) {
 		self.frame = CGRect(x: offset.horizontal, y: offset.vertical, width: size.width, height: size.height)
 	}
-	public func topRight(offset: UIOffset, size: CGSize) {
+	func topRight(offset: UIOffset, size: CGSize) {
 		self.frame = CGRect(x: parent.width-size.width+offset.horizontal, y: offset.vertical, width: size.width, height: size.height)
 	}
-	public func bottomLeft(offset: UIOffset, size: CGSize) {
+	func bottomLeft(offset: UIOffset, size: CGSize) {
 		self.frame = CGRect(x: offset.horizontal, y: parent.height-size.height+offset.vertical, width: size.width, height: size.height)
 	}
-	public func bottomRight(offset: UIOffset, size: CGSize) {
+	func bottomRight(offset: UIOffset, size: CGSize) {
 		self.frame = CGRect(x: parent.width-size.width+offset.horizontal, y: parent.height-size.height+offset.vertical, width: size.width, height: size.height)
 	}
 	
-	public var top: CGFloat {
+	var top: CGFloat {
 		return frame.origin.y
 	}
-	public var bottom: CGFloat {
+	var bottom: CGFloat {
 		return frame.origin.y + frame.size.height
 	}
-	public var left: CGFloat {
+	var left: CGFloat {
 		return frame.origin.x
 	}
-	public var right: CGFloat {
+	var right: CGFloat {
 		return frame.origin.x + frame.size.width
 	}
-	public var width: CGFloat {
+	var width: CGFloat {
 		return bounds.size.width
 	}
-	public var height: CGFloat {
+	var height: CGFloat {
 		return bounds.size.height
 	}
 	
-	public func pointOnScreen(_ point: CGPoint) -> CGPoint {
+	func pointOnScreen(_ point: CGPoint) -> CGPoint {
 		return convert(point, to: UIApplication.shared.keyWindow)
 	}
-	public func rectOnScreen(_ rect: CGRect) -> CGRect {
+	func rectOnScreen(_ rect: CGRect) -> CGRect {
 		return CGRect(origin: pointOnScreen(rect.origin), size: rect.size)
 	}
 }

@@ -17,7 +17,7 @@ public extension UIImageView {
 		return UInt(bitPattern: ObjectIdentifier(self))
 	}
 	
-	public func loadImage(url: String,_ complete: @escaping ()->()) {
+	func loadImage(url: String,_ complete: @escaping ()->()) {
 		self.image = UIImageView.images[url]
 		guard self.image == nil else {return}
 
@@ -46,7 +46,7 @@ public extension UIImageView {
 			complete()
 		}
 	}
-	public func loadImage(url: String) {
+	func loadImage(url: String) {
 		loadImage(url: url, {})
 	}
 }

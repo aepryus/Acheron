@@ -9,7 +9,7 @@
 import UIKit
 
 public extension UIViewController {
-	public var s: CGFloat {
+	var s: CGFloat {
 		return Screen.s
 	}
 	
