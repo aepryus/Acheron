@@ -36,7 +36,8 @@ public extension UIImageView {
 		
 		guard needsRequest else {return}
 		
-		let request = URLRequest(url: URL(string: url)!)
+		guard let URL = URL(string: url) else {return}
+		let request = URLRequest(url: URL)
 		NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { (response: URLResponse?, data: Data?, error: Error?) in
 			guard let data = data else {return}
 			guard let image: UIImage = UIImage(data: data) else {return}
@@ -46,7 +47,11 @@ public extension UIImageView {
 			complete()
 		}
 	}
-	func loadImage(url: String) {
+	@objc func loadImage(url: String) {
 		loadImage(url: url, {})
+	}
+	@objc func loadImage(atURL: URL?) {
+		guard let atURL = atURL else {return}
+		loadImage(url: atURL.absoluteString, {})
 	}
 }
