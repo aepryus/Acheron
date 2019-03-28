@@ -8,33 +8,34 @@
 
 import UIKit
 
-public class Pen {
-	public var attributes = [NSAttributedString.Key:Any]()
+public class Pen: NSObject {
+	@objc public var attributes = [NSAttributedString.Key:Any]()
 	
-	public var font: UIFont {
+	@objc public var font: UIFont {
 		set {attributes[NSAttributedString.Key.font] = newValue}
 		get {return attributes[NSAttributedString.Key.font] as! UIFont}
 	}
-	public var color: UIColor {
+	@objc public var color: UIColor {
 		set {attributes[NSAttributedString.Key.foregroundColor] = newValue}
 		get {return attributes[NSAttributedString.Key.foregroundColor] as! UIColor}
 	}
-	public var alignment: NSTextAlignment {
+	@objc public var alignment: NSTextAlignment {
 		set {style.alignment = newValue}
 		get {return style.alignment}
 	}
-	public var style: NSMutableParagraphStyle {
+	@objc public var style: NSMutableParagraphStyle {
 		set {attributes[NSAttributedString.Key.paragraphStyle] = newValue}
 		get {return attributes[NSAttributedString.Key.paragraphStyle] as! NSMutableParagraphStyle}
 	}
 	
-	public init (font: UIFont) {
+	@objc public init (font: UIFont) {
+		super.init()
 		self.font = font
 		self.color = UIColor.white
 		self.style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
 		self.style.lineBreakMode = .byWordWrapping
 	}
-	public convenience init() {
+	public override convenience init() {
 		self.init(font: UIFont.systemFont(ofSize: 12))
 	}
 	
