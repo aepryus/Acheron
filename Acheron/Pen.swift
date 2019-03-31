@@ -44,7 +44,7 @@ public class Pen: NSObject {
 		set(newValue) {attributes[index] = newValue}
 	}
 	
-	public func copy() -> Pen {
+	public func clone() -> Pen {
 		let pen = Pen(font: font)
 		pen.attributes = attributes
 		return pen
