@@ -72,34 +72,43 @@ public extension UIView {
 		}
 	}
 	
-	func center(offset: UIOffset, size: CGSize) {
-		self.frame = CGRect(x: (parent.width-size.width)/2+offset.horizontal, y: (parent.height-size.height)/2+offset.vertical, width: size.width, height: size.height)
+	func center(dx: CGFloat = 0, dy: CGFloat = 0, width: CGFloat = 0, height: CGFloat = 0) {
+		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
+		frame = CGRect(x: (parent.width-width)/2+dx, y: (parent.height-height)/2+dy, width: width, height: height)
 	}
-	func right(offset: UIOffset, size: CGSize) {
-		self.frame = CGRect(x: parent.width-size.width+offset.horizontal, y: (parent.height-size.height)/2+offset.vertical, width: size.width, height: size.height)
+	func right(dx: CGFloat = 0, dy: CGFloat = 0, width: CGFloat = 0, height: CGFloat = 0) {
+		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
+		self.frame = CGRect(x: parent.width-width+dx, y: (parent.height-height)/2+dy, width: width, height: height)
 	}
-	func left(offset: UIOffset, size: CGSize) {
-		self.frame = CGRect(x: offset.horizontal, y: (parent.height-size.height)/2+offset.vertical, width: size.width, height: size.height)
+	func left(dx: CGFloat = 0, dy: CGFloat = 0, width: CGFloat = 0, height: CGFloat = 0) {
+		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
+		self.frame = CGRect(x: dx, y: (parent.height-height)/2+dy, width: width, height: height)
 	}
-	func top(offset: UIOffset, size: CGSize) {
-		self.frame = CGRect(x: (parent.width-size.width)/2+offset.horizontal, y: offset.vertical, width: size.width, height: size.height)
+	func top(dx: CGFloat = 0, dy: CGFloat = 0, width: CGFloat = 0, height: CGFloat = 0) {
+		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
+		self.frame = CGRect(x: (parent.width-width)/2+dx, y: dy, width: width, height: height)
 	}
-	func bottom(offset: UIOffset, size: CGSize) {
-		self.frame = CGRect(x: (parent.width-size.width)/2+offset.horizontal, y: parent.height-size.height+offset.vertical, width: size.width, height: size.height)
+	func bottom(dx: CGFloat = 0, dy: CGFloat = 0, width: CGFloat = 0, height: CGFloat = 0) {
+		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
+		self.frame = CGRect(x: (parent.width-width)/2+dx, y: parent.height-height+dy, width: width, height: height)
 	}
-	func topLeft(offset: UIOffset, size: CGSize) {
-		self.frame = CGRect(x: offset.horizontal, y: offset.vertical, width: size.width, height: size.height)
+	func topLeft(dx: CGFloat = 0, dy: CGFloat = 0, width: CGFloat = 0, height: CGFloat = 0) {
+		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
+		self.frame = CGRect(x: dx, y: dy, width: width, height: height)
 	}
-	func topRight(offset: UIOffset, size: CGSize) {
-		self.frame = CGRect(x: parent.width-size.width+offset.horizontal, y: offset.vertical, width: size.width, height: size.height)
+	func topRight(dx: CGFloat = 0, dy: CGFloat = 0, width: CGFloat = 0, height: CGFloat = 0) {
+		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
+		self.frame = CGRect(x: parent.width-width+dx, y: dy, width: width, height: height)
 	}
-	func bottomLeft(offset: UIOffset, size: CGSize) {
-		self.frame = CGRect(x: offset.horizontal, y: parent.height-size.height+offset.vertical, width: size.width, height: size.height)
+	func bottomLeft(dx: CGFloat = 0, dy: CGFloat = 0, width: CGFloat = 0, height: CGFloat = 0) {
+		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
+		self.frame = CGRect(x: dx, y: parent.height-height+dy, width: width, height: height)
 	}
-	func bottomRight(offset: UIOffset, size: CGSize) {
-		self.frame = CGRect(x: parent.width-size.width+offset.horizontal, y: parent.height-size.height+offset.vertical, width: size.width, height: size.height)
+	func bottomRight(dx: CGFloat = 0, dy: CGFloat = 0, width: CGFloat = 0, height: CGFloat = 0) {
+		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
+		self.frame = CGRect(x: parent.width-width+dx, y: parent.height-height+dy, width: width, height: height)
 	}
-	
+
 	var top: CGFloat {
 		return frame.origin.y
 	}
