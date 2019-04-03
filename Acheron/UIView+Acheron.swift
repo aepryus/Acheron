@@ -108,6 +108,33 @@ public extension UIView {
 		let width = width == 0 ? self.width : width; let height = height == 0 ? self.height : height
 		self.frame = CGRect(x: parent.width-width+dx, y: parent.height-height+dy, width: width, height: height)
 	}
+	func center(dx: CGFloat, dy: CGFloat, size: CGSize) {
+		center(dx: dx, dy: dy, width: size.width, height: size.height)
+	}
+	func right(dx: CGFloat, dy: CGFloat, size: CGSize) {
+		right(dx: dx, dy: dy, width: size.width, height: size.height)
+	}
+	func left(dx: CGFloat, dy: CGFloat, size: CGSize) {
+		left(dx: dx, dy: dy, width: size.width, height: size.height)
+	}
+	func top(dx: CGFloat, dy: CGFloat, size: CGSize) {
+		top(dx: dx, dy: dy, width: size.width, height: size.height)
+	}
+	func bottom(dx: CGFloat, dy: CGFloat, size: CGSize) {
+		bottom(dx: dx, dy: dy, width: size.width, height: size.height)
+	}
+	func topLeft(dx: CGFloat, dy: CGFloat, size: CGSize) {
+		topLeft(dx: dx, dy: dy, width: size.width, height: size.height)
+	}
+	func topRight(dx: CGFloat, dy: CGFloat, size: CGSize) {
+		topRight(dx: dx, dy: dy, width: size.width, height: size.height)
+	}
+	func bottomLeft(dx: CGFloat, dy: CGFloat, size: CGSize) {
+		bottomLeft(dx: dx, dy: dy, width: size.width, height: size.height)
+	}
+	func bottomRight(dx: CGFloat, dy: CGFloat, size: CGSize) {
+		bottomRight(dx: dx, dy: dy, width: size.width, height: size.height)
+	}
 
 	var top: CGFloat {
 		return frame.origin.y
