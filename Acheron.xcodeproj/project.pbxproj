@@ -12,6 +12,7 @@
 		D81497B92238F39F00436E00 /* ExpandableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497B82238F39F00436E00 /* ExpandableCell.swift */; };
 		D81497BB2238F3D200436E00 /* AETableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497BA2238F3D200436E00 /* AETableView.swift */; };
 		D81849562248AD7000F05CC7 /* UIImageView+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */; };
+		D85BD71A225A947B00B8989E /* UIImage+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85BD719225A947B00B8989E /* UIImage+Acheron.swift */; };
 		D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B03D52245AB1F00CE6A5A /* TripWire.swift */; };
 		D8E604C622327C82000E8AEA /* Acheron.h in Headers */ = {isa = PBXBuildFile; fileRef = D8E604C422327C81000E8AEA /* Acheron.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D8E604D022327E2A000E8AEA /* CALayer+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */; };
@@ -30,6 +31,7 @@
 		D81497B82238F39F00436E00 /* ExpandableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableCell.swift; sourceTree = "<group>"; };
 		D81497BA2238F3D200436E00 /* AETableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETableView.swift; sourceTree = "<group>"; };
 		D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Acheron.swift"; sourceTree = "<group>"; };
+		D85BD719225A947B00B8989E /* UIImage+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Acheron.swift"; sourceTree = "<group>"; };
 		D88B03D52245AB1F00CE6A5A /* TripWire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripWire.swift; sourceTree = "<group>"; };
 		D8E604C122327C81000E8AEA /* Acheron.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Acheron.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8E604C422327C81000E8AEA /* Acheron.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Acheron.h; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 				D80367B0225915E400B0934C /* Date+Acheron.swift */,
 				D8E604D322327E63000E8AEA /* UIColor+Acheron.swift */,
 				D8E604D522327E84000E8AEA /* UIControl+Acheron.swift */,
+				D85BD719225A947B00B8989E /* UIImage+Acheron.swift */,
 				D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */,
 				D8E604D822327EC3000E8AEA /* UIView+Acheron.swift */,
 				D8E604DA22327EEE000E8AEA /* UIViewController+Acheron.swift */,
@@ -207,6 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D81849562248AD7000F05CC7 /* UIImageView+Acheron.swift in Sources */,
+				D85BD71A225A947B00B8989E /* UIImage+Acheron.swift in Sources */,
 				D8E604D622327E84000E8AEA /* UIControl+Acheron.swift in Sources */,
 				D8E604D922327EC3000E8AEA /* UIView+Acheron.swift in Sources */,
 				D81497B72238F39100436E00 /* ExpandableTableView.swift in Sources */,
