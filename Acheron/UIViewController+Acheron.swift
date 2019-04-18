@@ -12,6 +12,12 @@ public extension UIViewController {
 	var s: CGFloat {
 		return Screen.s
 	}
+	var safeTop: CGFloat {
+		return Screen.safeTop
+	}
+	var safeBottom: CGFloat {
+		return Screen.safeBottom
+	}
 	
 	func layout320x568() {
 		layout375x667()
