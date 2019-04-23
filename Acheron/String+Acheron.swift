@@ -49,7 +49,7 @@ extension String {
 	func toCString() -> [CChar]? {
 		return self.cString(using: .utf8)
 	}
-	func toAttributes() -> [String:Any] {
+	public func toAttributes() -> [String:Any] {
 		do {
 			return try JSONSerialization.jsonObject(with: data(using: .utf8)!, options: [.allowFragments]) as! [String:Any]
 		} catch {

@@ -9,7 +9,7 @@
 import Foundation
 
 extension Dictionary where Key == String {
-	func toJSON() -> String {
+	public func toJSON() -> String {
 		do {
 			let data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
 			return String(data:data, encoding: .utf8)!

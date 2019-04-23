@@ -17,7 +17,11 @@ open class Anchor: Domain {
 	public required init(attributes: [String : Any], parent: Domain? = nil) {
 		super.init(attributes: attributes, parent: parent)
 	}
-	public required init(basket: Basket, attributes: [String:Any] = [:]) {
+	public required init(basket: Basket) {
+		self.basket = basket
+		super.init()
+	}
+	public required init(basket: Basket, attributes: [String:Any]) {
 		self.basket = basket
 		super.init(attributes: attributes)
 	}

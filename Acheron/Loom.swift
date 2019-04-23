@@ -10,6 +10,7 @@ import Foundation
 
 public class Loom {
 	private static var namespaces: [String] = []
+	public static var basket: Basket!
 
 	static func nameFromType(_ type: Domain.Type) -> String {
 		let fullname: String = NSStringFromClass(type)
@@ -26,7 +27,35 @@ public class Loom {
 		return cls
 	}
 	
-	public static func start(namespaces: [String]) {
+	public static func set(key: String, value: String) {
+		Loom.basket.set(key: key, value: value)
+	}
+	public static func get(key: String) -> String? {
+		return Loom.basket.get(key: key)
+	}
+	public static func create(cls: Anchor.Type) -> Anchor {
+		return Loom.basket.createByClass(cls)
+	}
+	
+	public static func selectByID(_ iden: String) -> Anchor? {
+		return Loom.basket.selectByID(iden)
+	}
+	public static func selectOneWhere(field: String, value: String, type: Anchor.Type) -> Domain? {
+		return Loom.basket.selectOneWhere(field: field, value: value, type: type)
+	}
+	public static func selectWhere(field: String, value: String, type: Anchor.Type) -> [Domain] {
+		return Loom.basket.selectWhere(field: field, value: value, type: type)
+	}
+	public static func selectAll(_ type: Anchor.Type) -> [Anchor] {
+		return Loom.basket.selectAll(type)
+	}
+	
+	public static func transact(_ closure: ()->()) {
+		Loom.basket.transact(closure)
+	}
+	
+	public static func start(basket: Basket, namespaces: [String]) {
+		Loom.basket = basket
 		Loom.namespaces = namespaces
 	}
 }
