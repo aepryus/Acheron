@@ -9,11 +9,12 @@
 import UIKit
 
 public enum Screen {
-	case dim320x480, dim320x568, dim375x667, dim414x736, dim375x812, dim414x896, dim1024x768, dim1112x834, dim1366x1024, dimOther
+	case dim320x480, dim320x568, dim375x667, dim414x736, dim375x812, dim414x896, dim1024x768, dim1112x834, dim1194x834, dim1366x1024, dimOther
 	
 // Static ==========================================================================================
 	public static var this: Screen {
 		let size = UIScreen.main.bounds.size
+		
 		if size.width == 320 && size.height == 480 {return .dim320x480}			// 0.67
 		
 		if size.width == 320 && size.height == 568 {return .dim320x568}			// 0.56
@@ -26,6 +27,9 @@ public enum Screen {
 		if size.width == 1024 && size.height == 768 {return .dim1024x768}		// 1.33
 		if size.width == 1112 && size.height == 834 {return .dim1112x834}
 		if size.width == 1366 && size.height == 1024 {return .dim1366x1024}
+		
+		if size.width == 1194 && size.height == 834 {return .dim1194x834}		// 1.43
+		
 		return .dimOther
 	}
 	public static var iPhone: Bool {

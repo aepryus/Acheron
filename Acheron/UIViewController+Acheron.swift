@@ -30,6 +30,9 @@ public extension UIViewController {
 	func layout1112x834() {
 		layout1024x768()
 	}
+	func layout1194x834() {
+		layout1024x768()
+	}
 	func layout1366x1024() {
 		layout1024x768()
 	}
@@ -40,6 +43,7 @@ public extension UIViewController {
 			case .dim414x736:	layout414x736()
 			case .dim1024x768:	layout1024x768()
 			case .dim1112x834:	layout1112x834()
+			case .dim1194x834:	layout1194x834()
 			case .dim1366x1024:	layout1366x1024()
 			default:			layout375x667()
 		}
