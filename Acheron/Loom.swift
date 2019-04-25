@@ -9,8 +9,10 @@
 import Foundation
 
 public class Loom {
-	private static var namespaces: [String] = []
 	public static var basket: Basket!
+
+	private static var namespaces: [String] = []
+	static var domains = [String:[String:AnyClass]]()
 
 	static func nameFromType(_ type: Domain.Type) -> String {
 		let fullname: String = NSStringFromClass(type)
@@ -27,6 +29,39 @@ public class Loom {
 		return cls
 	}
 	
+	static func classForKeyPath(keyPath: String, parent: Domain.Type) -> AnyClass? {
+		var n: UInt32 = 0
+		let properties: UnsafeMutablePointer<objc_property_t>? = class_copyPropertyList(parent, &n)
+		var cls: AnyClass?
+		
+		for i in 0..<Int(n) {
+			let name = String(validatingUTF8: property_getName(properties![i]))
+			if keyPath != name {continue}
+			
+			let attributes: UnsafePointer<Int8> = property_getAttributes(properties![i])!
+			if attributes[1] == Int8(UInt8(ascii:"@")) {
+				var className: String = String()
+				var j = 3
+				while attributes[j] != 0 && attributes[j] != Int8(UInt8(ascii:"\"")) {
+					className.append(Character(UnicodeScalar(UInt8(attributes[j]))))
+					j += 1
+				}
+				cls = NSClassFromString(className)
+			}
+			break;
+		}
+		free(properties)
+		
+		if cls == nil {
+			let superclass: NSObject.Type = class_getSuperclass(parent) as! NSObject.Type
+			if superclass != NSObject.self {
+				cls = classForKeyPath(keyPath: keyPath, parent: superclass as! Domain.Type)
+			}
+		}
+		
+		return cls
+	}
+	
 	public static func set(key: String, value: String) {
 		Loom.basket.set(key: key, value: value)
 	}
@@ -40,11 +75,11 @@ public class Loom {
 	public static func selectByID(_ iden: String) -> Anchor? {
 		return Loom.basket.selectByID(iden)
 	}
-	public static func selectOneWhere(field: String, value: String, type: Anchor.Type) -> Domain? {
-		return Loom.basket.selectOneWhere(field: field, value: value, type: type)
+	public static func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
+		return Loom.basket.selectOne(where: field, is: value, type: type)
 	}
-	public static func selectWhere(field: String, value: String, type: Anchor.Type) -> [Domain] {
-		return Loom.basket.selectWhere(field: field, value: value, type: type)
+	public static func select(where field: String, is value: String, type: Anchor.Type) -> [Domain] {
+		return Loom.basket.select(where: field, is: value, type: type)
 	}
 	public static func selectAll(_ type: Anchor.Type) -> [Anchor] {
 		return Loom.basket.selectAll(type)

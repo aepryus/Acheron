@@ -362,7 +362,7 @@ public class SQLitePersist: Persist {
 		
 		let documents = selectAll()
 		for document in documents {
-			print("\(document)")
+			print("\(document.toJSON())")
 			print("===========================================================================")
 		}
 		

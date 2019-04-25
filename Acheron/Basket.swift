@@ -97,7 +97,7 @@ public class Basket: NSObject {
 		}
 		return anchor
 	}
-	public func selectOneWhere(field: String, value: String, type: Anchor.Type) -> Domain? {
+	public func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
 		guard let attributes = persist.selectOne(where: field, is: value, type: Loom.nameFromType(type))
 			else {return nil}
 		var anchor = cache[attributes["iden"] as! String]
@@ -106,7 +106,7 @@ public class Basket: NSObject {
 		}
 		return anchor
 	}
-	public func selectWhere(field: String, value: String, type: Anchor.Type) -> [Domain] {
+	public func select(where field: String, is value: String, type: Anchor.Type) -> [Domain] {
 		let array = persist.select(where: field, is: value, type: Loom.nameFromType(type))
 		return convert(array: array, type:type)
 	}

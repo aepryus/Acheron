@@ -126,6 +126,25 @@ open class Domain: NSObject {
 		
 		return result
 	}
+	private func classForKeyPath(_ keyPath: String) -> AnyClass? {
+		var propertyToClass = Loom.domains[type]
+		if propertyToClass == nil {
+			propertyToClass = [String:AnyClass]()
+			Loom.domains[type] = propertyToClass;
+		}
+		var cls: AnyClass? = propertyToClass![keyPath];
+		if cls == nil {
+			cls = Loom.classForKeyPath(keyPath: keyPath, parent: Swift.type(of:self))
+			if cls != nil {
+				propertyToClass![keyPath] = cls
+			} else {
+				propertyToClass![keyPath] = NotFound.self
+			}
+		} else if cls === NotFound.self {
+			cls = nil
+		}
+		return cls
+	}
 	
 	private func subscribe() {
 		if isStatic {return}
@@ -387,60 +406,5 @@ open class Domain: NSObject {
 		let oldValue = change?[.oldKey] as? NSObject
 		let newValue = change?[.newKey] as? NSObject
 		if newValue != oldValue {edit()}
-	}
-	
-// Static ==========================================================================================
-	private static func classForKeyPath(keyPath: String, parent: Domain.Type) -> AnyClass? {
-		var n: UInt32 = 0
-		let properties: UnsafeMutablePointer<objc_property_t>? = class_copyPropertyList(parent, &n)
-		var cls: AnyClass?
-		
-		for i in 0..<Int(n) {
-			let name = String(validatingUTF8: property_getName(properties![i]))
-			if keyPath != name {continue}
-			
-			let attributes: UnsafePointer<Int8> = property_getAttributes(properties![i])!
-			if attributes[1] == Int8(UInt8(ascii:"@")) {
-				var className: String = String()
-				var j = 3
-				while attributes[j] != 0 && attributes[j] != Int8(UInt8(ascii:"\"")) {
-					className.append(Character(UnicodeScalar(UInt8(attributes[j]))))
-					j += 1
-				}
-				cls = NSClassFromString(className)
-			}
-			break;
-		}
-		free(properties)
-		
-		if cls == nil {
-			let superclass: NSObject.Type = class_getSuperclass(parent) as! NSObject.Type
-			if superclass != NSObject.self {
-				cls = classForKeyPath(keyPath: keyPath, parent: superclass as! Domain.Type)
-			}
-		}
-		
-		return cls
-	}
-	static var domainReference_ = [String:[String:AnyClass]]()
-	
-	private func classForKeyPath(_ keyPath: String) -> AnyClass? {
-		var propertyToClass = Domain.domainReference_[type]
-		if propertyToClass == nil {
-			propertyToClass = [String:AnyClass]()
-			Domain.domainReference_[type] = propertyToClass;
-		}
-		var cls: AnyClass? = propertyToClass![keyPath];
-		if cls == nil {
-			cls = Domain.classForKeyPath(keyPath: keyPath, parent: Swift.type(of:self))
-			if cls != nil {
-				propertyToClass![keyPath] = cls
-			} else {
-				propertyToClass![keyPath] = NotFound.self
-			}
-		} else if cls === NotFound.self {
-			cls = nil
-		}
-		return cls
 	}
 }
