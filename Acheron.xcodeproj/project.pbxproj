@@ -23,6 +23,7 @@
 		D858A926226E986400AD831F /* Loom.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A925226E986400AD831F /* Loom.swift */; };
 		D85BD71A225A947B00B8989E /* UIImage+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85BD719225A947B00B8989E /* UIImage+Acheron.swift */; };
 		D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B03D52245AB1F00CE6A5A /* TripWire.swift */; };
+		D8AB61E22275039400415069 /* AEViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB61E12275039400415069 /* AEViewController.swift */; };
 		D8CBC9C92265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */; };
 		D8CBC9CB2265D70100B7BBC5 /* UILabel+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */; };
 		D8CBC9CD2265D7D600B7BBC5 /* NSString+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9CC2265D7D600B7BBC5 /* NSString+Acheron.swift */; };
@@ -54,6 +55,7 @@
 		D858A925226E986400AD831F /* Loom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loom.swift; sourceTree = "<group>"; };
 		D85BD719225A947B00B8989E /* UIImage+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Acheron.swift"; sourceTree = "<group>"; };
 		D88B03D52245AB1F00CE6A5A /* TripWire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripWire.swift; sourceTree = "<group>"; };
+		D8AB61E12275039400415069 /* AEViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AEViewController.swift; sourceTree = "<group>"; };
 		D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Acheron.swift"; sourceTree = "<group>"; };
 		D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Acheron.swift"; sourceTree = "<group>"; };
 		D8CBC9CC2265D7D600B7BBC5 /* NSString+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSString+Acheron.swift"; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 		D8E604E022327F8A000E8AEA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				D8AB61E12275039400415069 /* AEViewController.swift */,
 				D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */,
 				D8E604D122327E47000E8AEA /* CGPoint+Acheron.swift */,
 				D80367B0225915E400B0934C /* Date+Acheron.swift */,
@@ -283,6 +286,7 @@
 				D8E604D422327E63000E8AEA /* UIColor+Acheron.swift in Sources */,
 				D8CBC9CB2265D70100B7BBC5 /* UILabel+Acheron.swift in Sources */,
 				D8E604DF22327F3E000E8AEA /* RGB.swift in Sources */,
+				D8AB61E22275039400415069 /* AEViewController.swift in Sources */,
 				D8CBC9CD2265D7D600B7BBC5 /* NSString+Acheron.swift in Sources */,
 				D81497B92238F39F00436E00 /* ExpandableCell.swift in Sources */,
 				D858A926226E986400AD831F /* Loom.swift in Sources */,
