@@ -16,7 +16,6 @@
 		D858A917226E785400AD831F /* Basket.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A916226E785400AD831F /* Basket.swift */; };
 		D858A919226E785F00AD831F /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A918226E785F00AD831F /* Domain.swift */; };
 		D858A91B226E787500AD831F /* Persist.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A91A226E787500AD831F /* Persist.swift */; };
-		D858A91E226E789100AD831F /* SQLiteIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A91D226E789100AD831F /* SQLiteIndex.swift */; };
 		D858A920226E78A700AD831F /* SQLitePersist.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A91F226E78A700AD831F /* SQLitePersist.swift */; };
 		D858A922226E7A2000AD831F /* String+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A921226E7A2000AD831F /* String+Acheron.swift */; };
 		D858A924226E856200AD831F /* Dictionary+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A923226E856200AD831F /* Dictionary+Acheron.swift */; };
@@ -48,7 +47,6 @@
 		D858A916226E785400AD831F /* Basket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Basket.swift; sourceTree = "<group>"; };
 		D858A918226E785F00AD831F /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
 		D858A91A226E787500AD831F /* Persist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persist.swift; sourceTree = "<group>"; };
-		D858A91D226E789100AD831F /* SQLiteIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteIndex.swift; sourceTree = "<group>"; };
 		D858A91F226E78A700AD831F /* SQLitePersist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLitePersist.swift; sourceTree = "<group>"; };
 		D858A921226E7A2000AD831F /* String+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Acheron.swift"; sourceTree = "<group>"; };
 		D858A923226E856200AD831F /* Dictionary+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Acheron.swift"; sourceTree = "<group>"; };
@@ -99,7 +97,6 @@
 		D858A91C226E787F00AD831F /* SQLLite */ = {
 			isa = PBXGroup;
 			children = (
-				D858A91D226E789100AD831F /* SQLiteIndex.swift */,
 				D858A91F226E78A700AD831F /* SQLitePersist.swift */,
 			);
 			name = SQLLite;
@@ -273,7 +270,6 @@
 				D80367B1225915E400B0934C /* Date+Acheron.swift in Sources */,
 				D858A915226E784800AD831F /* Anchor.swift in Sources */,
 				D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */,
-				D858A91E226E789100AD831F /* SQLiteIndex.swift in Sources */,
 				D858A924226E856200AD831F /* Dictionary+Acheron.swift in Sources */,
 				D858A920226E78A700AD831F /* SQLitePersist.swift in Sources */,
 				D858A917226E785400AD831F /* Basket.swift in Sources */,

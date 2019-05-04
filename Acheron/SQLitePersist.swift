@@ -43,12 +43,10 @@ public class SQLitePersist: Persist {
 		execute("CREATE INDEX IF NOT EXISTS DocumentType ON Document (Type)")
 		execute("CREATE INDEX IF NOT EXISTS DocumentFork ON Document (Fork)")
 		execute("CREATE INDEX IF NOT EXISTS DocumentOnly ON Document (Type, Only)")
-		execute("CREATE TABLE IF NOT EXISTS Bookmark (Name TEXT, Value TEXT, Iden TEXT, PRIMARY KEY (Name, Value))")
 		execute("CREATE TABLE IF NOT EXISTS Memory (Name TEXT, Value TEXT, Server INTEGER, Vers INTEGER, Fork INTEGER, Gone INTEGER, PRIMARY KEY (Name))")
 	}
 	private func dropTables() {
 		execute("DROP TABLE Document")
-		execute("DROP TABLE Bookmark")
 		execute("DROP TABLE Memory")
 	}
 	
