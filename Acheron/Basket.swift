@@ -16,7 +16,8 @@ public class Basket: NSObject {
 	public var fork: Int
 
 	var busy: Bool
-	var cache = [String:Anchor]()
+	var cache: [String:Anchor] = [:]
+	var onlyToIden: [String:String] = [:]
 	var dirty = Set<Anchor>()
 	var dehydrate = Set<Domain>()
 
@@ -33,9 +34,9 @@ public class Basket: NSObject {
 		fork = Int(persist.get(key: "fork") ?? "0")!
 	}
 	
-	public func addIndex(name: String, type: String, field: String) {
+	public func associate(type: String, only: String) {
 		queue.sync {
-			persist.addIndex(name: name, type: type, field: field)
+			persist.associate(type: type, only: only)
 		}
 	}
 		
@@ -87,15 +88,23 @@ public class Basket: NSObject {
 		return anchors;
 	}
 	
-	public func selectByID(_ iden: String) -> Anchor? {
-		var anchor = cache[iden]
-		if anchor != nil {return anchor}
-		
-		let attributes = persist.attributes(iden: iden)
-		if let attributes = attributes {
-			anchor = load(attributes)
+	public func selectBy(iden: String) -> Anchor? {
+		if let anchor = cache[iden] {
+			return anchor
 		}
-		return anchor
+		if let attributes = persist.attributes(iden: iden) {
+			return load(attributes)
+		}
+		return nil
+	}
+	public func selectBy(type: String, only: String) -> Anchor? {
+		if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] {
+			return anchor
+		}
+		if let attributes = persist.attributes(type: type, only: only) {
+			return load(attributes)
+		}
+		return nil
 	}
 	public func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
 		guard let attributes = persist.selectOne(where: field, is: value, type: Loom.nameFromType(type))

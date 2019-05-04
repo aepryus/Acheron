@@ -72,8 +72,8 @@ public class Loom {
 		return Loom.basket.createByClass(cls)
 	}
 	
-	public static func selectByID(_ iden: String) -> Anchor? {
-		return Loom.basket.selectByID(iden)
+	public static func selectBy(iden: String) -> Anchor? {
+		return Loom.basket.selectBy(iden: iden)
 	}
 	public static func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
 		return Loom.basket.selectOne(where: field, is: value, type: type)

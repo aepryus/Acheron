@@ -11,7 +11,7 @@ import SQLite3
 
 public class SQLitePersist: Persist {
 	var db: OpaquePointer? = nil
-	var indexes = [String:[SQLiteIndex]]()
+	var typeToOnly: [String:String] = [:]
 	
 	public override init(_ name: String) {
 		
@@ -39,9 +39,10 @@ public class SQLitePersist: Persist {
 		createTables()
 	}
 	private func createTables() {
-		execute("CREATE TABLE IF NOT EXISTS Document (Iden TEXT PRIMARY KEY, Type TEXT, JSON TEXT, Fork INTEGER)")
+		execute("CREATE TABLE IF NOT EXISTS Document (Iden TEXT PRIMARY KEY, Type TEXT, Only TEXT, JSON TEXT, Fork INTEGER)")
 		execute("CREATE INDEX IF NOT EXISTS DocumentType ON Document (Type)")
 		execute("CREATE INDEX IF NOT EXISTS DocumentFork ON Document (Fork)")
+		execute("CREATE INDEX IF NOT EXISTS DocumentOnly ON Document (Type, Only)")
 		execute("CREATE TABLE IF NOT EXISTS Bookmark (Name TEXT, Value TEXT, Iden TEXT, PRIMARY KEY (Name, Value))")
 		execute("CREATE TABLE IF NOT EXISTS Memory (Name TEXT, Value TEXT, Server INTEGER, Vers INTEGER, Fork INTEGER, Gone INTEGER, PRIMARY KEY (Name))")
 	}
@@ -145,12 +146,8 @@ public class SQLitePersist: Persist {
 	}
 	
 // Persist =========================================================================================
-	override public func addIndex(name: String, type: String, field: String) {
-		let index = SQLiteIndex(name: name, field: field)
-		if self.indexes[type] == nil {
-			self.indexes[type] = [SQLiteIndex]()
-		}
-		self.indexes[type]!.append(index)
+	override public func associate(type: String, only: String) {
+		typeToOnly[type] = only
 	}
 	
 	override public func selectAll() -> [[String:Any]] {
@@ -238,7 +235,16 @@ public class SQLitePersist: Persist {
 		}
 	}
 	override public func attributes(type: String, only: String) -> [String : Any]? {
-		return nil
+		let rows = query("SELECT * FROM Document WHERE Type='\(type)' AND Only='\(only)'")
+		if rows.count != 1 {return nil}
+		do {
+			let json: String = rows[0]["JSON"] as! String
+			let attributes = try JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options:[]) as! [String:Any]
+			return attributes
+		} catch let error as NSError {
+			logError(error)
+			return nil
+		}
 	}
 	
 	override public func delete(iden: String) {
@@ -270,7 +276,7 @@ public class SQLitePersist: Persist {
 			var s: OpaquePointer? = nil
 			
 			_ = executeSQLite(sqlite: { () -> (Int32) in
-				return sqlite3_prepare(db, "INSERT OR REPLACE INTO Document (Iden, Type, JSON, Fork) VALUES (?, ?, ?, ?)", -1, &s, nil)
+				return sqlite3_prepare(db, "INSERT OR REPLACE INTO Document (Iden, Type, Only, JSON, Fork) VALUES (?, ?, ?, ?, ?)", -1, &s, nil)
 			})
 			
 			let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
@@ -281,43 +287,28 @@ public class SQLitePersist: Persist {
 			_ = executeSQLite(sqlite: { () -> (Int32) in
 				return sqlite3_bind_text(s, 2, type, -1, SQLITE_TRANSIENT)
 			})
+			
+			if let key = typeToOnly[type], let only = attributes[key] {
+				_ = executeSQLite(sqlite: { () -> (Int32) in
+					return sqlite3_bind_text(s, 3, "\(only)", -1, SQLITE_TRANSIENT)
+				})
+			} else {
+				_ = executeSQLite(sqlite: { () -> (Int32) in
+					return sqlite3_bind_null(s, 3)
+				})
+			}
+
 			_ = executeSQLite(sqlite: { () -> (Int32) in
-				return sqlite3_bind_text(s, 3, json, -1, SQLITE_TRANSIENT)
+				return sqlite3_bind_text(s, 4, json, -1, SQLITE_TRANSIENT)
 			})
+
 			_ = executeSQLite(sqlite: { () -> (Int32) in
-				return sqlite3_bind_int(s, 4, fork)
+				return sqlite3_bind_int(s, 5, fork)
 			})
 			_ = executeSQLite(sqlite: { () -> (Int32) in
 				return sqlite3_step(s)
 			})
 			sqlite3_finalize(s)
-			
-			if let indexes = indexes[type] {
-				for index in indexes {
-					var s: OpaquePointer? = nil
-					
-					_ = executeSQLite(sqlite: { () -> (Int32) in
-						return sqlite3_prepare(db, "INSERT OR REPLACE INTO Bookmark (Name, Value, Iden) VALUES (?, ?, ?)", -1, &s, nil)
-					})
-					
-					let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-					
-					_ = executeSQLite(sqlite: { () -> (Int32) in
-						return sqlite3_bind_text(s, 1, index.name, -1, SQLITE_TRANSIENT)
-					})
-					_ = executeSQLite(sqlite: { () -> (Int32) in
-						let value: String = attributes[index.field] as! String
-						return sqlite3_bind_text(s, 2, value, -1, SQLITE_TRANSIENT)
-					})
-					_ = executeSQLite(sqlite: { () -> (Int32) in
-						return sqlite3_bind_text(s, 3, iden, -1, SQLITE_TRANSIENT)
-					})
-					_ = executeSQLite(sqlite: { () -> (Int32) in
-						return sqlite3_step(s)
-					})
-					sqlite3_finalize(s)
-				}
-			}
 		}
 	}
 	override public func remove(iden: String) {}

@@ -15,7 +15,7 @@ open class Persist: NSObject {
 		self.name = name
 	}
 	
-	open func addIndex(name: String, type: String, field: String) {}
+	open func associate(type: String, only: String) {}
 	
 	open func selectAll() -> [[String:Any]] {
 		return []
