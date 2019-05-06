@@ -69,11 +69,14 @@ public class Loom {
 		return Loom.basket.get(key: key)
 	}
 	public static func create(cls: Anchor.Type) -> Anchor {
-		return Loom.basket.createByClass(cls)
+		return Loom.basket.createBy(cls: cls)
 	}
 	
 	public static func selectBy(iden: String) -> Anchor? {
 		return Loom.basket.selectBy(iden: iden)
+	}
+	public static func selectBy(cls: Anchor.Type, only: String) -> Anchor? {
+		return Loom.basket.selectBy(cls: cls, only: only)
 	}
 	public static func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
 		return Loom.basket.selectOne(where: field, is: value, type: type)

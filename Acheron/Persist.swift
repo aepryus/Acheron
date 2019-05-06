@@ -10,13 +10,16 @@ import Foundation
 
 open class Persist: NSObject {
 	open var name: String
-	
+	var typeToOnly: [String:String] = [:]
+
 	public init(_ name: String) {
 		self.name = name
 	}
 	
-	open func associate(type: String, only: String) {}
-	
+	public func associate(type: String, only: String) {
+		typeToOnly[type] = only
+	}
+
 	open func selectAll() -> [[String:Any]] {
 		return []
 	}

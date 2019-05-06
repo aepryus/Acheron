@@ -11,7 +11,6 @@ import SQLite3
 
 public class SQLitePersist: Persist {
 	var db: OpaquePointer? = nil
-	var typeToOnly: [String:String] = [:]
 	
 	public override init(_ name: String) {
 		
@@ -143,11 +142,7 @@ public class SQLitePersist: Persist {
 		}
 	}
 	
-// Persist =========================================================================================
-	override public func associate(type: String, only: String) {
-		typeToOnly[type] = only
-	}
-	
+// Persist =========================================================================================	
 	override public func selectAll() -> [[String:Any]] {
 		var result = [[String:Any]]()
 		let rows = query("SELECT * FROM Document")
@@ -403,11 +398,17 @@ public class SQLitePersist: Persist {
 	}
 	override open func get(key: String) -> String? {
 		let rows = query("SELECT Value FROM Memory WHERE Name = '\(key)'")
-		guard rows.count != 0 else {
-			return nil
-		}
+		guard rows.count != 0 else {return nil}
 		return rows[0]["Value"] as? String
 	}
 	override open func unset(key: String) {
+		var s: OpaquePointer? = nil
+		_ = executeSQLite(sqlite: { () -> (Int32) in
+			return sqlite3_prepare(db, "DELETE FROM Memory WHERE Name='\(key)'", -1, &s, nil)
+		})
+		_ = executeSQLite(sqlite: { () -> (Int32) in
+			return sqlite3_step(s)
+		})
+		sqlite3_finalize(s)
 	}
 }

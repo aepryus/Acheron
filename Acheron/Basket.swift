@@ -45,6 +45,9 @@ public class Basket: NSObject {
 		anchor.basket = self
 		anchor.load(attributes: attributes)
 		cache[anchor.iden] = anchor
+		if let onlyKey = persist.typeToOnly[anchor.type], let type = anchor.type, let only = attributes[onlyKey] {
+			onlyToIden["\(type):\(only)"] = anchor.iden
+		}
 		return anchor
 	}
 	private func load(_ attributes: [String:Any]) -> Anchor {
@@ -57,7 +60,7 @@ public class Basket: NSObject {
 		return anchor
 	}
 	
-	public func createByClass(_ cls: Anchor.Type) -> Anchor {
+	public func createBy(cls: Anchor.Type) -> Anchor {
 		let anchor = cls.init(basket: self)
 		anchor.iden = generateIden(cls)
 		cache[anchor.iden] = anchor
@@ -97,7 +100,8 @@ public class Basket: NSObject {
 		}
 		return nil
 	}
-	public func selectBy(type: String, only: String) -> Anchor? {
+	public func selectBy(cls: Anchor.Type, only: String) -> Anchor? {
+		let type = String(describing: cls).lowercased()
 		if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] {
 			return anchor
 		}
