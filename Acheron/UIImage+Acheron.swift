@@ -30,13 +30,16 @@ extension UIImage {
 		
 		guard let URL = URL(string: url) else {return}
 		let request = URLRequest(url: URL)
-		NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { (response: URLResponse?, data: Data?, error: Error?) in
+
+		URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
 			guard let data = data else {return}
 			guard let image: UIImage = UIImage(data: data) else {return}
-			UIImage.images[url] = image
-			let listenerArray = UIImage.listenerArrays.removeValue(forKey: url)!
-			listenerArray.forEach {$0(image)}
-		}
+			DispatchQueue.main.async {
+				UIImage.images[url] = image
+				let listenerArray = UIImage.listenerArrays.removeValue(forKey: url)!
+				listenerArray.forEach {$0(image)}
+			}
+		}.resume()
 	}
 	public static func loadImage(url: String, _ complete: @escaping (UIImage)->()) {
 		UIImage.loadImage(url: url, alreadyLoaded: complete, willLoad: {}, finishedLoading: complete)

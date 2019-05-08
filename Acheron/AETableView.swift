@@ -17,4 +17,12 @@ public class AETableView: UITableView {
 		allowsSelection = false
 	}
 	required init?(coder aDecoder: NSCoder) {fatalError()}
+	
+// UITableView =====================================================================================
+	override public var refreshControl: UIRefreshControl? {
+		didSet {
+			guard let refreshControl = refreshControl else {return}
+			refreshControl.layer.zPosition = -1
+		}
+	}
 }
