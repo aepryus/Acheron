@@ -133,7 +133,6 @@
 		D8E604E022327F8A000E8AEA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				D8AB61E12275039400415069 /* AEViewController.swift */,
 				D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */,
 				D8E604D122327E47000E8AEA /* CGPoint+Acheron.swift */,
 				D80367B0225915E400B0934C /* Date+Acheron.swift */,
@@ -174,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				D81497BA2238F3D200436E00 /* AETableView.swift */,
+				D8AB61E12275039400415069 /* AEViewController.swift */,
 				D81497B82238F39F00436E00 /* ExpandableCell.swift */,
 				D81497B62238F39100436E00 /* ExpandableTableView.swift */,
 				D88B03D52245AB1F00CE6A5A /* TripWire.swift */,
