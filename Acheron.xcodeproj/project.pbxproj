@@ -12,6 +12,9 @@
 		D81497B92238F39F00436E00 /* ExpandableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497B82238F39F00436E00 /* ExpandableCell.swift */; };
 		D81497BB2238F3D200436E00 /* AETableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497BA2238F3D200436E00 /* AETableView.swift */; };
 		D81849562248AD7000F05CC7 /* UIImageView+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */; };
+		D847A0F822857DC000A94232 /* Array+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D847A0F722857DC000A94232 /* Array+Acheron.swift */; };
+		D847A0FA22857EB200A94232 /* WeakSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D847A0F922857EB200A94232 /* WeakSet.swift */; };
+		D847A0FC228585DD00A94232 /* Collection+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D847A0FB228585DD00A94232 /* Collection+Acheron.swift */; };
 		D858A915226E784800AD831F /* Anchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A914226E784800AD831F /* Anchor.swift */; };
 		D858A917226E785400AD831F /* Basket.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A916226E785400AD831F /* Basket.swift */; };
 		D858A919226E785F00AD831F /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A918226E785F00AD831F /* Domain.swift */; };
@@ -43,6 +46,9 @@
 		D81497B82238F39F00436E00 /* ExpandableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableCell.swift; sourceTree = "<group>"; };
 		D81497BA2238F3D200436E00 /* AETableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETableView.swift; sourceTree = "<group>"; };
 		D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Acheron.swift"; sourceTree = "<group>"; };
+		D847A0F722857DC000A94232 /* Array+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Acheron.swift"; sourceTree = "<group>"; };
+		D847A0F922857EB200A94232 /* WeakSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakSet.swift; sourceTree = "<group>"; };
+		D847A0FB228585DD00A94232 /* Collection+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Acheron.swift"; sourceTree = "<group>"; };
 		D858A914226E784800AD831F /* Anchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchor.swift; sourceTree = "<group>"; };
 		D858A916226E785400AD831F /* Basket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Basket.swift; sourceTree = "<group>"; };
 		D858A918226E785F00AD831F /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
@@ -133,8 +139,10 @@
 		D8E604E022327F8A000E8AEA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				D847A0F722857DC000A94232 /* Array+Acheron.swift */,
 				D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */,
 				D8E604D122327E47000E8AEA /* CGPoint+Acheron.swift */,
+				D847A0FB228585DD00A94232 /* Collection+Acheron.swift */,
 				D80367B0225915E400B0934C /* Date+Acheron.swift */,
 				D858A923226E856200AD831F /* Dictionary+Acheron.swift */,
 				D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */,
@@ -156,6 +164,7 @@
 			children = (
 				D8E604DC22327F22000E8AEA /* Pen.swift */,
 				D8E604DE22327F3E000E8AEA /* RGB.swift */,
+				D847A0F922857EB200A94232 /* WeakSet.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -265,12 +274,14 @@
 				D85BD71A225A947B00B8989E /* UIImage+Acheron.swift in Sources */,
 				D8E604D622327E84000E8AEA /* UIControl+Acheron.swift in Sources */,
 				D8E604D922327EC3000E8AEA /* UIView+Acheron.swift in Sources */,
+				D847A0F822857DC000A94232 /* Array+Acheron.swift in Sources */,
 				D8CBC9C92265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift in Sources */,
 				D81497B72238F39100436E00 /* ExpandableTableView.swift in Sources */,
 				D80367B1225915E400B0934C /* Date+Acheron.swift in Sources */,
 				D858A915226E784800AD831F /* Anchor.swift in Sources */,
 				D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */,
 				D858A924226E856200AD831F /* Dictionary+Acheron.swift in Sources */,
+				D847A0FA22857EB200A94232 /* WeakSet.swift in Sources */,
 				D858A920226E78A700AD831F /* SQLitePersist.swift in Sources */,
 				D858A917226E785400AD831F /* Basket.swift in Sources */,
 				D81497BB2238F3D200436E00 /* AETableView.swift in Sources */,
@@ -283,6 +294,7 @@
 				D8CBC9CB2265D70100B7BBC5 /* UILabel+Acheron.swift in Sources */,
 				D8E604DF22327F3E000E8AEA /* RGB.swift in Sources */,
 				D8AB61E22275039400415069 /* AEViewController.swift in Sources */,
+				D847A0FC228585DD00A94232 /* Collection+Acheron.swift in Sources */,
 				D8CBC9CD2265D7D600B7BBC5 /* NSString+Acheron.swift in Sources */,
 				D81497B92238F39F00436E00 /* ExpandableCell.swift in Sources */,
 				D858A926226E986400AD831F /* Loom.swift in Sources */,

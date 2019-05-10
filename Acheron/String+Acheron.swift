@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension String {
+public extension String {
 	subscript(i: Int) -> Character {										// [a]
 		return self[index(startIndex, offsetBy: i)]
 	}
@@ -49,7 +49,7 @@ extension String {
 	func toCString() -> [CChar]? {
 		return self.cString(using: .utf8)
 	}
-	public func toAttributes() -> [String:Any] {
+	func toAttributes() -> [String:Any] {
 		do {
 			return try JSONSerialization.jsonObject(with: data(using: .utf8)!, options: [.allowFragments]) as! [String:Any]
 		} catch {
