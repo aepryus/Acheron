@@ -17,12 +17,13 @@ public extension UIImageView {
 	
 	func loadImage(url: String, placeholder: UIImage? = nil,_ complete: @escaping ()->()) {
 		UIImage.loadImage(url: url, alreadyLoaded: { (image: UIImage) in
+			UIImageView.urlLookup[self.identifier] = nil
 			self.image = image
 			complete()
 			
 		}, willLoad: {
-			self.image = placeholder
 			UIImageView.urlLookup[self.identifier] = url
+			self.image = placeholder
 
 		}, finishedLoading: { (image: UIImage) in
 			guard UIImageView.urlLookup[self.identifier] == url else {return}
