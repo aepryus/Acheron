@@ -48,6 +48,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		backgroundColor = UIColor.clear
 		self.delegate = self
 		dataSource = self
+		showsVerticalScrollIndicator = false
 	}
 	public required init?(coder aDecoder: NSCoder) {fatalError()}
 	
