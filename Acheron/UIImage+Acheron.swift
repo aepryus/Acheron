@@ -24,7 +24,7 @@ extension UIImage {
 			needsRequest = true
 			UIImage.listenerArrays[url] = []
 		}
-		UIImage.listenerArrays[url]?.append(finishedLoading)
+		UIImage.listenerArrays[url]!.append(finishedLoading)
 		
 		guard needsRequest else {return}
 		
