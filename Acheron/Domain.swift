@@ -69,6 +69,13 @@ open class Domain: NSObject {
 		super.init()
 		create()
 	}
+	public init(parent: Domain) {
+		self.iden = UUID().uuidString
+		self.type = Loom.nameFromType(Swift.type(of: self))
+		self.parent = parent
+		super.init()
+		load()
+	}
 	public required init(attributes: [String:Any], parent: Domain? = nil) {
 		self.iden = attributes["iden"] as? String
 		self.type = attributes["type"] as? String
