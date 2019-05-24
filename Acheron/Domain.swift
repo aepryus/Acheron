@@ -81,7 +81,7 @@ open class Domain: NSObject {
 		self.type = attributes["type"] as? String
 		self.parent = parent
 		super.init()
-		load(attributes: attributes)
+//		load(attributes: attributes)
 	}
 	
 	deinit {
