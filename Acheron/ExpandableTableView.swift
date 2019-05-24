@@ -59,8 +59,13 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		var nextExpandedView: UIView? = nil
 		
 		if indexPath == expandedPath {
+			cell.onWillCollapse()
 			expandedPath = nil
 		} else {
+			if let expandedPath = expandedPath, let oldCell = cellForRow(at: expandedPath) as? ExpandableCell {
+				oldCell.onWillCollapse()
+			}
+			cell.onWillExpand()
 			expandedPath = indexPath
 			nextExpandedView = expandableTableViewDelegate.expandableTableView(self, expansionForRowAt: indexPath)
 			cell.superAddSubview(nextExpandedView!)
@@ -71,7 +76,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		
 		let closingExpandedView = currentExpandedView
 		currentExpandedView = nextExpandedView
-		
+
 		beginUpdates()
 		CATransaction.setCompletionBlock {
 			guard let closingExpandedView = closingExpandedView else {return}
