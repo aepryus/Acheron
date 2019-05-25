@@ -28,7 +28,7 @@ public class Pen: NSObject {
 		get {return attributes[NSAttributedString.Key.paragraphStyle] as! NSMutableParagraphStyle}
 	}
 	
-	@objc public init (font: UIFont) {
+	@objc public init(font: UIFont) {
 		super.init()
 		self.font = font
 		self.color = UIColor.white

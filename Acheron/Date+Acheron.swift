@@ -29,7 +29,7 @@ public extension Date {
 		formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
 		return formatter
 	}()
-	func toISOFormattedString () -> String {
+	func toISOFormattedString() -> String {
 		return Date.isoFormatter.string(from: self)
 	}
 	static func fromISOFormatted(string: String) -> Date? {

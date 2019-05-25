@@ -11,7 +11,7 @@ import UIKit
 fileprivate class ClosureSleeve {
 	let closure:()->()
 	
-	init (_ closure: @escaping()->()) {
+	init(_ closure: @escaping()->()) {
 		self.closure = closure
 	}
 	
