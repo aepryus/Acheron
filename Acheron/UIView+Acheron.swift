@@ -65,7 +65,7 @@ public enum Screen {
 		if Screen.iPhone {
 			return Screen.width / 375
 		} else {
-			return Screen.height / 768
+			return min(Screen.height,Screen.width) / 768
 		}
 	}
 }
