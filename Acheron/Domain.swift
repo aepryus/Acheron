@@ -17,7 +17,7 @@ public enum DomainAction: String {
 
 class NotFound {}
 
-public protocol Packable {
+public protocol Packable where Self:NSObject {
 	init(_: String)
 	func pack() -> String
 }
@@ -270,12 +270,11 @@ open class Domain: NSObject {
 			}
 			var array: [Any] = []
 			if let domains = domains as? [Domain] {
-				for meta in domains
-				{array.append(meta.unload() as NSDictionary)}
-			} else {
-				for string: String in domains as! [String] {
-					array.append(string as NSString)
-				}
+				domains.forEach {array.append($0.unload())}
+			} else if let packables = domains as? [Packable] {
+				packables.forEach {array.append($0.pack())}
+			} else if let strings = domains as? [String] {
+				strings.forEach {array.append($0)}
 			}
 			attributes[keyPath] = array as NSArray;
 		}
