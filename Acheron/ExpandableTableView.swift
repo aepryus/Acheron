@@ -92,6 +92,11 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		layoutIfNeeded()
 	}
 	
+	public func dequeueExpansionView() -> UIView? {
+		guard expandedViews.count > 0 else {return nil}
+		return expandedViews.removeLast()
+	}
+	
 // UITableViewDelegate =============================================================================
 	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		var height: CGFloat = expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, baseHeightForRowAt:indexPath)

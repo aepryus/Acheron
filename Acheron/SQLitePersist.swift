@@ -229,7 +229,8 @@ public class SQLitePersist: Persist {
 	}
 	override public func attributes(type: String, only: String) -> [String : Any]? {
 		let rows = query("SELECT * FROM Document WHERE Type='\(type)' AND Only='\(only)'")
-		if rows.count != 1 {return nil}
+		guard rows.count < 2 else {fatalError()}
+		if rows.count == 0 {return nil}
 		do {
 			let json: String = rows[0]["JSON"] as! String
 			let attributes = try JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options:[]) as! [String:Any]
