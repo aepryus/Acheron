@@ -152,7 +152,26 @@ open class Domain: NSObject {
 		}
 		return cls
 	}
-	
+	private func arrayClassForKeyPath(_ keyPath: String) -> AnyClass? {
+		var propertyToClass = Loom.domains[type]
+		if propertyToClass == nil {
+			propertyToClass = [String:AnyClass]()
+			Loom.domains[type] = propertyToClass;
+		}
+		var cls: AnyClass? = propertyToClass![keyPath];
+		if cls == nil {
+			cls = Loom.arrayClassForKeyPath(keyPath: keyPath, parent: self)
+			if cls != nil {
+				propertyToClass![keyPath] = cls
+			} else {
+				propertyToClass![keyPath] = NotFound.self
+			}
+		} else if cls === NotFound.self {
+			cls = nil
+		}
+		return cls
+	}
+
 	private func subscribe() {
 		if isStatic {return}
 		for keyPath in properties {
@@ -364,6 +383,10 @@ open class Domain: NSObject {
 						domain!.load(attributes:child)
 						load(domain!)
 						array.append(domain!)
+					}
+				} else if let cls = arrayClassForKeyPath(keyPath) as? Packable.Type {
+					for package in children as! [String] {
+						array.append(cls.init(package))
 					}
 				} else {
 					for string in children as! [String] {

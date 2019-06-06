@@ -29,7 +29,7 @@ public class Loom {
 		return cls
 	}
 	
-	static func classForKeyPath(keyPath: String, parent: Domain.Type) -> AnyClass? {
+	public static func classForKeyPath(keyPath: String, parent: Domain.Type) -> AnyClass? {
 		var n: UInt32 = 0
 		let properties: UnsafeMutablePointer<objc_property_t>? = class_copyPropertyList(parent, &n)
 		var cls: AnyClass?
@@ -60,6 +60,24 @@ public class Loom {
 		}
 		
 		return cls
+	}
+	public static func arrayClassForKeyPath(keyPath: String, parent: AnyObject) -> AnyClass? {
+		let mirror: Mirror = Mirror(reflecting: parent)
+		for property in mirror.children {
+			guard property.label! == keyPath else {continue}
+			var className = "\(Swift.type(of: property.value))"
+			if className.starts(with: "Array<") {
+				className.removeLast(1)
+				className.removeFirst(6)
+				for namespace in Loom.namespaces {
+					if let cls = NSClassFromString("\(namespace).\(className)") {
+						return cls
+					}
+				}
+			}
+			return nil
+		}
+		return nil
 	}
 	
 	public static func set(key: String, value: String) {
