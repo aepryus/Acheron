@@ -18,15 +18,15 @@ class EmptyNodeData: NodeData {
 	func value(for name: String) -> Any? {return nil}
 }
 class GroupNodeData: NodeData {
-	var name: String
+	var value: String
 	
-	init(name: String) {
-		self.name = name
+	init(value: String) {
+		self.value = value
 	}
 	
 	var availableNames: [String] {return ["name"]}
 	func value(for name: String) -> Any? {
-		return name
+		return value
 	}
 }
 

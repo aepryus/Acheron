@@ -56,7 +56,8 @@ open class Persist: NSObject {
 	
 	open func show() {}
 	open func show(_ iden: String) {}
-	
+	open func census() {}
+
 	open func set(key: String, value: String) {}
 	open func setServer(key: String, value: String) {}
 	open func get(key: String) -> String? {

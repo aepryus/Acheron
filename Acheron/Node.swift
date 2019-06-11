@@ -20,6 +20,28 @@ public class Node {
 		datum.forEach {children.append(Node(data: $0))}
 	}
 	
+	func deepChildCount() -> Int {
+		var count: Int = (data is EmptyNodeData ? 0 : 1)
+		children.forEach {count += $0.deepChildCount()}
+		return count
+	}
+	func deepChild(at: Int) -> Node {
+		var index: Int = at
+		if !(data is EmptyNodeData) {
+			if index == 0 {return self}
+			index -= 1
+		}
+		
+		for child in children {
+			if index < child.deepChildCount() {
+				return child.deepChild(at: index)
+			} else {
+				index -= child.deepChildCount()
+			}
+		}
+		fatalError()
+	}
+	
 	func value(for name: String) -> Any? {
 		return data.value(for: name)
 	}
@@ -37,7 +59,7 @@ public class Node {
 		let node: Node = Node(data: EmptyNodeData())
 		
 		for name in groups.keys {
-			let groupNode: Node = Node(data: GroupNodeData(name: name))
+			let groupNode: Node = Node(data: GroupNodeData(value: name))
 			groupNode.children = groups[name]!
 			children.sort { (lhs: Node, rhs: Node) -> Bool in
 				if let lhs = lhs.value(for: sortedBy) as? String, let rhs = rhs.value(for: sortedBy) as? String {
@@ -54,7 +76,7 @@ public class Node {
 			node.children.append(groupNode)
 		}
 		node.children.sort { (lhs: Node, rhs: Node) -> Bool in
-			if let lhs = lhs.value(for: sortedBy) as? String, let rhs = rhs.value(for: sortedBy) as? String {
+			if let lhs = lhs.value(for: "name") as? String, let rhs = rhs.value(for: "name") as? String {
 				return lhs < rhs
 			}
 			fatalError()

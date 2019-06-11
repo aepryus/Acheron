@@ -50,10 +50,11 @@ public extension String {
 		return self.cString(using: .utf8)
 	}
 	func toAttributes() -> [String:Any] {
+		guard self != "" else {return [:]}
 		do {
 			return try JSONSerialization.jsonObject(with: data(using: .utf8)!, options: [.allowFragments]) as! [String:Any]
 		} catch {
-			print("\(error)")
+			print("Error Attempting to Parse [\(self)]\n\(error)")
 			return [:]
 		}
 	}

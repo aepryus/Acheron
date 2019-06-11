@@ -357,6 +357,24 @@ public class SQLitePersist: Persist {
 		print("===========================================================================")
 		print("\(attributes(iden: iden)!)")
 	}
+	override public func census() {
+		print("\nprinting census [\(self.name)]")
+		print("===========================================================================")
+		
+		let documents = selectAll()
+		var census: [String:Int] = [:]
+		documents.forEach {
+			let type: String = $0["type"] as! String
+			if census[type] == nil {census[type] = 0}
+			census[type] = census[type]! + 1
+		}
+		
+		for (type,count) in census {
+			print("\t\(type):\(count)")
+		}
+		
+		print("\n")
+	}
 	
 	func set(key: String, value: String, server: Bool) {
 		let fork: Int32 = Int32(get(key: "fork") ?? "0")! + 1

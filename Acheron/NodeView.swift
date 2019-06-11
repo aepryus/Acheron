@@ -25,6 +25,7 @@ public class NodeView: UIView, UITableViewDataSource {
 		backgroundColor = UIColor.magenta.tint(0.8)
 		
 		tableView.register(NodeCell.self, forCellReuseIdentifier: "cell")
+		tableView.register(NodeHeader.self, forCellReuseIdentifier: "header")
 		tableView.backgroundColor = UIColor.clear
 		tableView.dataSource = self
 		addSubview(tableView)
@@ -43,12 +44,19 @@ public class NodeView: UIView, UITableViewDataSource {
 	
 // UITableViewDataSource ===========================================================================
 	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return node.children.count
+		return node.deepChildCount()
 	}
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! NodeCell
-		cell.nodeView = self
-		cell.node = node.children[indexPath.row]
-		return cell
+		let current: Node = node.deepChild(at: indexPath.row)
+		if current.children.count != 0 {
+			let cell = tableView.dequeueReusableCell(withIdentifier: "header") as! NodeHeader
+			cell.node = node.deepChild(at: indexPath.row)
+			return cell
+		} else {
+			let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! NodeCell
+			cell.nodeView = self
+			cell.node = node.deepChild(at: indexPath.row)
+			return cell
+		}
 	}
 }

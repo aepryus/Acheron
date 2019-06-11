@@ -304,4 +304,7 @@ public class Basket: NSObject {
 	public func printStatus() {
 		persist.show()
 	}
+	public func printCensus() {
+		persist.census()
+	}
 }

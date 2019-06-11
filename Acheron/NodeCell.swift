@@ -51,7 +51,7 @@ class NodeCell: UITableViewCell {
 			if $0.width != 0 {
 				$0.left(dx: dx)
 			} else {
-				$0.left(dx: dx, width: 100*s, height: 24*s)
+				$0.left(dx: dx, width: 60*s, height: 24*s)
 			}
 			dx += $0.width+6*s
 		}
