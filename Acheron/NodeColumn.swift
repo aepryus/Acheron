@@ -8,8 +8,22 @@
 
 import Foundation
 
+public protocol NodeFormatter {
+	func format(_ input: Any?) -> String
+}
+private class DefaultFormatter: NodeFormatter {
+	func format(_ input: Any?) -> String {
+		return "\(input ?? "")"
+	}
+}
+
 public class NodeColumn {
 	let name: String
+	public var pen: Pen?
+	public var formatter: NodeFormatter
+
+	private static let defaultFormatter: DefaultFormatter = DefaultFormatter()
+
 	public var createView: (NodeColumn)->(UIView) = { (column: NodeColumn) in
 		let label = UILabel()
 		if let pen = column.pen {label.pen = pen}
@@ -19,10 +33,10 @@ public class NodeColumn {
 		let label = view as! UILabel
 		label.text = "\(value ?? "")"
 	}
-	public var pen: Pen?
 	
-	public init(name: String, pen: Pen? = nil) {
+	public init(name: String, pen: Pen? = nil, formatter: NodeFormatter? = nil) {
 		self.name = name
 		self.pen = pen
+		self.formatter = formatter == nil ? NodeColumn.defaultFormatter : formatter!
 	}
 }

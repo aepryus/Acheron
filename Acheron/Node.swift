@@ -60,8 +60,7 @@ public class Node {
 		
 		for name in groups.keys {
 			let groupNode: Node = Node(data: GroupNodeData(value: name))
-			groupNode.children = groups[name]!
-			children.sort { (lhs: Node, rhs: Node) -> Bool in
+			groupNode.children = groups[name]!.sorted { (lhs: Node, rhs: Node) -> Bool in
 				if let lhs = lhs.value(for: sortedBy) as? String, let rhs = rhs.value(for: sortedBy) as? String {
 					return lhs < rhs
 				}
@@ -69,7 +68,7 @@ public class Node {
 					return lhs < rhs
 				}
 				if let lhs = lhs.value(for: sortedBy) as? Double, let rhs = rhs.value(for: sortedBy) as? Double {
-					return lhs < rhs
+					return lhs > rhs
 				}
 				fatalError()
 			}
