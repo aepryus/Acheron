@@ -39,6 +39,9 @@ public class Basket: NSObject {
 			persist.associate(type: type, only: only)
 		}
 	}
+	public func only(type: String) -> String? {
+		return persist.only(type: type)
+	}
 		
 	private func load(_ attributes: [String:Any], cls: Anchor.Type) -> Anchor {
 		let anchor = cls.init(attributes: attributes)
@@ -248,9 +251,11 @@ public class Basket: NSObject {
 				self.persist.transact({ () -> (Bool) in
 					autoreleasepool {
 						for anchor in deletedAnchors {
+							if let only = anchor.only {onlyToIden["\(anchor.type!):\(only)"] = nil}
 							persist.delete(iden: anchor.iden)
 						}
 						for anchor in editedAnchors {
+							if let only = anchor.only {onlyToIden["\(anchor.type!):\(only)"] = anchor.iden}
 							persist.store(iden: anchor.iden, attributes: anchor.unload())
 						}
 					}

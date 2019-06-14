@@ -14,7 +14,7 @@ class NodeCell: UITableViewCell {
 			for i in 0..<nodeView.columns.count {
 				let name = nodeView.columns[i].name
 				let value = node.value(for: name)
-				nodeView.columns[i].loadView(views[i],value)
+				nodeView.columns[i].loadView(nodeView.columns[i],views[i],value)
 			}
 		}
 	}

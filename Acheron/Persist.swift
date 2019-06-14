@@ -19,6 +19,9 @@ open class Persist: NSObject {
 	public func associate(type: String, only: String) {
 		typeToOnly[type] = only
 	}
+	public func only(type: String) -> String? {
+		return typeToOnly[type]
+	}
 
 	open func selectAll() -> [[String:Any]] {
 		return []
