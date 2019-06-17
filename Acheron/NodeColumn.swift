@@ -12,6 +12,7 @@ public class NodeColumn {
 	let name: String
 	public var pen: Pen?
 	public var format: (Any?)->(String)
+	public var width: CGFloat = 80
 	
 	static let defaultFormat: (Any?)->(String) = { (input: Any?)->(String) in
 		return "\(input ?? "")"

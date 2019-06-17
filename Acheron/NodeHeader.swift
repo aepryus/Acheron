@@ -16,21 +16,19 @@ class NodeHeader: UITableViewCell {
 	}
 	
 	private var label: UILabel = UILabel()
-	private var lineView: UIView = UIView()
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
-		addSubview(label)
+		backgroundColor = UIColor(rgb: 0xCCCCCC)
 		
-		lineView.backgroundColor = UIColor(rgb: 0xAAAAAA)
-		addSubview(lineView)
+		label.textColor = UIColor(rgb: 0x888888)
+		addSubview(label)
 	}
 	required init?(coder aDecoder: NSCoder) {fatalError()}
 	
 // UIView ==========================================================================================
 	override func layoutSubviews() {
 		label.left(dx: 6*s, width: 200*s, height: 24*s)
-		lineView.bottom(width: width, height: 1*s)
 	}
 }

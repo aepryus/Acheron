@@ -44,13 +44,15 @@ class NodeCell: UITableViewCell {
 // UIView ==========================================================================================
 	override func layoutSubviews() {
 		var dx: CGFloat = 6*s
+		var i: Int = 0
 		views.forEach {
 			if $0.width != 0 {
 				$0.left(dx: dx)
 			} else {
-				$0.left(dx: dx, width: 60*s, height: 24*s)
+				$0.left(dx: dx, width: nodeView.columns[i].width, height: 24*s)
 			}
-			dx += $0.width+6*s
+			dx += $0.width
+			i += 1
 		}
 		lineView.bottom(width: width, height: 1*s)
 	}
