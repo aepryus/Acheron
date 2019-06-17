@@ -18,12 +18,7 @@ class NodeCell: UITableViewCell {
 			}
 		}
 	}
-	unowned var nodeView: NodeView! {
-		didSet {
-			guard nodeView != oldValue else {return}
-			renderFields()
-		}
-	}
+	unowned var nodeView: NodeView!
 	
 	private var views: [UIView] = []
 	private var lineView: UIView = UIView()
@@ -36,7 +31,9 @@ class NodeCell: UITableViewCell {
 	}
 	required init?(coder aDecoder: NSCoder) {fatalError()}
 	
-	private func renderFields() {
+	func renderFields() {
+		views.forEach {$0.removeFromSuperview()}
+		views.removeAll()
 		for column in nodeView.columns {
 			let view = column.createView(column)
 			addSubview(view)

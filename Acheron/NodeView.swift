@@ -10,9 +10,7 @@ import Foundation
 
 public class NodeView: UIView, UITableViewDataSource {
 	public var node: Node! {
-		didSet{
-			tableView.reloadData()
-		}
+		didSet{tableView.reloadData()}
 	}
 	
 	public var columns: [NodeColumn] = []
@@ -55,6 +53,7 @@ public class NodeView: UIView, UITableViewDataSource {
 		} else {
 			let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! NodeCell
 			cell.nodeView = self
+			cell.renderFields()
 			cell.node = node.deepChild(at: indexPath.row)
 			return cell
 		}
