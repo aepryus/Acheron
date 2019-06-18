@@ -12,4 +12,9 @@ public extension NSMutableAttributedString {
 	func append(_ string: String, pen: Pen) {
 		self.append(NSAttributedString(string: string, attributes: pen.attributes))
 	}
+	func append(image: UIImage) {
+		let attachment = NSTextAttachment()
+		attachment.image = image
+		self.append(NSAttributedString(attachment: attachment))
+	}
 }
