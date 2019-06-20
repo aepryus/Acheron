@@ -79,11 +79,13 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 
 		beginUpdates()
 		CATransaction.setCompletionBlock {
+			if self.expandedPath != nil {self.scrollRectToVisible(cell.frame, animated: true)}
 			guard let closingExpandedView = closingExpandedView else {return}
 			closingExpandedView.removeFromSuperview()
 			self.expandedViews.append(closingExpandedView)
 		}
 		endUpdates()
+		
 	}
 	public func collapseSilent() {
 		expandedPath = nil
