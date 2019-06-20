@@ -9,6 +9,8 @@
 import UIKit
 
 public protocol ExpandableTableViewDelegate: class {
+	func numberOfSections(in tableView: ExpandableTableView) -> Int
+	func expandableTableView(_ tableView: ExpandableTableView, viewForHeaderInSection section: Int) -> UIView?
 	func expandableTableView(_ tableView: ExpandableTableView, numberOfRowsInSection section: Int) -> Int
 	func expandableTableView(_ tableView: ExpandableTableView, cellForRowAt indexPath: IndexPath) -> ExpandableCell
 	func expandableTableView(_ tableView: ExpandableTableView, expansionForRowAt indexPath: IndexPath) -> UIView
@@ -17,6 +19,12 @@ public protocol ExpandableTableViewDelegate: class {
 	func expandableTableView(_ tableView: ExpandableTableView, expandableRowAt indexPath: IndexPath) -> Bool
 }
 public extension ExpandableTableViewDelegate {
+	func numberOfSections(in tableView: ExpandableTableView) -> Int {
+		return 1
+	}
+	func expandableTableView(_ tableView: ExpandableTableView, viewForHeaderInSection section: Int) -> UIView? {
+		return nil
+	}
 	func expandableTableView(_ tableView: ExpandableTableView, expansionForRowAt indexPath: IndexPath) -> UIView {
 		let view = UIView()
 		view.backgroundColor = UIColor.blue.tint(0.5)
@@ -111,6 +119,12 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	}
 	
 // UITableViewDataSource ===========================================================================
+	public func numberOfSections(in tableView: UITableView) -> Int {
+		return expandableTableViewDelegate.numberOfSections(in: tableView as! ExpandableTableView)
+	}
+	public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		return expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, viewForHeaderInSection: section)
+	}
 	public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, numberOfRowsInSection: section)
 	}
