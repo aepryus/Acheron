@@ -10,6 +10,7 @@ import UIKit
 
 public protocol ExpandableTableViewDelegate: class {
 	func numberOfSections(in tableView: ExpandableTableView) -> Int
+	func expandableTableView(_ tableView: ExpandableTableView, heightForHeaderInSection section: Int) -> CGFloat
 	func expandableTableView(_ tableView: ExpandableTableView, viewForHeaderInSection section: Int) -> UIView?
 	func expandableTableView(_ tableView: ExpandableTableView, numberOfRowsInSection section: Int) -> Int
 	func expandableTableView(_ tableView: ExpandableTableView, cellForRowAt indexPath: IndexPath) -> ExpandableCell
@@ -21,6 +22,9 @@ public protocol ExpandableTableViewDelegate: class {
 public extension ExpandableTableViewDelegate {
 	func numberOfSections(in tableView: ExpandableTableView) -> Int {
 		return 1
+	}
+	func expandableTableView(_ tableView: ExpandableTableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return 0
 	}
 	func expandableTableView(_ tableView: ExpandableTableView, viewForHeaderInSection section: Int) -> UIView? {
 		return nil
@@ -95,6 +99,11 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		endUpdates()
 		
 	}
+	public func collapse() {
+		guard let expandedPath = expandedPath else {return}
+		let cell = cellForRow(at: expandedPath) as! ExpandableCell
+		toggle(cell: cell)
+	}
 	public func collapseSilent() {
 		expandedPath = nil
 		currentExpandedView = nil
@@ -116,6 +125,9 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		}
 		
 		return height
+	}
+	public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, heightForHeaderInSection: section)
 	}
 	
 // UITableViewDataSource ===========================================================================

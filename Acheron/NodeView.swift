@@ -8,6 +8,13 @@
 
 import Foundation
 
+public protocol NodeViewDelegate: class {
+	func nodeView(_ nodeView: NodeView, didTapNode node: Node)
+}
+public extension NodeViewDelegate {
+	func nodeView(_ nodeView: NodeView, didTapNode node: Node) {}
+}
+
 public class NodeView: UIView, UITableViewDataSource {
 	public var node: Node! {
 		didSet{tableView.reloadData()}
@@ -16,6 +23,7 @@ public class NodeView: UIView, UITableViewDataSource {
 	public var columns: [NodeColumn] = []
 	
 	let tableView: UITableView = AETableView()
+	public weak var delegate: NodeViewDelegate? = nil
 	
 	public init() {
 		super.init(frame: CGRect.zero)

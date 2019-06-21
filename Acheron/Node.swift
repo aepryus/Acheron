@@ -9,7 +9,7 @@
 import Foundation
 
 public class Node {
-	var data: NodeData
+	public var data: NodeData
 	var children: [Node] = []
 	
 	public init(data: NodeData) {

@@ -28,6 +28,9 @@ class NodeCell: UITableViewCell {
 		
 		lineView.backgroundColor = UIColor(rgb: 0xCCCCCC)
 		addSubview(lineView)
+		
+		let gesture = UITapGestureRecognizer(target: self, action: #selector(onTap))
+		addGestureRecognizer(gesture)
 	}
 	required init?(coder aDecoder: NSCoder) {fatalError()}
 	
@@ -39,6 +42,12 @@ class NodeCell: UITableViewCell {
 			addSubview(view)
 			views.append(view)
 		}
+	}
+	
+// Events ==========================================================================================
+	@objc func onTap() {
+		guard let delegate = nodeView.delegate else {return}
+		delegate.nodeView(nodeView, didTapNode: node)
 	}
 	
 // UIView ==========================================================================================
