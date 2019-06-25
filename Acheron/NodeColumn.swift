@@ -9,7 +9,8 @@
 import Foundation
 
 public class NodeColumn {
-	let name: String
+	let title: String?
+	let token: String
 	public var pen: Pen?
 	public var format: (Any?)->(String)
 	public var width: CGFloat = 80
@@ -28,8 +29,9 @@ public class NodeColumn {
 		label.text = column.format(value)
 	}
 	
-	public init(name: String, pen: Pen? = nil, format: ((Any?)->(String))? = nil) {
-		self.name = name
+	public init(title: String? = nil, token: String, pen: Pen? = nil, format: ((Any?)->(String))? = nil) {
+		self.title = title
+		self.token = token
 		self.pen = pen
 		self.format = format != nil ? format! : NodeColumn.defaultFormat
 	}

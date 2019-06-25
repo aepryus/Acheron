@@ -56,6 +56,8 @@ public class NodeView: UIView, UITableViewDataSource {
 		let current: Node = node.deepChild(at: indexPath.row)
 		if current.children.count != 0 {
 			let cell = tableView.dequeueReusableCell(withIdentifier: "header") as! NodeHeader
+			cell.nodeView = self
+			cell.renderFields()
 			cell.node = node.deepChild(at: indexPath.row)
 			return cell
 		} else {

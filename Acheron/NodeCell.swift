@@ -12,8 +12,7 @@ class NodeCell: UITableViewCell {
 	var node: Node! {
 		didSet {
 			for i in 0..<nodeView.columns.count {
-				let name = nodeView.columns[i].name
-				let value = node.value(for: name)
+				let value = node.value(for: nodeView.columns[i].token)
 				nodeView.columns[i].loadView(nodeView.columns[i],views[i],value)
 			}
 		}
