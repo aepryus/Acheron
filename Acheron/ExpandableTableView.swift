@@ -116,6 +116,12 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		return expandedViews.removeLast()
 	}
 	
+	public func dequeueReusableExpandableCell(withIdentifier identifier: String) -> ExpandableCell? {
+		let cell = super.dequeueReusableCell(withIdentifier: identifier) as! ExpandableCell
+		cell.expandableTableView = self
+		return cell
+	}
+	
 // UITableViewDelegate =============================================================================
 	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		var height: CGFloat = expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, baseHeightForRowAt:indexPath)
