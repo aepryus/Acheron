@@ -51,7 +51,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	public unowned var expandableTableViewDelegate: ExpandableTableViewDelegate
 	var expandedPath: IndexPath? = nil
 	
-	private var currentExpandedView: UIView? = nil
+	var currentExpandedView: UIView? = nil
 	private var expandedViews: [UIView] = []
 	
 	public init(delegate: ExpandableTableViewDelegate) {
@@ -101,7 +101,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	}
 	public func collapse() {
 		guard let expandedPath = expandedPath else {return}
-		let cell = cellForRow(at: expandedPath) as! ExpandableCell
+		guard let cell = cellForRow(at: expandedPath) as? ExpandableCell else {return}
 		toggle(cell: cell)
 	}
 	public func collapseSilent() {

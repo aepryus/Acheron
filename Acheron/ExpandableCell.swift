@@ -25,10 +25,16 @@ open class ExpandableCell: UITableViewCell {
 	public required init?(coder aDecoder: NSCoder) {fatalError()}
 	
 	var indexPath: IndexPath? {
-		return expandableTableView.indexPath(for: self)
+		return expandableTableView.indexPathForRow(at: self.center)
 	}
 	var expanded: Bool {
 		return expandableTableView.expandedPath == indexPath
+	}
+	public var expansion: UIView? {
+		guard let expandableTableView = expandableTableView else {return nil}
+		guard expandableTableView.expandedPath == indexPath else {return nil}
+		guard let expansion = expandableTableView.currentExpandedView else {return nil}
+		return expansion
 	}
 	
 	func superAddSubview(_ view: UIView) {
