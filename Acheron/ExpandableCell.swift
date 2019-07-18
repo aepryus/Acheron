@@ -30,6 +30,9 @@ open class ExpandableCell: UITableViewCell {
 	public var expanded: Bool {
 		return expandableTableView.expandedPath == indexPath
 	}
+	public var baseHeight: CGFloat {
+		return baseView.height
+	}
 	
 	func superAddSubview(_ view: UIView) {
 		super.addSubview(view)
