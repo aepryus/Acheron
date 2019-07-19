@@ -18,6 +18,7 @@ public protocol ExpandableTableViewDelegate: class {
 	func expandableTableView(_ tableView: ExpandableTableView, baseHeightForRowAt indexPath: IndexPath) -> CGFloat
 	func expandableTableView(_ tableView: ExpandableTableView, expansionHeightForRowAt indexPath: IndexPath) -> CGFloat
 	func expandableTableView(_ tableView: ExpandableTableView, expandableRowAt indexPath: IndexPath) -> Bool
+	func expandableTableView(_ tableView: ExpandableTableView, reload expansion: UIView, at indexPath: IndexPath)
 }
 public extension ExpandableTableViewDelegate {
 	func numberOfSections(in tableView: ExpandableTableView) -> Int {
@@ -43,6 +44,7 @@ public extension ExpandableTableViewDelegate {
 	func expandableTableView(_ tableView: ExpandableTableView, expandableRowAt indexPath: IndexPath) -> Bool {
 		return true
 	}
+	func expandableTableView(_ tableView: ExpandableTableView, reload expansion: UIView, at indexPath: IndexPath) {}
 }
 
 public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewDataSource {
@@ -51,7 +53,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	public unowned var expandableTableViewDelegate: ExpandableTableViewDelegate
 	var expandedPath: IndexPath? = nil
 	
-	var currentExpandedView: UIView? = nil
+	private var currentExpandedView: UIView? = nil
 	private var expandedViews: [UIView] = []
 	
 	public init(delegate: ExpandableTableViewDelegate) {
@@ -116,12 +118,6 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		return expandedViews.removeLast()
 	}
 	
-	public func dequeueReusableExpandableCell(withIdentifier identifier: String) -> ExpandableCell? {
-		let cell = super.dequeueReusableCell(withIdentifier: identifier) as! ExpandableCell
-		cell.expandableTableView = self
-		return cell
-	}
-	
 // UITableViewDelegate =============================================================================
 	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		var height: CGFloat = expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, baseHeightForRowAt:indexPath)
@@ -149,9 +145,12 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, cellForRowAt: indexPath)
 		cell.expandableTableView = self
-		if expandedPath == indexPath, let currentExpandedView = currentExpandedView, currentExpandedView.superview != cell {
-			currentExpandedView.removeFromSuperview()
-			cell.superAddSubview(currentExpandedView)
+		if expandedPath == indexPath, let currentExpandedView = currentExpandedView {
+			if currentExpandedView.superview != cell {
+				currentExpandedView.removeFromSuperview()
+				cell.superAddSubview(currentExpandedView)
+			}
+			expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, reload: currentExpandedView, at: indexPath)
 		}
 		return cell
 	}
