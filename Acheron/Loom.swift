@@ -86,6 +86,9 @@ public class Loom {
 	public static func get(key: String) -> String? {
 		return Loom.basket.get(key: key)
 	}
+	public static func unset(key: String) {
+		Loom.basket.unset(key: key)
+	}
 	public static func create(cls: Anchor.Type) -> Anchor {
 		return Loom.basket.createBy(cls: cls)
 	}
