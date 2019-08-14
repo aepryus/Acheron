@@ -277,16 +277,26 @@ public class Basket: NSObject {
 	}
 	
 	public func set(key: String, value: String) {
-		persist.set(key: key, value: value)
+		queue.sync {
+			persist.set(key: key, value: value)
+		}
 	}
 	public func setServer(key: String, value: String) {
-		persist.setServer(key: key, value: value)
+		queue.sync {
+			persist.setServer(key: key, value: value)
+		}
 	}
 	public func get(key: String) -> String? {
-		return persist.get(key: key)
+		var result: String? = nil
+		queue.sync {
+			result = persist.get(key: key)
+		}
+		return result
 	}
 	public func unset(key: String) {
-		persist.unset(key: key)
+		queue.sync {
+			persist.unset(key: key)
+		}
 	}
 	
 	public func show() {
