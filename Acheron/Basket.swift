@@ -315,7 +315,16 @@ public class Basket: NSObject {
 		dirty.removeAll()
 		dehydrate.removeAll()
 	}
-	
+	public func wipeDocuments() {
+		lock()
+		defer {unlock()}
+		persist.wipeDocuments()
+		fork = 0
+		cache.removeAll()
+		dirty.removeAll()
+		dehydrate.removeAll()
+	}
+
 	public func printStatus() {
 		persist.show()
 	}

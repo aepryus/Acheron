@@ -37,15 +37,21 @@ public class SQLitePersist: Persist {
 		
 		createTables()
 	}
-	private func createTables() {
+	private func createDocument() {
 		execute("CREATE TABLE IF NOT EXISTS Document (Iden TEXT PRIMARY KEY, Type TEXT, Only TEXT, JSON TEXT, Fork INTEGER)")
 		execute("CREATE INDEX IF NOT EXISTS DocumentType ON Document (Type)")
 		execute("CREATE INDEX IF NOT EXISTS DocumentFork ON Document (Fork)")
 		execute("CREATE INDEX IF NOT EXISTS DocumentOnly ON Document (Type, Only)")
+	}
+	private func dropDocument() {
+		execute("DROP TABLE Document")
+	}
+	private func createTables() {
+		createDocument()
 		execute("CREATE TABLE IF NOT EXISTS Memory (Name TEXT, Value TEXT, Server INTEGER, Vers INTEGER, Fork INTEGER, Gone INTEGER, PRIMARY KEY (Name))")
 	}
 	private func dropTables() {
-		execute("DROP TABLE Document")
+		dropDocument()
 		execute("DROP TABLE Memory")
 	}
 	
@@ -339,6 +345,10 @@ public class SQLitePersist: Persist {
 	override public func wipe() {
 		dropTables()
 		createTables()
+	}
+	override public func wipeDocuments() {
+		dropDocument()
+		createDocument()
 	}
 	
 	override public func show() {

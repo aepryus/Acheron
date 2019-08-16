@@ -56,6 +56,7 @@ open class Persist: NSObject {
 	}
 	
 	open func wipe() {}
+	open func wipeDocuments() {}
 	
 	open func show() {}
 	open func show(_ iden: String) {}
