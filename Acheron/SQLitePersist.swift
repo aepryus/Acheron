@@ -11,7 +11,8 @@ import SQLite3
 
 public class SQLitePersist: Persist {
 	var db: OpaquePointer? = nil
-	
+	let queue: DispatchQueue = DispatchQueue(label: "SQLite")
+
 	public override init(_ name: String) {
 		
 		let path = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]).appendingPathComponent("data")
@@ -56,7 +57,7 @@ public class SQLitePersist: Persist {
 	}
 	
 // Private =========================================================================================
-	func query(_ query: String) -> [[String:Any]] {
+	func unprotectedQuery(_ query: String) -> [[String:Any]] {
 		var s: OpaquePointer? = nil
 		if sqlite3_prepare_v2(db, query, -1, &s, nil) != SQLITE_OK {
 			let error = String(cString: sqlite3_errmsg(db))
@@ -114,6 +115,13 @@ public class SQLitePersist: Persist {
 		
 		return result;
 	}
+	private func query(_ query: String) -> [[String:Any]] {
+		var result = [[String:Any]]()
+		queue.sync {
+			result = unprotectedQuery(query)
+		}
+		return result;
+	}
 	private func executeSQLite(sqlite: ()->(Int32)) -> Int32 {
 		var result: Int32 = 0
 		var n = 0
@@ -148,7 +156,7 @@ public class SQLitePersist: Persist {
 		}
 	}
 	
-// Persist =========================================================================================	
+// Persist =========================================================================================
 	override public func selectAll() -> [[String:Any]] {
 		var result = [[String:Any]]()
 		let rows = query("SELECT * FROM Document")
@@ -248,6 +256,7 @@ public class SQLitePersist: Persist {
 	}
 	
 	override public func delete(iden: String) {
+		dispatchPrecondition(condition: .onQueue(queue))
 		var s: OpaquePointer? = nil
 		_ = executeSQLite(sqlite: { () -> (Int32) in
 			return sqlite3_prepare(db, "DELETE FROM Document WHERE Iden='\(iden)'", -1, &s, nil)
@@ -257,8 +266,8 @@ public class SQLitePersist: Persist {
 		})
 		sqlite3_finalize(s)
 	}
-	
 	override public func store(iden: String, attributes: [String : Any]) {
+		dispatchPrecondition(condition: .onQueue(queue))
 		let type = attributes["type"] as! String
 		
 		var json: String?
@@ -311,44 +320,49 @@ public class SQLitePersist: Persist {
 			sqlite3_finalize(s)
 		}
 	}
-	override public func remove(iden: String) {}
 	
 	override public func transact(_ transact: ()->(Bool)) {
-		var error: UnsafeMutablePointer<Int8>?
-		let result: Int32 = executeSQLite { () -> (Int32) in
-			return sqlite3_exec(db, "BEGIN IMMEDIATE TRANSACTION", nil, nil, &error)
-		}
-		if result != SQLITE_OK {
-			logError(message: "begin transaction failed")
-			return;
-		}
-		
-		let shouldCommit = transact()
-		
-		if shouldCommit {
-			_ = executeSQLite(sqlite: { () -> (Int32) in
-				return sqlite3_exec(db, "COMMIT TRANSACTION", nil, nil, &error);
-			})
-		} else {
-			_ = executeSQLite(sqlite: { () -> (Int32) in
-				return sqlite3_exec(db, "ROLLBACK TRANSACTION", nil, nil, &error);
-			})
-		}
-		
-		if let error = error {
-			print("SQLitePersist: error in database [\(self.name)] @3\n\terror: \(error)")
-			sqlite3_free(error)
-			return
+		queue.sync {
+			var error: UnsafeMutablePointer<Int8>?
+			let result: Int32 = executeSQLite { () -> (Int32) in
+				return sqlite3_exec(db, "BEGIN IMMEDIATE TRANSACTION", nil, nil, &error)
+			}
+			if result != SQLITE_OK {
+				logError(message: "begin transaction failed")
+				return;
+			}
+			
+			let shouldCommit = transact()
+			
+			if shouldCommit {
+				_ = executeSQLite(sqlite: { () -> (Int32) in
+					return sqlite3_exec(db, "COMMIT TRANSACTION", nil, nil, &error);
+				})
+			} else {
+				_ = executeSQLite(sqlite: { () -> (Int32) in
+					return sqlite3_exec(db, "ROLLBACK TRANSACTION", nil, nil, &error);
+				})
+			}
+			
+			if let error = error {
+				print("SQLitePersist: error in database [\(self.name)] @3\n\terror: \(error)")
+				sqlite3_free(error)
+				return
+			}
 		}
 	}
 	
 	override public func wipe() {
-		dropTables()
-		createTables()
+		queue.sync {
+			dropTables()
+			createTables()
+		}
 	}
 	override public func wipeDocuments() {
-		dropDocument()
-		createDocument()
+		queue.sync {
+			dropDocument()
+			createDocument()
+		}
 	}
 	
 	override public func show() {
@@ -386,8 +400,8 @@ public class SQLitePersist: Persist {
 		print("\n")
 	}
 	
-	func set(key: String, value: String, server: Bool) {
-		let fork: Int32 = Int32(get(key: "fork") ?? "0")! + 1
+	private func set(key: String, value: String, server: Bool) {
+		let fork: Int32 = Int32(unprotectedGet(key: "fork") ?? "0")! + 1
 		var s: OpaquePointer? = nil
 		
 		_ = executeSQLite(sqlite: { () -> (Int32) in
@@ -420,24 +434,35 @@ public class SQLitePersist: Persist {
 		sqlite3_finalize(s)
 	}
 	override open func set(key: String, value: String) {
-		set(key: key, value: value, server: false)
+		queue.sync {
+			set(key: key, value: value, server: false)
+		}
 	}
 	override open func setServer(key: String, value: String) {
-		set(key: key, value: value, server: true)
+		queue.sync {
+			set(key: key, value: value, server: true)
+		}
 	}
 	override open func get(key: String) -> String? {
 		let rows = query("SELECT Value FROM Memory WHERE Name = '\(key)'")
 		guard rows.count != 0 else {return nil}
 		return rows[0]["Value"] as? String
 	}
+	private func unprotectedGet(key: String) -> String? {
+		let rows = unprotectedQuery("SELECT Value FROM Memory WHERE Name = '\(key)'")
+		guard rows.count != 0 else {return nil}
+		return rows[0]["Value"] as? String
+	}
 	override open func unset(key: String) {
-		var s: OpaquePointer? = nil
-		_ = executeSQLite(sqlite: { () -> (Int32) in
-			return sqlite3_prepare(db, "DELETE FROM Memory WHERE Name='\(key)'", -1, &s, nil)
-		})
-		_ = executeSQLite(sqlite: { () -> (Int32) in
-			return sqlite3_step(s)
-		})
-		sqlite3_finalize(s)
+		queue.sync {
+			var s: OpaquePointer? = nil
+			_ = executeSQLite(sqlite: { () -> (Int32) in
+				return sqlite3_prepare(db, "DELETE FROM Memory WHERE Name='\(key)'", -1, &s, nil)
+			})
+			_ = executeSQLite(sqlite: { () -> (Int32) in
+				return sqlite3_step(s)
+			})
+			sqlite3_finalize(s)
+		}
 	}
 }

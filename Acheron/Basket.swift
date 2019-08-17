@@ -325,7 +325,7 @@ public class Basket: NSObject {
 		dehydrate.removeAll()
 	}
 
-	public func printStatus() {
+	public func printDocuments() {
 		persist.show()
 	}
 	public func printCensus() {

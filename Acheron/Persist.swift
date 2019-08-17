@@ -47,9 +47,7 @@ open class Persist: NSObject {
 	open func attributes(type: String, only: String) -> [String:Any]? {return nil}
 	
 	open func delete(iden: String) {}
-	
 	open func store(iden: String, attributes: [String:Any]) {}
-	open func remove(iden: String) {}
 	
 	open func transact(_ closure: ()->(Bool)) {
 		_ = closure()
