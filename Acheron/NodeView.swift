@@ -28,7 +28,7 @@ public class NodeView: UIView, UITableViewDataSource {
 	public init() {
 		super.init(frame: CGRect.zero)
 		
-		backgroundColor = UIColor.magenta.tint(0.8)
+		backgroundColor = UIColor(rgb: 0xAAAAAA)
 		
 		tableView.register(NodeCell.self, forCellReuseIdentifier: "cell")
 		tableView.register(NodeHeader.self, forCellReuseIdentifier: "header")
