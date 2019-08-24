@@ -25,6 +25,7 @@
 		D858A924226E856200AD831F /* Dictionary+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A923226E856200AD831F /* Dictionary+Acheron.swift */; };
 		D858A926226E986400AD831F /* Loom.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A925226E986400AD831F /* Loom.swift */; };
 		D85BD71A225A947B00B8989E /* UIImage+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85BD719225A947B00B8989E /* UIImage+Acheron.swift */; };
+		D86225842310C7F20014020F /* Rosetta.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86225832310C7F20014020F /* Rosetta.swift */; };
 		D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B03D52245AB1F00CE6A5A /* TripWire.swift */; };
 		D8AB61E22275039400415069 /* AEViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB61E12275039400415069 /* AEViewController.swift */; };
 		D8CBC9C92265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */; };
@@ -65,6 +66,7 @@
 		D858A923226E856200AD831F /* Dictionary+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Acheron.swift"; sourceTree = "<group>"; };
 		D858A925226E986400AD831F /* Loom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loom.swift; sourceTree = "<group>"; };
 		D85BD719225A947B00B8989E /* UIImage+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Acheron.swift"; sourceTree = "<group>"; };
+		D86225832310C7F20014020F /* Rosetta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rosetta.swift; sourceTree = "<group>"; };
 		D88B03D52245AB1F00CE6A5A /* TripWire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripWire.swift; sourceTree = "<group>"; };
 		D8AB61E12275039400415069 /* AEViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AEViewController.swift; sourceTree = "<group>"; };
 		D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Acheron.swift"; sourceTree = "<group>"; };
@@ -153,8 +155,8 @@
 			isa = PBXGroup;
 			children = (
 				D8E604E022327F8A000E8AEA /* Extensions */,
-				D858A913226E780500AD831F /* Loom */,
 				D8E604E122327F91000E8AEA /* Utility */,
+				D858A913226E780500AD831F /* Loom */,
 				D8E604E422327FB8000E8AEA /* Widgets */,
 				D8E604E222327F98000E8AEA /* Global */,
 			);
@@ -189,6 +191,7 @@
 			children = (
 				D8E604DC22327F22000E8AEA /* Pen.swift */,
 				D8E604DE22327F3E000E8AEA /* RGB.swift */,
+				D86225832310C7F20014020F /* Rosetta.swift */,
 				D847A0F922857EB200A94232 /* WeakSet.swift */,
 			);
 			name = Utility;
@@ -325,6 +328,7 @@
 				D8AB61E22275039400415069 /* AEViewController.swift in Sources */,
 				D8D47C3222ADD7860071DC0C /* Node.swift in Sources */,
 				D8D47C3622ADD83A0071DC0C /* NodeColumn.swift in Sources */,
+				D86225842310C7F20014020F /* Rosetta.swift in Sources */,
 				D847A0FC228585DD00A94232 /* Collection+Acheron.swift in Sources */,
 				D80548CA22AFD39C008F021E /* NodeHeader.swift in Sources */,
 				D8CBC9CD2265D7D600B7BBC5 /* NSString+Acheron.swift in Sources */,

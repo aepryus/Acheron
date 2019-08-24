@@ -17,7 +17,7 @@ public class Basket: NSObject {
 
 	var busy: Bool
 	var cache: [String:Anchor] = [:]
-	var onlyToIden: [String:String] = [:]
+	var onlyToIden: Rosetta = Rosetta()
 	var dirty = Set<Anchor>()
 	var dehydrate = Set<Domain>()
 
@@ -105,8 +105,10 @@ public class Basket: NSObject {
 	}
 	public func selectBy(cls: Anchor.Type, only: String) -> Anchor? {
 		let type = String(describing: cls).lowercased()
-		if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] {
-			return anchor
+		if let iden = onlyToIden["\(type):\(only)"] {
+			if let anchor = cache[iden] {
+				return anchor
+			}
 		}
 		if let attributes = persist.attributes(type: type, only: only) {
 			return load(attributes)
