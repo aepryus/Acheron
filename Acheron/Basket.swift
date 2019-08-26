@@ -35,9 +35,7 @@ public class Basket: NSObject {
 	}
 	
 	public func associate(type: String, only: String) {
-		queue.sync {
-			persist.associate(type: type, only: only)
-		}
+		persist.associate(type: type, only: only)
 	}
 	public func only(type: String) -> String? {
 		return persist.only(type: type)
@@ -63,10 +61,13 @@ public class Basket: NSObject {
 		return anchor
 	}
 	
-	public func createBy(cls: Anchor.Type) -> Anchor {
+	public func createBy(cls: Anchor.Type, only: String? = nil) -> Anchor {
 		let anchor = cls.init(basket: self)
 		anchor.iden = generateIden(cls)
 		cache[anchor.iden] = anchor
+		if let only = only {
+			onlyToIden["\(anchor.type!):\(only)"] = anchor.iden
+		}
 		dirty.insert(anchor)
 		return anchor
 	}
@@ -95,25 +96,27 @@ public class Basket: NSObject {
 	}
 	
 	public func selectBy(iden: String) -> Anchor? {
-		if let anchor = cache[iden] {
-			return anchor
-		}
-		if let attributes = persist.attributes(iden: iden) {
-			return load(attributes)
-		}
-		return nil
+		var result: Anchor? = nil
+//		queue.sync {
+			if let anchor = cache[iden] {
+				result = anchor
+			} else if let attributes = persist.attributes(iden: iden) {
+				result = load(attributes)
+			}
+//		}
+		return result
 	}
 	public func selectBy(cls: Anchor.Type, only: String) -> Anchor? {
-		let type = String(describing: cls).lowercased()
-		if let iden = onlyToIden["\(type):\(only)"] {
-			if let anchor = cache[iden] {
-				return anchor
+		var result: Anchor? = nil
+//		queue.sync {
+			let type = String(describing: cls).lowercased()
+			if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] {
+				result = anchor
+			} else if let attributes = persist.attributes(type: type, only: only) {
+				result = load(attributes)
 			}
-		}
-		if let attributes = persist.attributes(type: type, only: only) {
-			return load(attributes)
-		}
-		return nil
+//		}
+		return result
 	}
 	public func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
 		guard let attributes = persist.selectOne(where: field, is: value, type: Loom.nameFromType(type))
@@ -143,17 +146,19 @@ public class Basket: NSObject {
 	public func syncPacket() -> [String:Any] {
 		var attributes = [String:Any]()
 		
-		var documents =  [[String:Any]]()
-		for anchor in selectForked() {
-			if anchor.isUploaded {
-				documents.append(anchor.unload())
+		queue.sync {
+			var documents =  [[String:Any]]()
+			for anchor in selectForked() {
+				if anchor.isUploaded {
+					documents.append(anchor.unload())
+				}
 			}
+			
+			attributes["fork"] = persist.get(key: "fork")
+			attributes["documents"] = documents
+			attributes["deleted"] = []
+			attributes["memories"] = selectForkedMemories()
 		}
-		
-		attributes["fork"] = persist.get(key: "fork")
-		attributes["documents"] = documents
-		attributes["deleted"] = []
-		attributes["memories"] = selectForkedMemories()
 		
 		return attributes
 	}
@@ -186,7 +191,7 @@ public class Basket: NSObject {
 		return blocks[key] ?? []
 	}
 	
-	static func loadDirty(into: inout Set<Domain>, domain: Domain) {
+	private static func loadDirty(into: inout Set<Domain>, domain: Domain) {
 		into.insert(domain)
 		for child in domain.allDomainChildren() {
 			if child.status != .clean {
@@ -195,25 +200,14 @@ public class Basket: NSObject {
 		}
 	}
 	
-	var semaphore = DispatchSemaphore(value: 1)
-	public func lock() {
-		semaphore.wait()
-	}
-	public func unlock() {
-		semaphore.signal()
-	}
-	public func unlockedTransact(_ closure: ()->()) {
-		if self.busy {fatalError("Do not nest transact blocks.")}
-		
-		busy = true
-		
+	public func transact(_ closure: ()->()) {
 		var dirty = Set<Anchor>()
 		
 		var editedAnchors = Set<Anchor>()
 		var deletedAnchors = Set<Anchor>()
 		var editedDomains = Set<Domain>()
 		var deletedDomains = Set<Domain>()
-		
+
 		queue.sync {
 			autoreleasepool {
 				closure()
@@ -247,58 +241,41 @@ public class Basket: NSObject {
 				}
 			}
 		}
-		
+
 		if dirty.count > 0 {
-			queue.sync {
-				self.persist.transact({ () -> (Bool) in
-					autoreleasepool {
-						for anchor in deletedAnchors {
-							if let only = anchor.only {onlyToIden["\(anchor.type!):\(only)"] = nil}
-							persist.delete(iden: anchor.iden)
-						}
-						for anchor in editedAnchors {
-							if let only = anchor.only {onlyToIden["\(anchor.type!):\(only)"] = anchor.iden}
-							persist.store(iden: anchor.iden, attributes: anchor.unload())
-						}
+			self.persist.transact({ () -> (Bool) in
+				autoreleasepool {
+					for anchor in deletedAnchors {
+						if let only = anchor.only {onlyToIden["\(anchor.type!):\(only)"] = nil}
+						persist.delete(iden: anchor.iden)
 					}
-					return true
-				})
-			}
+					for anchor in editedAnchors {
+						if let only = anchor.only {onlyToIden["\(anchor.type!):\(only)"] = anchor.iden}
+						persist.store(iden: anchor.iden, attributes: anchor.unload())
+					}
+				}
+				return true
+			})
 		}
-		
-		busy = false
-	}
-	public func transact(_ closure: ()->()) {
-		lock()
-		defer {unlock()}
-		unlockedTransact(closure)
 	}
 	
 	public func clearCache() {
-		cache.removeAll()
+		queue.sync {
+			cache.removeAll()
+		}
 	}
 	
 	public func set(key: String, value: String) {
-		queue.sync {
-			persist.set(key: key, value: value)
-		}
+		persist.set(key: key, value: value)
 	}
 	public func setServer(key: String, value: String) {
-		queue.sync {
-			persist.setServer(key: key, value: value)
-		}
+		persist.setServer(key: key, value: value)
 	}
 	public func get(key: String) -> String? {
-		var result: String? = nil
-		queue.sync {
-			result = persist.get(key: key)
-		}
-		return result
+		return persist.get(key: key)
 	}
 	public func unset(key: String) {
-		queue.sync {
-			persist.unset(key: key)
-		}
+		persist.unset(key: key)
 	}
 	
 	public func show() {
@@ -309,22 +286,22 @@ public class Basket: NSObject {
 	}
 	
 	public func wipe() {
-		lock()
-		defer {unlock()}
-		persist.wipe()
-		fork = 0
-		cache.removeAll()
-		dirty.removeAll()
-		dehydrate.removeAll()
+		queue.sync {
+			persist.wipe()
+			fork = 0
+			cache.removeAll()
+			dirty.removeAll()
+			dehydrate.removeAll()
+		}
 	}
 	public func wipeDocuments() {
-		lock()
-		defer {unlock()}
-		persist.wipeDocuments()
-		fork = 0
-		cache.removeAll()
-		dirty.removeAll()
-		dehydrate.removeAll()
+		queue.sync {
+			persist.wipeDocuments()
+			fork = 0
+			cache.removeAll()
+			dirty.removeAll()
+			dehydrate.removeAll()
+		}
 	}
 
 	public func printDocuments() {
