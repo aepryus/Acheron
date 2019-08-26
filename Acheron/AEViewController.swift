@@ -62,8 +62,9 @@ open class AEViewController: UIViewController {
 	}
 	
 // UIViewController ================================================================================
-	override open func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
+	override open func viewSafeAreaInsetsDidChange() {
+		guard #available(iOS 11.0, *) else {return}
+		super.viewSafeAreaInsetsDidChange()
 		layout()
 	}
 }
