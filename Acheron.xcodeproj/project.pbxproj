@@ -12,6 +12,7 @@
 		D81497B72238F39100436E00 /* ExpandableTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497B62238F39100436E00 /* ExpandableTableView.swift */; };
 		D81497B92238F39F00436E00 /* ExpandableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497B82238F39F00436E00 /* ExpandableCell.swift */; };
 		D81497BB2238F3D200436E00 /* AETableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497BA2238F3D200436E00 /* AETableView.swift */; };
+		D81774A32314C0A600A49725 /* AETimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81774A22314C0A600A49725 /* AETimer.swift */; };
 		D81849562248AD7000F05CC7 /* UIImageView+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */; };
 		D847A0F822857DC000A94232 /* Array+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D847A0F722857DC000A94232 /* Array+Acheron.swift */; };
 		D847A0FA22857EB200A94232 /* WeakSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D847A0F922857EB200A94232 /* WeakSet.swift */; };
@@ -53,6 +54,7 @@
 		D81497B62238F39100436E00 /* ExpandableTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableTableView.swift; sourceTree = "<group>"; };
 		D81497B82238F39F00436E00 /* ExpandableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableCell.swift; sourceTree = "<group>"; };
 		D81497BA2238F3D200436E00 /* AETableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETableView.swift; sourceTree = "<group>"; };
+		D81774A22314C0A600A49725 /* AETimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETimer.swift; sourceTree = "<group>"; };
 		D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Acheron.swift"; sourceTree = "<group>"; };
 		D847A0F722857DC000A94232 /* Array+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Acheron.swift"; sourceTree = "<group>"; };
 		D847A0F922857EB200A94232 /* WeakSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakSet.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 		D8E604E122327F91000E8AEA /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				D81774A22314C0A600A49725 /* AETimer.swift */,
 				D8E604DC22327F22000E8AEA /* Pen.swift */,
 				D8E604DE22327F3E000E8AEA /* RGB.swift */,
 				D86225832310C7F20014020F /* Rosetta.swift */,
@@ -326,6 +329,7 @@
 				D8E604DF22327F3E000E8AEA /* RGB.swift in Sources */,
 				D8D47C3822ADD8AB0071DC0C /* NodeData.swift in Sources */,
 				D8AB61E22275039400415069 /* AEViewController.swift in Sources */,
+				D81774A32314C0A600A49725 /* AETimer.swift in Sources */,
 				D8D47C3222ADD7860071DC0C /* Node.swift in Sources */,
 				D8D47C3622ADD83A0071DC0C /* NodeColumn.swift in Sources */,
 				D86225842310C7F20014020F /* Rosetta.swift in Sources */,
