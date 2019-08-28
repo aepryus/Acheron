@@ -8,22 +8,28 @@
 
 import Foundation
 
-class Rosetta {
-	private var map: [String:String] = [:]
+class Rosetta<T> {
+	private var map: [String:T] = [:]
 	private let queue: DispatchQueue = DispatchQueue(label: "Rosetta")
 	
-	subscript(key: String) -> String? {
+	subscript(key: String) -> T? {
 		set {
-			queue.sync {
-				map[key] = newValue
-			}
+			queue.sync {map[key] = newValue}
 		}
 		get {
-			var result: String? = nil
-			queue.sync {
-				result = map[key]
-			}
+			var result: T? = nil
+			queue.sync {result = map[key]}
 			return result
 		}
+	}
+	
+	@discardableResult
+	func removeValue(forKey key: String) -> T? {
+		var result: T? = nil
+		queue.sync {result = map.removeValue(forKey: key)}
+		return result
+	}
+	func removeAll() {
+		queue.sync {map.removeAll()}
 	}
 }

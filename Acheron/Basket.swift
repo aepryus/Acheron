@@ -16,8 +16,8 @@ public class Basket: NSObject {
 	public var fork: Int
 
 	var busy: Bool
-	var cache: [String:Anchor] = [:]
-	var onlyToIden: Rosetta = Rosetta()
+	var cache: Rosetta = Rosetta<Anchor>()
+	var onlyToIden: Rosetta = Rosetta<String>()
 	var dirty = Set<Anchor>()
 	var dehydrate = Set<Domain>()
 
@@ -110,8 +110,10 @@ public class Basket: NSObject {
 		var result: Anchor? = nil
 //		queue.sync {
 			let type = String(describing: cls).lowercased()
-			if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] {
-				result = anchor
+			if let iden = onlyToIden["\(type):\(only)"] {
+				if let anchor = cache[iden] {
+					result = anchor
+				}
 			} else if let attributes = persist.attributes(type: type, only: only) {
 				result = load(attributes)
 			}
