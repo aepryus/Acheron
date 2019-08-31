@@ -8,8 +8,8 @@
 
 import Foundation
 
-class NodeCell: UITableViewCell {
-	var node: Node! {
+public class NodeCell: UITableViewCell {
+	public var node: Node! {
 		didSet {
 			for i in 0..<nodeView.columns.count {
 				let value = node.value(for: nodeView.columns[i].token)
@@ -50,7 +50,7 @@ class NodeCell: UITableViewCell {
 	}
 	
 // UIView ==========================================================================================
-	override func layoutSubviews() {
+	override public func layoutSubviews() {
 		var dx: CGFloat = 6*s
 		var i: Int = 0
 		views.forEach {

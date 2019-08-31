@@ -25,6 +25,8 @@ public class NodeView: UIView, UITableViewDataSource {
 	let tableView: UITableView = AETableView()
 	public weak var delegate: NodeViewDelegate? = nil
 	
+	public var forEachCell: (NodeCell)->() = {NodeCell in}
+	
 	public init() {
 		super.init(frame: CGRect.zero)
 		
@@ -65,6 +67,7 @@ public class NodeView: UIView, UITableViewDataSource {
 			cell.nodeView = self
 			cell.renderFields()
 			cell.node = node.deepChild(at: indexPath.row)
+			forEachCell(cell)
 			return cell
 		}
 	}

@@ -42,7 +42,7 @@ public class Node {
 		fatalError()
 	}
 	
-	func value(for name: String) -> Any? {
+	public func value(for name: String) -> Any? {
 		return data.value(for: name)
 	}
 	
@@ -64,11 +64,8 @@ public class Node {
 				if let lhs = lhs.value(for: sortedBy) as? String, let rhs = rhs.value(for: sortedBy) as? String {
 					return lhs < rhs
 				}
-				if let lhs = lhs.value(for: sortedBy) as? Int, let rhs = rhs.value(for: sortedBy) as? Int {
-					return lhs < rhs
-				}
 				if let lhs = lhs.value(for: sortedBy) as? Double, let rhs = rhs.value(for: sortedBy) as? Double {
-					return lhs > rhs
+					return lhs < rhs
 				}
 				fatalError()
 			}
