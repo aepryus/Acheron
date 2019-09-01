@@ -52,6 +52,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	public var expansionHeight: CGFloat = 60
 	public unowned var expandableTableViewDelegate: ExpandableTableViewDelegate
 	var expandedPath: IndexPath? = nil
+	public var exposeBottom: Bool = true
 	
 	private var currentExpandedView: UIView? = nil
 	private var expandedViews: [UIView] = []
@@ -93,7 +94,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 
 		beginUpdates()
 		CATransaction.setCompletionBlock {
-			if self.expandedPath != nil {self.scrollRectToVisible(cell.frame, animated: true)}
+			if self.expandedPath != nil && self.exposeBottom {self.scrollRectToVisible(cell.frame, animated: true)}
 			guard let closingExpandedView = closingExpandedView else {return}
 			closingExpandedView.removeFromSuperview()
 			self.expandedViews.append(closingExpandedView)
