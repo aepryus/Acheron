@@ -14,6 +14,7 @@ public class NodeColumn {
 	public var pen: Pen?
 	public var format: (Any?)->(String)
 	public var width: CGFloat = 80
+	public var alignment: NSTextAlignment = .left
 	
 	static let defaultFormat: (Any?)->(String) = { (input: Any?)->(String) in
 		return "\(input ?? "")"
@@ -22,6 +23,7 @@ public class NodeColumn {
 	public var createView: (NodeColumn)->(UIView) = { (column: NodeColumn) in
 		let label = UILabel()
 		if let pen = column.pen {label.pen = pen}
+		label.textAlignment = column.alignment
 		return label
 	}
 	public var loadView: (NodeColumn,UIView,Any?)->() = { (column: NodeColumn, view: UIView, value: Any?) in
