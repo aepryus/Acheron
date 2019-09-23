@@ -14,6 +14,9 @@ open class Anchor: Domain {
 	
 	public unowned var basket: Basket? = nil
 	
+	public override init() {
+		super.init()
+	}
 	public required init(attributes: [String : Any], parent: Domain? = nil) {
 		super.init(attributes: attributes, parent: parent)
 	}
