@@ -1,5 +1,5 @@
 //
-//  Rosetta.swift
+//  SafeMap.swift
 //  Acheron
 //
 //  Created by Joe Charlier on 8/24/19.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-class Rosetta<T> {
+class SafeMap<T> {
 	private var map: [String:T] = [:]
-	private let queue: DispatchQueue = DispatchQueue(label: "Rosetta")
+	private let queue: DispatchQueue = DispatchQueue(label: "SafeMap")
 	
 	subscript(key: String) -> T? {
 		set {

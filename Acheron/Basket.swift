@@ -16,8 +16,8 @@ public class Basket: NSObject {
 	public var fork: Int
 
 	var busy: Bool
-	var cache: Rosetta = Rosetta<Anchor>()
-	var onlyToIden: Rosetta = Rosetta<String>()
+	var cache: SafeMap = SafeMap<Anchor>()
+	var onlyToIden: SafeMap = SafeMap<String>()
 	var dirty = Set<Anchor>()
 	var dehydrate = Set<Domain>()
 
