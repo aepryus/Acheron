@@ -9,44 +9,27 @@
 import UIKit
 
 public class Pen: NSObject {
-	@objc public var attributes = [NSAttributedString.Key:Any]()
+	public let attributes: [NSAttributedString.Key:Any]
 	
-	@objc public var font: UIFont {
-		set {attributes[NSAttributedString.Key.font] = newValue}
-		get {return attributes[NSAttributedString.Key.font] as! UIFont}
-	}
-	@objc public var color: UIColor {
-		set {attributes[NSAttributedString.Key.foregroundColor] = newValue}
-		get {return attributes[NSAttributedString.Key.foregroundColor] as! UIColor}
-	}
-	@objc public var alignment: NSTextAlignment {
-		set {style.alignment = newValue}
-		get {return style.alignment}
-	}
-	@objc public var style: NSMutableParagraphStyle {
-		set {attributes[NSAttributedString.Key.paragraphStyle] = newValue}
-		get {return attributes[NSAttributedString.Key.paragraphStyle] as! NSMutableParagraphStyle}
-	}
+	var font: UIFont {return attributes[NSAttributedString.Key.font] as! UIFont}
+	var color: UIColor {return attributes[NSAttributedString.Key.foregroundColor] as! UIColor}
+	var style: NSParagraphStyle {return attributes[NSAttributedString.Key.paragraphStyle] as! NSParagraphStyle}
+	var alignment: NSTextAlignment {return style.alignment}
 	
-	@objc public init(font: UIFont) {
-		super.init()
-		self.font = font
-		self.color = UIColor.white
-		self.style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
-		self.style.lineBreakMode = .byWordWrapping
+	public init(font: UIFont = UIFont.systemFont(ofSize: 16), color: UIColor = UIColor.black, alignment: NSTextAlignment = .left, style: NSParagraphStyle = NSParagraphStyle.default) {
+		var mutable: [NSAttributedString.Key:Any] = [:]
+		mutable[NSAttributedString.Key.font] = font
+		mutable[NSAttributedString.Key.foregroundColor] = color
+		let mutableStyle: NSMutableParagraphStyle = style.mutableCopy() as! NSMutableParagraphStyle
+		mutableStyle.alignment = alignment
+		mutable[NSAttributedString.Key.paragraphStyle] = mutableStyle
+		attributes = mutable
 	}
-	public override convenience init() {
-		self.init(font: UIFont.systemFont(ofSize: 12))
+	@objc public convenience init(font: UIFont, alignment: NSTextAlignment) {
+		self.init(font: font, color: UIColor.black, alignment: alignment)
 	}
-	
-	public subscript(index: NSAttributedString.Key) -> Any? {
-		get {return attributes[index]}
-		set(newValue) {attributes[index] = newValue}
-	}
-	
-	public func clone() -> Pen {
-		let pen = Pen(font: font)
-		pen.attributes = attributes
-		return pen
+
+	public func clone(font: UIFont? = nil, color: UIColor? = nil, alignment: NSTextAlignment? = nil, style: NSParagraphStyle? = nil) -> Pen {
+		return Pen(font: font ?? self.font, color: color ?? self.color, alignment: alignment ?? self.alignment, style: style ?? self.style)
 	}
 }
