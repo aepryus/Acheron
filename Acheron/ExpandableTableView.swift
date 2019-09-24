@@ -51,7 +51,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	public var baseHeight: CGFloat = 60
 	public var expansionHeight: CGFloat = 60
 	public unowned var expandableTableViewDelegate: ExpandableTableViewDelegate
-	var expandedPath: IndexPath? = nil
+	public var expandedPath: IndexPath? = nil
 	public var exposeBottom: Bool = true
 	
 	private var currentExpandedView: UIView? = nil
