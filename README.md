@@ -27,43 +27,43 @@ A collection of lightweight extensions and convience methods for laying out iOS 
 
 An object and set of extensions to ease using text within iOS.
 
-   Classes: Pen
-   Extensions: NSMutableAttributedString, NSString, UILabel
-   Lines: 60
+* Classes: Pen
+* Extensions: NSMutableAttributedString, NSString, UILabel
+* Lines: 60
 
 
 ## RGB
 
 A set of tools for working with color.
 
-  Classes: RGB
-  Extensions: UIColor
-  Lines: 92
+* Classes: RGB
+* Extensions: UIColor
+* Lines: 92
 
 
 ## Expandable Table View
 
 An object and set delegate protocol for creating expandable tables.
 
-   Classes: ExpandableTableView, ExpandableCell
-   Lines: 188
+* Classes: ExpandableTableView, ExpandableCell
+* Lines: 188
 
 ## Node View
 
 A view making the display of tabular data easy.
 
-  Classes: AETableView, Node, NodeData, NodeColumn, NodeHeader, NodeCell, NodeView
-  Lines: 280
+* Classes: AETableView, Node, NodeData, NodeColumn, NodeHeader, NodeCell, NodeView
+* Lines: 280
 
 ## UIImage+Acheron and UIImageView+Acheron
 
 Extensions for handling server image loading.
 
-    Extensions: UIImage, UIImageView
-    Lines: 66
+* Extensions: UIImage, UIImageView
+* Lines: 66
 
 ## Odds and Ends
 
-   Classes: AETimer, WeakSet, TripWire
-   Extensions: Array, CALayer, CGPoint, Collection, Date, String, UIControl
-   Lines: 263
+* Classes: AETimer, WeakSet, TripWire
+* Extensions: Array, CALayer, CGPoint, Collection, Date, String, UIControl
+* Lines: 263
