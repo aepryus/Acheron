@@ -6,7 +6,7 @@ Acheron is a collection of utilties for developing iOS apps.
 
 A lightweight threadsafe no SQL ORM (object-relational mapping) library.
 
-## Aepryus Layout
+## AepLayout
 
 A collection of lightweight extensions and convience methods for laying out iOS screens programatically.  It is particularly useful for implementing multiple screen sizes.
 
