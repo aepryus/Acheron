@@ -16,7 +16,7 @@ A lightweight threadsafe no SQL ORM.
 
 ## AepLayout
 
-A collection of lightweight extensions and convenience methods for laying out iOS screens programatically.  It is particularly useful in making multiple screen sizes look the same.
+A collection of lightweight extensions and convience methods for laying out iOS screens programatically.  It is particularly useful in making multiple screen sizes look the same.
 
 * Classes: AEViewController
 * Extensions: UIView, UIViewController
