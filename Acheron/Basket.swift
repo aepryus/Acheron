@@ -24,7 +24,7 @@ public class Basket: NSObject {
 	let queue: DispatchQueue
 	
 	let generateIden:(Domain.Type)->(String) = {(type: Domain.Type) -> (String) in
-		return String.uuid()
+		return UUID().uuidString
 	}
 	
 	public init(_ persist: Persist) {
