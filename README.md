@@ -67,3 +67,11 @@ Extensions for handling server image loading.
 * Classes: AETimer, WeakSet, TripWire
 * Extensions: Array, CALayer, CGPoint, Collection, Date, String, UIControl
 * Lines: 263
+
+Usage:
+```
+    let button: UIButton = UIButton()
+    button.addAction {
+        print("Hello, Acheron")
+    }
+```
