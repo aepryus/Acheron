@@ -20,10 +20,26 @@ class Pebble {
 	let payload: (_ complete: ()->())->()
 	var state: Pebble.State = .pending
 	private var upstream: WeakSet<Pebble> = []
-	private var downstream: WeakSet<Pebble> = []
+	var downstream: WeakSet<Pebble> = []
 	weak var listener: PebbleListener? = nil
 	
 	init(_ payload: @escaping (_ complete: ()->())->()) {
 		self.payload = payload
+	}
+	
+	func attach(pebble: Pebble) {
+		downstream.insert(pebble)
+		pebble.upstream.insert(self)
+	}
+	
+	func attemptToStart(_ gizzard: Gizzard) {
+		guard state == .pending else {return}
+		guard upstream.first(where: {$0.state != .complete}) == nil else {return}
+
+		state = .running
+		payload {
+			state = .complete
+			gizzard.complete(pebble: self)
+		}
 	}
 }
