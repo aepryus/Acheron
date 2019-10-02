@@ -12,7 +12,7 @@ protocol PebbleListener: class {
 	func onComplete()
 }
 
-class Pebble {
+public class Pebble {
 	enum State {
 		case pending, running, complete
 	}
@@ -23,11 +23,11 @@ class Pebble {
 	var downstream: WeakSet<Pebble> = []
 	weak var listener: PebbleListener? = nil
 	
-	init(_ payload: @escaping (_ complete: ()->())->()) {
+	public init(_ payload: @escaping (_ complete: ()->())->()) {
 		self.payload = payload
 	}
 	
-	func attach(pebble: Pebble) {
+	public func attach(pebble: Pebble) {
 		downstream.insert(pebble)
 		pebble.upstream.insert(self)
 	}

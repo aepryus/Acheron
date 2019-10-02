@@ -8,11 +8,11 @@
 
 import Foundation
 
-class Gizzard {
+public class Gizzard {
 	let pebbles: [Pebble]
 	let queue: DispatchQueue = DispatchQueue(label: "gizzard")
 	
-	init(pebbles: [Pebble]) {
+	public init(pebbles: [Pebble]) {
 		self.pebbles = pebbles
 	}
 	
@@ -21,7 +21,7 @@ class Gizzard {
 			pebble.downstream.forEach {$0.attemptToStart(self)}
 		}
 	}
-	func start() {
+	public func start() {
 		queue.async { [unowned self] in
 			self.pebbles.forEach {$0.attemptToStart(self)}
 		}
