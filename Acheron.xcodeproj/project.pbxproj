@@ -14,6 +14,7 @@
 		D81497BB2238F3D200436E00 /* AETableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497BA2238F3D200436E00 /* AETableView.swift */; };
 		D81774A32314C0A600A49725 /* AETimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81774A22314C0A600A49725 /* AETimer.swift */; };
 		D81849562248AD7000F05CC7 /* UIImageView+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */; };
+		D83B32AE23448E160006CB03 /* Pebble.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83B32AD23448E160006CB03 /* Pebble.swift */; };
 		D847A0F822857DC000A94232 /* Array+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D847A0F722857DC000A94232 /* Array+Acheron.swift */; };
 		D847A0FA22857EB200A94232 /* WeakSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D847A0F922857EB200A94232 /* WeakSet.swift */; };
 		D847A0FC228585DD00A94232 /* Collection+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D847A0FB228585DD00A94232 /* Collection+Acheron.swift */; };
@@ -56,6 +57,7 @@
 		D81497BA2238F3D200436E00 /* AETableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETableView.swift; sourceTree = "<group>"; };
 		D81774A22314C0A600A49725 /* AETimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETimer.swift; sourceTree = "<group>"; };
 		D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Acheron.swift"; sourceTree = "<group>"; };
+		D83B32AD23448E160006CB03 /* Pebble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pebble.swift; sourceTree = "<group>"; };
 		D847A0F722857DC000A94232 /* Array+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Acheron.swift"; sourceTree = "<group>"; };
 		D847A0F922857EB200A94232 /* WeakSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakSet.swift; sourceTree = "<group>"; };
 		D847A0FB228585DD00A94232 /* Collection+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Acheron.swift"; sourceTree = "<group>"; };
@@ -103,6 +105,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D83B32AC23448DD20006CB03 /* Pebbles */ = {
+			isa = PBXGroup;
+			children = (
+				D83B32AD23448E160006CB03 /* Pebble.swift */,
+			);
+			name = Pebbles;
+			sourceTree = "<group>";
+		};
 		D858A913226E780500AD831F /* Loom */ = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +168,7 @@
 			children = (
 				D8E604E022327F8A000E8AEA /* Extensions */,
 				D8E604E122327F91000E8AEA /* Utility */,
+				D83B32AC23448DD20006CB03 /* Pebbles */,
 				D858A913226E780500AD831F /* Loom */,
 				D8E604E422327FB8000E8AEA /* Widgets */,
 				D8E604E222327F98000E8AEA /* Global */,
@@ -326,6 +337,7 @@
 				D8E604DD22327F22000E8AEA /* Pen.swift in Sources */,
 				D8E604D422327E63000E8AEA /* UIColor+Acheron.swift in Sources */,
 				D8CBC9CB2265D70100B7BBC5 /* UILabel+Acheron.swift in Sources */,
+				D83B32AE23448E160006CB03 /* Pebble.swift in Sources */,
 				D8E604DF22327F3E000E8AEA /* RGB.swift in Sources */,
 				D8D47C3822ADD8AB0071DC0C /* NodeData.swift in Sources */,
 				D8AB61E22275039400415069 /* AEViewController.swift in Sources */,
