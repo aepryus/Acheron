@@ -11,10 +11,10 @@ import UIKit
 public class Pen: NSObject {
 	public let attributes: [NSAttributedString.Key:Any]
 	
-	var font: UIFont {return attributes[NSAttributedString.Key.font] as! UIFont}
-	var color: UIColor {return attributes[NSAttributedString.Key.foregroundColor] as! UIColor}
-	var style: NSParagraphStyle {return attributes[NSAttributedString.Key.paragraphStyle] as! NSParagraphStyle}
-	var alignment: NSTextAlignment {return style.alignment}
+	public var font: UIFont {return attributes[NSAttributedString.Key.font] as! UIFont}
+	public var color: UIColor {return attributes[NSAttributedString.Key.foregroundColor] as! UIColor}
+	public var style: NSParagraphStyle {return attributes[NSAttributedString.Key.paragraphStyle] as! NSParagraphStyle}
+	public var alignment: NSTextAlignment {return style.alignment}
 	
 	public init(font: UIFont = UIFont.systemFont(ofSize: 16), color: UIColor = UIColor.black, alignment: NSTextAlignment = .left, style: NSParagraphStyle = NSParagraphStyle.default) {
 		var mutable: [NSAttributedString.Key:Any] = [:]
