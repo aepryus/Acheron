@@ -63,6 +63,13 @@ public enum Screen {
 			return 20
 		}
 	}
+	public static var navBottom: CGFloat {
+		if #available(iOS 13.0, *) {
+			return 0
+		} else {
+			return Screen.safeTop + 49
+		}
+	}
 	public static var safeBottom: CGFloat {
 		guard #available(iOS 11.0, *) else {return 0}
 		return UIApplication.shared.windows[0].safeAreaInsets.bottom
