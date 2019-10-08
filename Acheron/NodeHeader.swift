@@ -25,9 +25,10 @@ class NodeHeader: UITableViewCell {
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
-		backgroundColor = UIColor(rgb: 0xCCCCCC)
+		backgroundColor = UIColor(rgb: 0xE7E7E7)
 		
-		label.textColor = UIColor(rgb: 0x888888)
+		label.font = UIFont(name: "HelveticaNeue", size: 16*s)
+		label.textColor = UIColor(rgb: 0x333333)
 		addSubview(label)
 	}
 	required init?(coder aDecoder: NSCoder) {fatalError()}
@@ -37,9 +38,9 @@ class NodeHeader: UITableViewCell {
 		labels.removeAll()
 		for _ in nodeView.columns {
 			let label = UILabel()
-			label.font = UIFont.systemFont(ofSize: 14*s)
+			label.font = UIFont(name: "HelveticaNeue", size: 14*s)
 			label.textAlignment = .center
-			label.textColor = UIColor(rgb: 0x888888)
+			label.textColor = UIColor(rgb: 0x666666)
 			addSubview(label)
 			labels.append(label)
 		}
