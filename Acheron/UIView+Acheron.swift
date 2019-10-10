@@ -65,7 +65,7 @@ public enum Screen {
 	}
 	public static var navBottom: CGFloat {
 		if #available(iOS 13.0, *) {
-			return 0
+			return Screen.safeTop + 49
 		} else {
 			return Screen.safeTop + 49
 		}
