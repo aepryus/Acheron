@@ -25,7 +25,7 @@ public class NodeCell: UITableViewCell {
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
-		lineView.backgroundColor = UIColor(rgb: 0xCCCCCC)
+		lineView.backgroundColor = UIColor(rgb: 0xCECECE)
 		addSubview(lineView)
 		
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(onTap))
@@ -62,6 +62,6 @@ public class NodeCell: UITableViewCell {
 			dx += $0.width
 			i += 1
 		}
-		lineView.bottom(width: width, height: 1*s)
+		lineView.bottom(width: width, height: 0.5*s)
 	}
 }
