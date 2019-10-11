@@ -17,13 +17,13 @@ public class Pebble {
 		case pending, running, complete
 	}
 
-	let payload: (_ complete: ()->())->()
+	let payload: (_ complete: (Bool)->())->()
 	var state: Pebble.State = .pending
 	private var upstream: WeakSet<Pebble> = []
 	var downstream: WeakSet<Pebble> = []
 	weak var listener: PebbleListener? = nil
 	
-	public init(_ payload: @escaping (_ complete: ()->())->()) {
+	public init(_ payload: @escaping (_ complete: (Bool)->())->()) {
 		self.payload = payload
 	}
 	
@@ -37,7 +37,7 @@ public class Pebble {
 		guard upstream.first(where: {$0.state != .complete}) == nil else {return}
 
 		state = .running
-		payload {
+		payload { (success: Bool) in
 			state = .complete
 			gizzard.complete(pebble: self)
 		}
