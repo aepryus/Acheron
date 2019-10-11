@@ -62,6 +62,13 @@ Extensions for handling server image loading.
 * Extensions: UIImage, UIImageView
 * Lines: 66
 
+## Pebbles
+
+Asynchronous control flow.
+
+* Classes: Pebble, Gizzard
+* Lines: 
+
 ## Odds and Ends
 
 * Classes: AETimer, WeakSet, TripWire
