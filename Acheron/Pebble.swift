@@ -14,32 +14,58 @@ protocol PebbleListener: class {
 
 public class Pebble {
 	enum State {
-		case pending, running, complete
+		case pending, running, complete, completeElse
 	}
 
 	let payload: (_ complete: (Bool)->())->()
 	var state: Pebble.State = .pending
-	private var upstream: WeakSet<Pebble> = []
 	var downstream: WeakSet<Pebble> = []
-	weak var listener: PebbleListener? = nil
+	var necessary: WeakSet<Pebble> = []
+	var sufficient: WeakSet<Pebble> = []
+	var elseDownstream: WeakSet<Pebble> = []
+	var elseNecessary: WeakSet<Pebble> = []
+	var elseSufficient: WeakSet<Pebble> = []
+//	weak var listener: PebbleListener? = nil
 	
 	public init(_ payload: @escaping (_ complete: (Bool)->())->()) {
 		self.payload = payload
 	}
 	
-	public func attach(pebble: Pebble) {
+	public func isNeccessary(for pebble: Pebble) {
 		downstream.insert(pebble)
-		pebble.upstream.insert(self)
+		pebble.necessary.insert(self)
 	}
+	public func isSufficient(for pebble: Pebble) {
+		downstream.insert(pebble)
+		pebble.sufficient.insert(self)
+	}
+	public func elseIsNeccessary(for pebble: Pebble) {
+		elseDownstream.insert(pebble)
+		pebble.elseNecessary.insert(self)
+	}
+	public func elseIsSufficient(for pebble: Pebble) {
+		elseDownstream.insert(pebble)
+		pebble.elseSufficient.insert(self)
+	}
+
+//	public func attach(pebble: Pebble) {
+//		downstream.insert(pebble)
+//		pebble.upstream.insert(self)
+//	}
 	
 	func attemptToStart(_ gizzard: Gizzard) {
 		guard state == .pending else {return}
-		guard upstream.first(where: {$0.state != .complete}) == nil else {return}
+		guard necessary.first(where: {$0.state != .complete}) == nil else {return}
+		guard elseNecessary.first(where: {$0.state != .completeElse}) == nil else {return}
+		guard sufficient.count == 0 || sufficient.first(where: {$0.state == .complete}) != nil else {return}
+		guard elseSufficient.count == 0 || elseSufficient.first(where: {$0.state == .completeElse}) != nil else {return}
 
 		state = .running
-		payload { (success: Bool) in
-			state = .complete
-			gizzard.complete(pebble: self)
+		DispatchQueue.main.async {
+			self.payload { (success: Bool) in
+				self.state = success ? .complete : .completeElse
+				gizzard.complete(pebble: self)
+			}
 		}
 	}
 }
