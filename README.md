@@ -9,8 +9,8 @@ Acheron is a collection of utilties for developing iOS apps.
 
 A lightweight threadsafe no SQL ORM.
 
-* Classes: Anchor, Basket, Domain, Persist, Loom, SQLitePersist, SafeMap
-* Extensions: Date, Dictionary, String
+* Dependencies: Odds and Ends
+* Classes: Anchor, Basket, Domain, Persist, Loom, SQLitePersist
 * Lines: 1378
 
 
@@ -19,7 +19,7 @@ A lightweight threadsafe no SQL ORM.
 A collection of lightweight extensions and convenience methods for laying out iOS screens programatically.  It is particularly useful in making multiple screen sizes look the same.
 
 * Classes: AEViewController
-* Extensions: UIView, UIViewController
+* Extensions: CALayer, UIView, UIViewController
 * Lines: 219
 
 
@@ -45,17 +45,19 @@ A set of tools for working with color.
 
 An object and set delegate protocol for creating expandable tables.
 
-* Classes: ExpandableTableView, ExpandableCell
+* Dependencies: AepLayout
+* Classes: ExpandableCell, ExpandableTableView
 * Lines: 188
 
 ## Node View
 
 A view making the display of tabular data easy.
 
-* Classes: AETableView, Node, NodeData, NodeColumn, NodeHeader, NodeCell, NodeView
+* Dependencies: AepLayout
+* Classes: AETableView, Node, NodeCell, NodeColumn, NodeData, NodeHeader, NodeView
 * Lines: 280
 
-## UIImage+Acheron and UIImageView+Acheron
+## AepImage
 
 Extensions for handling server image loading.
 
@@ -71,8 +73,8 @@ Asynchronous control flow.
 
 ## Odds and Ends
 
-* Classes: AETimer, WeakSet, TripWire
-* Extensions: Array, CALayer, CGPoint, Collection, Date, String, UIControl
+* Classes: AETimer, SafeMap, WeakSet, TripWire
+* Extensions: Array, CGPoint, Collection, Date, Dictionary, String, UIControl
 * Lines: 263
 
 Usage:
