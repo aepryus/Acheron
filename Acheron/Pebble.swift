@@ -61,11 +61,9 @@ public class Pebble {
 		guard elseSufficient.count == 0 || elseSufficient.first(where: {$0.state == .completeElse}) != nil else {return}
 
 		state = .running
-		DispatchQueue.main.async {
-			self.payload { (success: Bool) in
-				self.state = success ? .complete : .completeElse
-				gizzard.complete(pebble: self)
-			}
+		self.payload { (success: Bool) in
+			self.state = success ? .complete : .completeElse
+			gizzard.complete(pebble: self)
 		}
 	}
 }

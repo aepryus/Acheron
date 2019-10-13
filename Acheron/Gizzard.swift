@@ -10,7 +10,6 @@ import Foundation
 
 public class Gizzard {
 	public var pebbles: [Pebble] = []	
-	let queue: DispatchQueue = DispatchQueue(label: "gizzard")
 
 	public let startPebble: Pebble = Pebble { (complete: (Bool)->()) in
 		print(" == [ Gizzard Start Pebble ]\n")
@@ -26,7 +25,7 @@ public class Gizzard {
 	}
 	
 	func complete(pebble: Pebble) {
-		queue.async {
+		DispatchQueue.main.async {
 			if pebble.state == .complete {
 				pebble.downstream.forEach {$0.attemptToStart(self)}
 			} else if pebble.state == .completeElse {
@@ -35,8 +34,6 @@ public class Gizzard {
 		}
 	}
 	public func start() {
-		queue.sync { [unowned self] in
-			startPebble.attemptToStart(self)
-		}
+		startPebble.attemptToStart(self)
 	}
 }
