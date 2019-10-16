@@ -20,17 +20,13 @@ public class Gizzard {
 		complete(true)
 	}
 	
-	public init() {
-		
-	}
+	public init() {}
 	
 	func complete(pebble: Pebble) {
-		DispatchQueue.main.async {
-			if pebble.state == .complete {
-				pebble.downstream.forEach {$0.attemptToStart(self)}
-			} else if pebble.state == .completeElse {
-				pebble.elseDownstream.forEach {$0.attemptToStart(self)}
-			}
+		if pebble.state == .complete {
+			pebble.downstream.forEach {$0.attemptToStart(self)}
+		} else if pebble.state == .completeElse {
+			pebble.elseDownstream.forEach {$0.attemptToStart(self)}
 		}
 	}
 	public func start() {

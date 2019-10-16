@@ -17,7 +17,7 @@ public class Pebble {
 		case pending, running, complete, completeElse
 	}
 
-	let payload: (_ complete: (Bool)->())->()
+	let payload: (_ complete: @escaping (Bool)->())->()
 	var state: Pebble.State = .pending
 	var downstream: WeakSet<Pebble> = []
 	var necessary: WeakSet<Pebble> = []
@@ -27,7 +27,7 @@ public class Pebble {
 	var elseSufficient: WeakSet<Pebble> = []
 //	weak var listener: PebbleListener? = nil
 	
-	public init(_ payload: @escaping (_ complete: (Bool)->())->()) {
+	public init(_ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
 		self.payload = payload
 	}
 	
