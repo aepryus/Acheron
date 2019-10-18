@@ -22,6 +22,8 @@ public class Gizzard {
 	}
 	
 	public init() {
+		startPebble.ready = {true}
+		stopPebble.ready = {true}
 		pebbles.append(startPebble)
 		pebbles.append(stopPebble)
 	}
