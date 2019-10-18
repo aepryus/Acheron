@@ -13,7 +13,7 @@ public class Pebble {
 		case pending, running, success, exception
 	}
 
-	public var ready: (()->(Bool))? = nil
+	public var ready: (()->(Bool)) = {false}
 	let payload: (_ complete: @escaping (Bool)->())->()
 	var state: Pebble.State = .pending
 	
@@ -27,7 +27,7 @@ public class Pebble {
 	
 	func attemptToStart(_ gizzard: Gizzard) {
 		guard state == .pending else {return}
-		guard ready == nil || (ready!() == true) else {return}
+		guard ready() == true else {return}
 		
 		state = .running
 		DispatchQueue.main.async {
