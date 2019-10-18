@@ -12,12 +12,10 @@ public class Gizzard {
 	private var pebbles: [Pebble] = []
 	private let queue: DispatchQueue = DispatchQueue(label: "gizzard")
 
-	public let startPebble: Pebble = Pebble { (complete: (Bool)->()) in
-		print(" == [ Gizzard Start Pebble ]\n")
+	public let startPebble: Pebble = Pebble(name: "Gizzard Start") { (complete: (Bool)->()) in
 		complete(true)
 	}
-	public let stopPebble: Pebble = Pebble { (complete: (Bool)->()) in
-		print(" == [ Gizzard Stop Pebble ]\n")
+	public let stopPebble: Pebble = Pebble(name: "Gizzard Stop") { (complete: (Bool)->()) in
 		complete(true)
 	}
 	
@@ -34,8 +32,8 @@ public class Gizzard {
 		}
 	}
 	
-	public func pebble(_ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
-		let pebble = Pebble(payload)
+	public func pebble(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
+		let pebble = Pebble(name: name, payload)
 		pebbles.append(pebble)
 		return pebble
 	}

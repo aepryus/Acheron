@@ -13,15 +13,17 @@ public class Pebble {
 		case pending, running, success, exception
 	}
 
-	public var ready: (()->(Bool)) = {false}
+	let name: String
 	let payload: (_ complete: @escaping (Bool)->())->()
+	public var ready: (()->(Bool)) = {false}
 	var state: Pebble.State = .pending
 	
 	public var succeeded: Bool {return state == .success}
 	public var excepted: Bool {return state == .exception}
 	public var completed: Bool {return state == .success || state == .exception}
 	
-	init(_ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
+	init(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
+		self.name = name
 		self.payload = payload
 	}
 	
@@ -31,6 +33,7 @@ public class Pebble {
 		
 		state = .running
 		DispatchQueue.main.async {
+			print(" == [ \(self.name) Pebble ]\n")
 			self.payload { (success: Bool) in
 				self.state = success ? .success : .exception
 				gizzard.complete(pebble: self)
