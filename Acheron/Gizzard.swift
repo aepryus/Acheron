@@ -39,7 +39,7 @@ public class Gizzard {
 	}
 	
 	public func start() {
-		queue.async { [unowned self] in
+		queue.async {
 			self.startPebble.attemptToStart(self)
 		}
 	}

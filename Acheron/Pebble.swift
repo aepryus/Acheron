@@ -8,10 +8,6 @@
 
 import Foundation
 
-protocol PebbleListener: class {
-	func onComplete()
-}
-
 public class Pebble {
 	enum State {
 		case pending, running, success, exception
