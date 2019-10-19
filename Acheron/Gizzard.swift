@@ -15,20 +15,38 @@ public class Gizzard {
 	public let startPebble: Pebble = Pebble(name: "Gizzard Start") { (complete: (Bool)->()) in
 		complete(true)
 	}
-	public let stopPebble: Pebble = Pebble(name: "Gizzard Stop") { (complete: (Bool)->()) in
-		complete(true)
-	}
 	
 	public init() {
 		startPebble.ready = {true}
-		stopPebble.ready = {true}
 		pebbles.append(startPebble)
-		pebbles.append(stopPebble)
+	}
+	
+	
+	private func checkIfComplete() {
+		if pebbles.first(where: {$0.state == .running}) == nil {
+			print(" == [ Gizzard Complete ]\n")
+			
+			print("\t Successful Pebbles ===========")
+			for pebble in pebbles.filter({$0.state == .success}) {
+				print("\t\t - \(pebble.name)")
+			}
+			
+			print("\t Exceptional Pebbles ===========")
+			for pebble in pebbles.filter({$0.state == .exception}) {
+				print("\t\t - \(pebble.name)")
+			}
+
+			print("\t Skipped Pebbles ===========")
+			for pebble in pebbles.filter({$0.state == .pending}) {
+				print("\t\t - \(pebble.name)")
+			}
+		}
 	}
 	
 	func complete(pebble: Pebble) {
 		queue.async {
 			self.pebbles.forEach {$0.attemptToStart(self)}
+			self.checkIfComplete()
 		}
 	}
 	
