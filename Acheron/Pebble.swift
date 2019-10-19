@@ -29,7 +29,7 @@ public class Pebble {
 	
 	func attemptToStart(_ gizzard: Gizzard) {
 		guard state == .pending else {return}
-		guard ready() == true else {return}
+		guard ready() else {return}
 		
 		state = .running
 		DispatchQueue.main.async {
