@@ -11,39 +11,33 @@ import Foundation
 public class Gizzard {
 	private var pebbles: [Pebble] = []
 	private let queue: DispatchQueue = DispatchQueue(label: "gizzard")
+	
+	public init() {}
 
-	public let startPebble: Pebble = Pebble(name: "Gizzard Start") { (complete: (Bool)->()) in
-		complete(true)
-	}
-	
-	public init() {
-		startPebble.ready = {true}
-		pebbles.append(startPebble)
-	}
-	
-	
 	private func checkIfComplete() {
 		if pebbles.first(where: {$0.state == .running}) == nil {
-			print(" == [ Gizzard Complete ]\n")
+			print("\n == [ Gizzard Complete ]\n")
 			
 			print("\t Successful Pebbles ===========")
 			for pebble in pebbles.filter({$0.state == .success}) {
 				print("\t\t - \(pebble.name)")
 			}
 			
-			print("\t Exceptional Pebbles ===========")
+			print("\n\t Exceptional Pebbles ===========")
 			for pebble in pebbles.filter({$0.state == .exception}) {
 				print("\t\t - \(pebble.name)")
 			}
 
-			print("\t Skipped Pebbles ===========")
+			print("\n\t Skipped Pebbles ===========")
 			for pebble in pebbles.filter({$0.state == .pending}) {
 				print("\t\t - \(pebble.name)")
 			}
+			
+			print("\n =======================\n")
 		}
 	}
 	
-	func complete(pebble: Pebble) {
+	func complete() {
 		queue.async {
 			self.pebbles.forEach {$0.attemptToStart(self)}
 			self.checkIfComplete()
@@ -58,7 +52,8 @@ public class Gizzard {
 	
 	public func start() {
 		queue.async {
-			self.startPebble.attemptToStart(self)
+			print(" == [ Gizzard Starting ]")
+			self.complete()
 		}
 	}
 }

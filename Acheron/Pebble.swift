@@ -33,10 +33,10 @@ public class Pebble {
 		
 		state = .running
 		DispatchQueue.main.async {
-			print(" == [ \(self.name) ]\n")
+			print("\n == [ \(self.name) ]")
 			self.payload { (success: Bool) in
 				self.state = success ? .success : .exception
-				gizzard.complete(pebble: self)
+				gizzard.complete()
 			}
 		}
 	}
