@@ -35,8 +35,10 @@ public class Pebble {
 		DispatchQueue.main.async {
 			print("\n == [ \(self.name) ]")
 			self.payload { (success: Bool) in
-				self.state = success ? .success : .exception
-				gizzard.complete()
+				gizzard.queue.async {
+					self.state = success ? .success : .exception
+					gizzard.complete()
+				}
 			}
 		}
 	}

@@ -10,7 +10,7 @@ import Foundation
 
 public class Gizzard {
 	private var pebbles: [Pebble] = []
-	private let queue: DispatchQueue = DispatchQueue(label: "gizzard")
+	let queue: DispatchQueue = DispatchQueue(label: "gizzard")
 	
 	public init() {}
 
@@ -38,10 +38,8 @@ public class Gizzard {
 	}
 	
 	func complete() {
-		queue.async {
-			self.pebbles.forEach {$0.attemptToStart(self)}
-			self.checkIfComplete()
-		}
+		self.pebbles.forEach {$0.attemptToStart(self)}
+		self.checkIfComplete()
 	}
 	
 	public func pebble(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
