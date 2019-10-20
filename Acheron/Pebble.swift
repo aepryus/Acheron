@@ -14,9 +14,9 @@ public class Pebble {
 	}
 
 	let name: String
-	let payload: (_ complete: @escaping (Bool)->())->()
+	private let payload: (_ complete: @escaping (Bool)->())->()
 	public var ready: (()->(Bool)) = {false}
-	var state: Pebble.State = .pending
+	private(set) var state: Pebble.State = .pending
 	
 	public var succeeded: Bool {return state == .success}
 	public var excepted: Bool {return state == .exception}
