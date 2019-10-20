@@ -37,7 +37,7 @@ public class Pebble {
 			self.payload { (success: Bool) in
 				gizzard.queue.async {
 					self.state = success ? .success : .exception
-					gizzard.complete()
+					gizzard.iterate()
 				}
 			}
 		}
