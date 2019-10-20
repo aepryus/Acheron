@@ -38,8 +38,8 @@ public class Gizzard {
 	}
 	
 	func complete() {
-		self.pebbles.forEach {$0.attemptToStart(self)}
-		self.checkIfComplete()
+		pebbles.forEach {$0.attemptToStart(self)}
+		checkIfComplete()
 	}
 	
 	public func pebble(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
