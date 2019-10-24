@@ -152,6 +152,9 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 				cell.superAddSubview(currentExpandedView)
 			}
 			expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, reload: currentExpandedView, at: indexPath)
+			let baseHeight = expandableTableViewDelegate.expandableTableView(self, baseHeightForRowAt: indexPath)
+			let expansionHeight = expandableTableViewDelegate.expandableTableView(self, expansionHeightForRowAt: indexPath)
+			currentExpandedView.frame = CGRect(x: 0, y: baseHeight, width: width, height: expansionHeight)
 		}
 		return cell
 	}
