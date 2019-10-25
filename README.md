@@ -2,7 +2,7 @@
 
 Acheron is a collection of utilties for developing iOS apps.
 
-* Total Lines: 2565
+* Total Lines: 2563
 
 
 ## Loom ORM
@@ -43,7 +43,7 @@ A set of tools for working with color.
 
 ## Expandable Table View
 
-An object and set delegate protocol for creating expandable tables.
+Classes and delegates for creating expandable table views.
 
 * Dependencies: AepLayout
 * Classes: ExpandableCell, ExpandableTableView
