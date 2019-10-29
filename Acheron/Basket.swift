@@ -18,8 +18,8 @@ public class Basket: NSObject {
 	var busy: Bool
 	var cache: SafeMap = SafeMap<Anchor>()
 	var onlyToIden: SafeMap = SafeMap<String>()
-	var dirty = Set<Anchor>()
-	var dehydrate = Set<Domain>()
+	var dirty = SafeSet<Anchor>()
+	var dehydrate = SafeSet<Domain>()
 
 	let queue: DispatchQueue
 	
