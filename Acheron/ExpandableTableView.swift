@@ -68,7 +68,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	public required init?(coder aDecoder: NSCoder) {fatalError()}
 	
 	func toggle(cell: ExpandableCell) {
-		guard let indexPath = self.indexPath(for: cell) else {fatalError()}
+		guard let indexPath = self.indexPath(for: cell) else {return}
 		guard expandableTableViewDelegate.expandableTableView(self, expandableRowAt: indexPath) else {return}
 		
 		var nextExpandedView: UIView? = nil
