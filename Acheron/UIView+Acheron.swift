@@ -72,6 +72,7 @@ public enum Screen {
 	}
 	public static var safeBottom: CGFloat {
 		guard #available(iOS 11.0, *) else {return 0}
+		guard UIApplication.shared.windows.count > 0 else {return 0}
 		return UIApplication.shared.windows[0].safeAreaInsets.bottom
 	}
 	public static var s: CGFloat {
