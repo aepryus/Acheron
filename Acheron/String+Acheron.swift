@@ -52,7 +52,7 @@ public extension String {
 	func toAttributes() -> [String:Any] {
 		guard self != "" else {return [:]}
 		do {
-			return try JSONSerialization.jsonObject(with: data(using: .utf8)!, options: [.allowFragments]) as! [String:Any]
+			return try JSONSerialization.jsonObject(with: data(using: .utf8)!, options: [.allowFragments]) as? [String:Any] ?? [:]
 		} catch {
 			print("Error Attempting to Parse [\(self)]\n\(error)")
 			return [:]
