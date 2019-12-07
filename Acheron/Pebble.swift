@@ -42,4 +42,7 @@ public class Pebble {
 			}
 		}
 	}
+	func reset() {
+		state = .pending
+	}
 }

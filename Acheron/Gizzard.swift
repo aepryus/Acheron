@@ -16,7 +16,8 @@ public class Gizzard {
 
 	public init() {}
 
-	private var complete: Bool {pebbles.first(where: {$0.state == .running}) == nil}
+	public var complete: Bool {pebbles.first(where: {$0.state == .running}) == nil}
+	public var started: Bool {pebbles.first(where: {$0.state != .pending}) != nil}
 	private func checkIfComplete() {
 		guard complete else {return}
 
@@ -62,11 +63,15 @@ public class Gizzard {
 		}
 	}
 
-	
 	public func start() {
 		queue.async {
 			print(" == [ Gizzard Starting ]")
 			self.iterate()
+		}
+	}
+	public func reset() {
+		queue.sync {
+			self.pebbles.forEach {$0.reset()}
 		}
 	}
 }
