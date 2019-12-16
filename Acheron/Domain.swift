@@ -196,6 +196,7 @@ open class Domain: NSObject {
 	
 // Actions =========================================================================================
 	func create() {
+		status = .dirty
 		modified = Date.now
 		onCreate()
 		handleTriggers(self, action: .create)
