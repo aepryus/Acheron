@@ -38,4 +38,7 @@ public extension CGPoint {
 		let l = length()
 		return CGPoint(x: x/l, y: y/l)
 	}
+	static func point(theta: CGFloat) -> CGPoint {
+		return CGPoint(x: cos(theta), y: sin(theta))
+	}
 }
