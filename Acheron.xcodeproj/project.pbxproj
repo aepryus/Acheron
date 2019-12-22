@@ -14,6 +14,7 @@
 		D81497BB2238F3D200436E00 /* AETableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497BA2238F3D200436E00 /* AETableView.swift */; };
 		D81774A32314C0A600A49725 /* AETimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81774A22314C0A600A49725 /* AETimer.swift */; };
 		D81849562248AD7000F05CC7 /* UIImageView+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */; };
+		D830BB2623AF4C1100428A35 /* Comparable+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D830BB2523AF4C1100428A35 /* Comparable+Acheron.swift */; };
 		D83A0E13234493F00058075B /* Gizzard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A0E12234493F00058075B /* Gizzard.swift */; };
 		D83A874423682F580083812E /* SafeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A874323682F580083812E /* SafeSet.swift */; };
 		D83B32AE23448E160006CB03 /* Pebble.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83B32AD23448E160006CB03 /* Pebble.swift */; };
@@ -59,6 +60,7 @@
 		D81497BA2238F3D200436E00 /* AETableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETableView.swift; sourceTree = "<group>"; };
 		D81774A22314C0A600A49725 /* AETimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETimer.swift; sourceTree = "<group>"; };
 		D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Acheron.swift"; sourceTree = "<group>"; };
+		D830BB2523AF4C1100428A35 /* Comparable+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comparable+Acheron.swift"; sourceTree = "<group>"; };
 		D83A0E12234493F00058075B /* Gizzard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gizzard.swift; sourceTree = "<group>"; };
 		D83A874323682F580083812E /* SafeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeSet.swift; sourceTree = "<group>"; };
 		D83B32AD23448E160006CB03 /* Pebble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pebble.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */,
 				D8E604D122327E47000E8AEA /* CGPoint+Acheron.swift */,
 				D847A0FB228585DD00A94232 /* Collection+Acheron.swift */,
+				D830BB2523AF4C1100428A35 /* Comparable+Acheron.swift */,
 				D80367B0225915E400B0934C /* Date+Acheron.swift */,
 				D858A923226E856200AD831F /* Dictionary+Acheron.swift */,
 				D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */,
@@ -327,6 +330,7 @@
 				D8D47C3A22AE06C10071DC0C /* NodeCell.swift in Sources */,
 				D8CBC9C92265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift in Sources */,
 				D81497B72238F39100436E00 /* ExpandableTableView.swift in Sources */,
+				D830BB2623AF4C1100428A35 /* Comparable+Acheron.swift in Sources */,
 				D80367B1225915E400B0934C /* Date+Acheron.swift in Sources */,
 				D858A915226E784800AD831F /* Anchor.swift in Sources */,
 				D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */,
