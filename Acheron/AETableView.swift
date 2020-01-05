@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class AETableView: UITableView {
+open class AETableView: UITableView {
 	public init() {
 		super.init(frame: CGRect.zero, style: .plain)
 		
@@ -16,7 +16,7 @@ public class AETableView: UITableView {
 		tableFooterView = nil
 		allowsSelection = false
 	}
-	required init?(coder aDecoder: NSCoder) {fatalError()}
+	required public init?(coder aDecoder: NSCoder) {fatalError()}
 	
 // UITableView =====================================================================================
 	override public var refreshControl: UIRefreshControl? {
