@@ -100,7 +100,6 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 			self.expandedViews.append(closingExpandedView)
 		}
 		endUpdates()
-		
 	}
 	public func collapse() {
 		guard let expandedPath = expandedPath else {return}
