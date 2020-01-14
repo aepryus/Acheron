@@ -10,6 +10,6 @@ import Foundation
 
 public extension Collection where Index == Int {
 	func random() -> Iterator.Element? {
-		return isEmpty ? nil : self[Int(arc4random_uniform(UInt32(endIndex)))]
+		return isEmpty ? nil : self[Int.random(in: 0 ..< endIndex)]
 	}
 }
