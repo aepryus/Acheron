@@ -21,4 +21,7 @@ public extension NSString {
 	@objc func size(pen: Pen) -> CGSize {
 		return size(withAttributes: pen.attributes)
 	}
+	@objc func size(pen: Pen, width: CGFloat) -> CGSize {
+		return boundingRect(with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin , .usesFontLeading], attributes: pen.attributes, context: nil).size
+	}
 }
