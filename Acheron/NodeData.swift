@@ -38,3 +38,12 @@ extension Domain: NodeData {
 		return super.value(forKey: name)
 	}
 }
+
+extension Dictionary: NodeData where Key == String {
+	public var availableNames: [String] {
+		return Array(keys)
+	}
+	public func value(for name: String) -> Any? {
+		return self[name]
+	}
+}
