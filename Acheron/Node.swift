@@ -46,6 +46,20 @@ public class Node {
 		return data.value(for: name)
 	}
 	
+	public func sort(by: String) {
+		children.sort { (lhs: Node, rhs: Node) -> Bool in
+			if let lhs = lhs.value(for: by) as? String, let rhs = rhs.value(for: by) as? String {
+				return lhs < rhs
+			}
+			if let lhs = lhs.value(for: by) as? Double, let rhs = rhs.value(for: by) as? Double {
+				return lhs < rhs
+			}
+			if let lhs = lhs.value(for: by) as? Int, let rhs = rhs.value(for: by) as? Int {
+				return lhs < rhs
+			}
+			fatalError()
+		}
+	}
 	public func node(groupedBy: String, sortedBy: String) -> Node {
 		var groups: [String:[Node]] = [:]
 		

@@ -36,10 +36,10 @@ class NodeHeader: UITableViewCell {
 	func renderFields() {
 		labels.forEach {$0.removeFromSuperview()}
 		labels.removeAll()
-		for _ in nodeView.columns {
+		for column in nodeView.columns {
 			let label = UILabel()
 			label.font = UIFont(name: "HelveticaNeue", size: 14*s)
-			label.textAlignment = .center
+			label.textAlignment = column.alignment
 			label.textColor = UIColor(rgb: 0x666666)
 			addSubview(label)
 			labels.append(label)
