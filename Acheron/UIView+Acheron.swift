@@ -64,16 +64,20 @@ public enum Screen {
 		}
 	}
 	public static var navBottom: CGFloat {
-		if #available(iOS 13.0, *) {
-			return Screen.safeTop + 49
-		} else {
-			return Screen.safeTop + 49
-		}
+		return Screen.safeTop + 49
 	}
 	public static var safeBottom: CGFloat {
 		guard #available(iOS 11.0, *) else {return 0}
 		guard UIApplication.shared.windows.count > 0 else {return 0}
 		return UIApplication.shared.windows[0].safeAreaInsets.bottom
+	}
+	public static var safeLeft: CGFloat {
+		guard #available(iOS 11.0, *) else {return 0}
+		return UIApplication.shared.windows[0].safeAreaInsets.left
+	}
+	public static var safeRight: CGFloat {
+		guard #available(iOS 11.0, *) else {return 0}
+		return UIApplication.shared.windows[0].safeAreaInsets.right
 	}
 	public static var s: CGFloat {
 		if Screen.iPhone {
