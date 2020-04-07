@@ -29,10 +29,15 @@ public extension Date {
 		formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
 		return formatter
 	}()
+	static var iso8601Formatter: ISO8601DateFormatter = {
+		let formatter: ISO8601DateFormatter = ISO8601DateFormatter()
+		formatter.formatOptions = [.withFractionalSeconds, .withInternetDateTime]
+		return formatter
+	}()
 	func toISOFormattedString() -> String {
 		return Date.isoFormatter.string(from: self)
 	}
 	static func fromISOFormatted(string: String) -> Date? {
-		return Date.isoFormatter.date(from: string)
+		return Date.iso8601Formatter.date(from: string) ?? Date.isoFormatter.date(from: string)
 	}
 }
