@@ -31,7 +31,9 @@ public extension Date {
 	}()
 	static var iso8601Formatter: ISO8601DateFormatter = {
 		let formatter: ISO8601DateFormatter = ISO8601DateFormatter()
-		formatter.formatOptions = [.withFractionalSeconds, .withInternetDateTime]
+		if #available(iOS 11, *) {
+			formatter.formatOptions = [.withFractionalSeconds, .withInternetDateTime]
+		}
 		return formatter
 	}()
 	func toISOFormattedString() -> String {
