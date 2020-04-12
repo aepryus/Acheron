@@ -1,5 +1,5 @@
 //
-//  Gizzard.swift
+//  Pond.swift
 //  Acheron
 //
 //  Created by Joe Charlier on 10/2/19.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-public class Gizzard {
+public class Pond {
 	private var pebbles: [Pebble] = []
-	let queue: DispatchQueue = DispatchQueue(label: "gizzard")
+	let queue: DispatchQueue = DispatchQueue(label: "pond")
 	private var tasks: [()->()] = []
 	private var completed: Bool = false
 
@@ -21,7 +21,7 @@ public class Gizzard {
 	private func checkIfComplete() {
 		guard complete else {return}
 
-		print("\n == [ Gizzard Complete ]\n")
+		print("\n == [ Pond Complete ]\n")
 		print("\t Successful Pebbles ===========")
 		for pebble in pebbles.filter({$0.state == .success}) {
 			print("\t\t - \(pebble.name)")
@@ -65,7 +65,7 @@ public class Gizzard {
 
 	public func start() {
 		queue.async {
-			print(" == [ Gizzard Starting ]")
+			print(" == [ Pond Starting ]")
 			self.iterate()
 		}
 	}

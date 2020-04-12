@@ -27,7 +27,7 @@ public class Pebble {
 		self.payload = payload
 	}
 	
-	func attemptToStart(_ gizzard: Gizzard) {
+	func attemptToStart(_ gizzard: Pond) {
 		guard state == .pending else {return}
 		guard ready() else {return}
 		
