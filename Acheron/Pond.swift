@@ -22,12 +22,12 @@ public class Pond {
 		guard complete else {return}
 
 		print("\n == [ Pond Complete ]\n")
-		print("\t Successful Pebbles ===========")
-		for pebble in pebbles.filter({$0.state == .success}) {
+		print("\t Succeeded Pebbles ===========")
+		for pebble in pebbles.filter({$0.state == .succeeded}) {
 			print("\t\t - \(pebble.name)")
 		}
-		print("\n\t Exceptional Pebbles ===========")
-		for pebble in pebbles.filter({$0.state == .exception}) {
+		print("\n\t Failed Pebbles ===========")
+		for pebble in pebbles.filter({$0.state == .failed}) {
 			print("\t\t - \(pebble.name)")
 		}
 		print("\n\t Skipped Pebbles ===========")

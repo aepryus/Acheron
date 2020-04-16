@@ -10,7 +10,7 @@ import Foundation
 
 public class Pebble {
 	enum State {
-		case pending, running, success, exception
+		case pending, running, succeeded, failed
 	}
 
 	let name: String
@@ -18,9 +18,9 @@ public class Pebble {
 	public var ready: (()->(Bool)) = {false}
 	private(set) var state: Pebble.State = .pending
 	
-	public var succeeded: Bool {return state == .success}
-	public var excepted: Bool {return state == .exception}
-	public var completed: Bool {return state == .success || state == .exception}
+	public var succeeded: Bool {return state == .succeeded}
+	public var failed: Bool {return state == .failed}
+	public var completed: Bool {return state == .succeeded || state == .failed}
 	
 	init(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
 		self.name = name
@@ -36,7 +36,7 @@ public class Pebble {
 			print("\n == [ \(self.name) ]")
 			self.payload { (success: Bool) in
 				gizzard.queue.async {
-					self.state = success ? .success : .exception
+					self.state = success ? .succeeded : .failed
 					gizzard.iterate()
 				}
 			}
