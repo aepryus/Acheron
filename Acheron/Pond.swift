@@ -26,11 +26,11 @@ public class Pond {
 		for pebble in pebbles.filter({$0.state == .succeeded}) {
 			print("\t\t - \(pebble.name)")
 		}
-		print("\n\t Failed Pebbles ===========")
+		print("\n\t Failed Pebbles ==============")
 		for pebble in pebbles.filter({$0.state == .failed}) {
 			print("\t\t - \(pebble.name)")
 		}
-		print("\n\t Skipped Pebbles ===========")
+		print("\n\t Skipped Pebbles =============")
 		for pebble in pebbles.filter({$0.state == .pending}) {
 			print("\t\t - \(pebble.name)")
 		}
