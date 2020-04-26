@@ -54,14 +54,27 @@ public enum Screen {
 		return UIScreen.main.bounds.size.height
 	}
 	public static var safeTop: CGFloat {
-		if #available(iOS 12.0, *) {
-			return UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
-		} else if #available(iOS 11.0, *) {
-			let safeTop = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
-			return safeTop != 0 ? safeTop : 20
+		let win: UIWindow?
+		
+		if #available(iOS 13.0, *) {
+			win = UIApplication.shared.windows.first { $0.isKeyWindow }
 		} else {
-			return 20
+			win =  UIApplication.shared.keyWindow
 		}
+		
+		guard let window = win else {fatalError()}
+
+		let safeTop: CGFloat
+		
+		if #available(iOS 12.0, *) {
+			safeTop = window.safeAreaInsets.top
+		} else if #available(iOS 11.0, *) {
+			safeTop = window.safeAreaInsets.top != 0 ? window.safeAreaInsets.top : 20
+		} else {
+			safeTop = 20
+		}
+
+		return safeTop
 	}
 	public static var navBottom: CGFloat {
 		return Screen.safeTop + 44
