@@ -14,6 +14,7 @@
 		D81497BB2238F3D200436E00 /* AETableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81497BA2238F3D200436E00 /* AETableView.swift */; };
 		D81774A32314C0A600A49725 /* AETimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81774A22314C0A600A49725 /* AETimer.swift */; };
 		D81849562248AD7000F05CC7 /* UIImageView+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */; };
+		D82B7D3224594B2200F9C4C4 /* UIButton+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82B7D3124594B2200F9C4C4 /* UIButton+Acheron.swift */; };
 		D830BB2623AF4C1100428A35 /* Comparable+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D830BB2523AF4C1100428A35 /* Comparable+Acheron.swift */; };
 		D83A0E13234493F00058075B /* Pond.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A0E12234493F00058075B /* Pond.swift */; };
 		D83A874423682F580083812E /* SafeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A874323682F580083812E /* SafeSet.swift */; };
@@ -60,6 +61,7 @@
 		D81497BA2238F3D200436E00 /* AETableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETableView.swift; sourceTree = "<group>"; };
 		D81774A22314C0A600A49725 /* AETimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AETimer.swift; sourceTree = "<group>"; };
 		D81849552248AD7000F05CC7 /* UIImageView+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Acheron.swift"; sourceTree = "<group>"; };
+		D82B7D3124594B2200F9C4C4 /* UIButton+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Acheron.swift"; sourceTree = "<group>"; };
 		D830BB2523AF4C1100428A35 /* Comparable+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comparable+Acheron.swift"; sourceTree = "<group>"; };
 		D83A0E12234493F00058075B /* Pond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pond.swift; sourceTree = "<group>"; };
 		D83A874323682F580083812E /* SafeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeSet.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 				D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */,
 				D8CBC9CC2265D7D600B7BBC5 /* NSString+Acheron.swift */,
 				D858A921226E7A2000AD831F /* String+Acheron.swift */,
+				D82B7D3124594B2200F9C4C4 /* UIButton+Acheron.swift */,
 				D8E604D322327E63000E8AEA /* UIColor+Acheron.swift */,
 				D8E604D522327E84000E8AEA /* UIControl+Acheron.swift */,
 				D85BD719225A947B00B8989E /* UIImage+Acheron.swift */,
@@ -338,6 +341,7 @@
 				D8D47C3422ADD7950071DC0C /* NodeView.swift in Sources */,
 				D858A924226E856200AD831F /* Dictionary+Acheron.swift in Sources */,
 				D847A0FA22857EB200A94232 /* WeakSet.swift in Sources */,
+				D82B7D3224594B2200F9C4C4 /* UIButton+Acheron.swift in Sources */,
 				D858A920226E78A700AD831F /* SQLitePersist.swift in Sources */,
 				D858A917226E785400AD831F /* Basket.swift in Sources */,
 				D81497BB2238F3D200436E00 /* AETableView.swift in Sources */,
