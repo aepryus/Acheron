@@ -11,6 +11,14 @@ import UIKit
 public enum Screen {
 	case dim320x480, dim320x568, dim375x667, dim414x736, dim375x812, dim414x896, dim1024x768, dim1112x834, dim1194x834, dim1366x1024, dimOther
 	
+	static var keyWindow: UIWindow? {
+		if #available(iOS 13.0, *) {
+			return UIApplication.shared.windows.first { $0.isKeyWindow }
+		} else {
+			return UIApplication.shared.keyWindow
+		}
+	}
+
 // Static ==========================================================================================
 	public static var this: Screen {
 		let size = UIScreen.main.bounds.size
@@ -54,15 +62,7 @@ public enum Screen {
 		return UIScreen.main.bounds.size.height
 	}
 	public static var safeTop: CGFloat {
-		let win: UIWindow?
-		
-		if #available(iOS 13.0, *) {
-			win = UIApplication.shared.windows.first { $0.isKeyWindow }
-		} else {
-			win =  UIApplication.shared.keyWindow
-		}
-		
-		guard let window = win else {fatalError()}
+		guard let window = Screen.keyWindow else { fatalError() }
 
 		let safeTop: CGFloat
 		
@@ -80,17 +80,16 @@ public enum Screen {
 		return Screen.safeTop + 44
 	}
 	public static var safeBottom: CGFloat {
-		guard #available(iOS 11.0, *) else {return 0}
-		guard UIApplication.shared.windows.count > 0 else {return 0}
-		return UIApplication.shared.windows[0].safeAreaInsets.bottom
+		guard #available(iOS 11.0, *), let window = Screen.keyWindow else {return 0}
+		return window.safeAreaInsets.bottom
 	}
 	public static var safeLeft: CGFloat {
-		guard #available(iOS 11.0, *) else {return 0}
-		return UIApplication.shared.windows[0].safeAreaInsets.left
+		guard #available(iOS 11.0, *), let window = Screen.keyWindow else {return 0}
+		return window.safeAreaInsets.left
 	}
 	public static var safeRight: CGFloat {
-		guard #available(iOS 11.0, *) else {return 0}
-		return UIApplication.shared.windows[0].safeAreaInsets.right
+		guard #available(iOS 11.0, *), let window = Screen.keyWindow else {return 0}
+		return window.safeAreaInsets.right
 	}
 	public static var s: CGFloat {
 		if Screen.iPhone {
@@ -199,7 +198,7 @@ public extension UIView {
 	}
 	
 	func pointOnScreen(_ point: CGPoint) -> CGPoint {
-		return convert(point, to: UIApplication.shared.windows[0])
+		return convert(point, to: Screen.keyWindow)
 	}
 	func rectOnScreen(_ rect: CGRect) -> CGRect {
 		return CGRect(origin: pointOnScreen(rect.origin), size: rect.size)
