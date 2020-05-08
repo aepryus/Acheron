@@ -58,6 +58,13 @@ public extension String {
 			return [:]
 		}
 	}
+	func xmlToAttributes() -> [String:Any] {
+		let parser: XMLParser = XMLParser(data: data(using: .utf8)!)
+		let delegate: XMLtoAttributes = XMLtoAttributes()
+		parser.delegate = delegate
+		parser.parse()
+		return delegate.result
+	}
 	func toArray() -> [[String:Any]] {
 		guard self != "" else {return []}
 		do {
