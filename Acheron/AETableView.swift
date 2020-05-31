@@ -9,6 +9,9 @@
 import UIKit
 
 open class AETableView: UITableView {
+	public var minimumContentHeight: CGFloat? = nil
+	private var requestedSize: CGSize = CGSize.zero
+	
 	public init() {
 		super.init(frame: CGRect.zero, style: .plain)
 		
@@ -24,5 +27,16 @@ open class AETableView: UITableView {
 			guard let refreshControl = refreshControl else {return}
 			refreshControl.layer.zPosition = -1
 		}
+	}
+	override public var contentSize: CGSize {
+		set {
+			requestedSize = newValue
+			if let minimumContentHeight = minimumContentHeight {
+				super.contentSize = CGSize(width: newValue.width, height: max(newValue.height, minimumContentHeight))
+			} else {
+				super.contentSize = newValue
+			}
+		}
+		get { return requestedSize }
 	}
 }
