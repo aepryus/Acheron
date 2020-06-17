@@ -25,7 +25,7 @@ open class ExpandableCell: UITableViewCell {
 	public required init?(coder aDecoder: NSCoder) {fatalError()}
 	
 	var indexPath: IndexPath? {
-		return expandableTableView.indexPathForRow(at: self.center)
+		return expandableTableView.indexPathForRow(at: CGPoint(x: self.frame.origin.x, y: self.frame.origin.y))
 	}
 	public var expanded: Bool {
 		return expandableTableView.expandedPath == indexPath
