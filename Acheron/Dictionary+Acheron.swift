@@ -19,9 +19,3 @@ extension Dictionary where Key == String {
 		}
 	}
 }
-
-class D {
-	static func toJSON(_ attributes: [String:Any]) -> String {
-		return attributes.toJSON()
-	}
-}
