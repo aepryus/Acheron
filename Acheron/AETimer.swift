@@ -40,8 +40,11 @@ public class AETimer {
 	public func stop() {
 		guard running else {return}
 		running = false
-		timer.suspend()
 		semaphore.wait()
+		timer.suspend()
 		semaphore.signal()
+	}
+	public func reschedule() {
+		timer.schedule(deadline: .now()+interval/2, repeating: interval)
 	}
 }
