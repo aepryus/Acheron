@@ -47,7 +47,7 @@ Classes and delegates for creating expandable table views.
 
 * Dependencies: AepLayout
 * Classes: ExpandableCell, ExpandableTableView
-* Lines: 331
+* Lines: 239
 
 ## Node View
 
