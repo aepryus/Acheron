@@ -23,20 +23,22 @@ public enum Screen {
 	public static var this: Screen {
 		let size = UIScreen.main.bounds.size
 		
-		if size.width == 320 && size.height == 480 {return .dim320x480}			// 0.67
-		
-		if size.width == 320 && size.height == 568 {return .dim320x568}			// 0.56
-		if size.width == 375 && size.height == 667 {return .dim375x667}
-		if size.width == 414 && size.height == 736 {return .dim414x736}
-		
-		if size.width == 375 && size.height == 812 {return .dim375x812}			// 0.46
-		if size.width == 414 && size.height == 896 {return .dim414x896}
-		
-		if size.width == 1024 && size.height == 768 {return .dim1024x768}		// 1.33
-		if size.width == 1112 && size.height == 834 {return .dim1112x834}
-		if size.width == 1366 && size.height == 1024 {return .dim1366x1024}
-		
-		if size.width == 1194 && size.height == 834 {return .dim1194x834}		// 1.43
+		for (w, h) in [(size.width, size.height), (size.height, size.width)] {
+			if w == 320 && h == 480 {return .dim320x480}		// 0.67
+			
+			if w == 320 && h == 568 {return .dim320x568}		// 0.56
+			if w == 375 && h == 667 {return .dim375x667}
+			if w == 414 && h == 736 {return .dim414x736}
+			
+			if w == 375 && h == 812 {return .dim375x812}		// 0.46
+			if w == 414 && h == 896 {return .dim414x896}
+			
+			if w == 1024 && h == 768 {return .dim1024x768}		// 1.33
+			if w == 1112 && h == 834 {return .dim1112x834}
+			if w == 1366 && h == 1024 {return .dim1366x1024}
+			
+			if w == 1194 && h == 834 {return .dim1194x834}		// 1.43
+		}
 		
 		return .dimOther
 	}
