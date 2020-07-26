@@ -42,7 +42,10 @@ public extension String {
 		guard let first = first else { return "" }
 		return String(first).uppercased() + dropFirst()
 	}
-	
+	var localized: String {
+		return NSLocalizedString(self, comment: "")
+	}
+
 	func toInt8() -> UnsafeMutablePointer<Int8> {
 		return UnsafeMutablePointer<Int8>(mutating: (self as NSString).utf8String!)
 	}
