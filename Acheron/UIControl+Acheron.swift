@@ -10,14 +10,8 @@ import UIKit
 
 fileprivate class ClosureSleeve {
 	let closure:()->()
-	
-	init(_ closure: @escaping()->()) {
-		self.closure = closure
-	}
-	
-	@objc func invoke() {
-		closure()
-	}
+	init(_ closure: @escaping()->()) { self.closure = closure }
+	@objc func invoke() { closure() }
 }
 
 extension UIControl {
