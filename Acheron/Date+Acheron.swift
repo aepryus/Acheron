@@ -10,7 +10,7 @@ import Foundation
 
 public extension Date {
 	
-	static var formatters: [String:DateFormatter] = [:]
+	private static var formatters: [String:DateFormatter] = [:]
 	func format(_ template: String) -> String {
 		var formatter = Date.formatters[template]
 		if formatter == nil {

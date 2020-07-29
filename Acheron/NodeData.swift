@@ -9,13 +9,13 @@
 import Foundation
 
 public protocol NodeData {
-	var availableNames: [String] {get}
+	var availableNames: [String] { get }
 	func value(for name: String) -> Any?
 }
 
 class EmptyNodeData: NodeData {
-	var availableNames: [String] {return []}
-	func value(for name: String) -> Any? {return nil}
+	var availableNames: [String] { return [] }
+	func value(for name: String) -> Any? { return nil }
 }
 class GroupNodeData: NodeData {
 	var value: String
@@ -24,7 +24,7 @@ class GroupNodeData: NodeData {
 		self.value = value
 	}
 	
-	var availableNames: [String] {return ["name"]}
+	var availableNames: [String] { return ["name"] }
 	func value(for name: String) -> Any? {
 		return value
 	}

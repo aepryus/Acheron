@@ -55,9 +55,9 @@ open class Domain: NSObject {
 			
 			_status = newValue
 			
-			if _status == .clean && isStatic == false && subscribed == false {fatalError()}
+			if _status == .clean && isStatic == false && subscribed == false { fatalError() }
 		}
-		get {return _status}
+		get { return _status }
 	}
 	
 	var subscribed: Bool = false
@@ -81,7 +81,6 @@ open class Domain: NSObject {
 		self.type = attributes["type"] as? String
 		self.parent = parent
 		super.init()
-//		load(attributes: attributes)
 	}
 	
 	deinit {
@@ -109,28 +108,20 @@ open class Domain: NSObject {
 		domain.handleTriggers(domain, action: .removed)
 	}
 	
-	func allDomainChildren() -> [Domain] {
+	var allDomainChildren: [Domain] {
 		var result: [Domain] = []
 		
-		for keyPath in children {
-			if let domains = self.value(forKeyPath: keyPath) as? [Domain] {
-				result += domains
-			}
+		children.forEach {
+			guard let domains = self.value(forKeyPath: $0) as? [Domain] else { return }
+			result += domains
 		}
 		
 		return result
 	}
 	func deepSearchChildren(_ search: (Domain)->(Bool)) -> Set<Domain> {
 		var result: Set<Domain> = []
-		
-		if search(self) {
-			result.insert(self)
-		}
-		
-		for domain in allDomainChildren() {
-			result.formUnion(domain.deepSearchChildren(search))
-		}
-		
+		if search(self) { result.insert(self) }
+		allDomainChildren.forEach { result.formUnion($0.deepSearchChildren(search)) }
 		return result
 	}
 	private func classForKeyPath(_ keyPath: String) -> AnyClass? {
@@ -173,25 +164,19 @@ open class Domain: NSObject {
 	}
 
 	private func subscribe() {
-		if isStatic {return}
-		for keyPath in properties {
-			addObserver(self, forKeyPath: keyPath, options: [.new,.old], context: nil)
-		}
+		if isStatic { return }
+		properties.forEach { addObserver(self, forKeyPath: $0, options: [.new,.old], context: nil) }
 		subscribed = true
 	}
 	private func unsubscribe() {
-		if isStatic {return}
-		for keyPath in properties {
-			removeObserver(self, forKeyPath: keyPath)
-		}
+		if isStatic { return }
+		properties.forEach { removeObserver(self, forKeyPath: $0) }
 		subscribed = false
 	}
 	
 	private func handleTriggers(_ domain: Domain, action: DomainAction) {
 		guard let basket = domain.anchor?.basket else {return}
-		for block in basket.blocksFor(class: Swift.type(of: domain), action: action) {
-			block(domain)
-		}
+		basket.blocksFor(class: Swift.type(of: domain), action: action).forEach { $0(domain) }
 	}
 	
 // Actions =========================================================================================
@@ -213,13 +198,11 @@ open class Domain: NSObject {
 		modified = Date.now
 		onDelete()
 		handleTriggers(self, action: .delete)
-		for domain in allDomainChildren() {
-			domain.delete()
-		}
+		allDomainChildren.forEach { $0.delete() }
 	}
 	
 	func dirty() {
-		guard status != .deleted else {return}
+		guard status != .deleted else { return }
 		status = .dirty
 	}
 	func dirtied() {
@@ -236,9 +219,7 @@ open class Domain: NSObject {
 		status = .clean
 		onSave()
 		handleTriggers(self, action: .save)
-		for domain in allDomainChildren() {
-			domain.save()
-		}
+		allDomainChildren.forEach { $0.save() }
 	}
 	
 // Events ==========================================================================================
@@ -265,7 +246,7 @@ open class Domain: NSObject {
 	}
 	
 	public func unload() -> [String:Any] {
-		var attributes = [String:Any]()
+		var attributes: [String:Any] = [:]
 		
 		for keyPath in properties {
 			let value = self.value(forKeyPath: keyPath) as Any?
@@ -290,11 +271,11 @@ open class Domain: NSObject {
 			}
 			var array: [Any] = []
 			if let domains = domains as? [Domain] {
-				domains.forEach {array.append($0.unload())}
+				domains.forEach { array.append($0.unload()) }
 			} else if let packables = domains as? [Packable] {
-				packables.forEach {array.append($0.pack())}
+				packables.forEach { array.append($0.pack()) }
 			} else if let strings = domains as? [String] {
-				strings.forEach {array.append($0)}
+				strings.forEach { array.append($0) }
 			}
 			attributes[keyPath] = array as NSArray;
 		}
@@ -304,12 +285,8 @@ open class Domain: NSObject {
 	
 	private func indexOfChildren(_ keyPath: String) -> [String:Domain] {
 		var index: [String:Domain] = [:]
-		
 		let domains = value(forKeyPath: keyPath) as! [Domain]
-		for domain in domains {
-			index[domain.iden] = domain
-		}
-		
+		domains.forEach { index[$0.iden] = $0 }
 		return index
 	}
 	private func isOptional(_ instance: Any) -> Bool {
@@ -401,9 +378,7 @@ open class Domain: NSObject {
 	}
 	public func dirtyUsingAttributes(_ attributes: [String:Any]) {
 		dirty()
-		for child in deepSearchChildren({ (domain) -> (Bool) in return true }) {
-			child.dirty()
-		}
+		deepSearchChildren({ (domain) -> (Bool) in return true }).forEach { $0.dirty() }
 		load(attributes: attributes)
 	}
 	public func dirtyUsingDomain(_ domain: Domain) {
@@ -428,13 +403,13 @@ open class Domain: NSObject {
 		return false
 	}
 	public var anchor: Anchor? {
-		get {return parent?.anchor}
+		get { return parent?.anchor }
 	}
 	
 // NSObject ========================================================================================
 	override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 		let oldValue = change?[.oldKey] as? NSObject
 		let newValue = change?[.newKey] as? NSObject
-		if newValue != oldValue {edit()}
+		if newValue != oldValue { edit() }
 	}
 }

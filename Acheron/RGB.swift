@@ -23,7 +23,7 @@ public struct RGB {
 		self.uiColor = uiColor
 	}
 	public init(r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
-		let uiColor = UIColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
+		let uiColor = UIColor(red: r, green: g, blue: b, alpha: a)
 		self.init(r: r, g: g, b: b, a: a, uiColor: uiColor)
 	}
 	public init(r: CGFloat, g: CGFloat, b: CGFloat) {
@@ -34,11 +34,11 @@ public struct RGB {
 	}
 	public init(uiColor: UIColor) {
 		var color = uiColor
-		if color == UIColor.white			{color = UIColor(red: 6/6, green: 6/6, blue: 6/6, alpha: 1)}
-		else if color == UIColor.lightGray	{color = UIColor(red: 4/6, green: 4/6, blue: 4/6, alpha: 1)}
-		else if color == UIColor.gray		{color = UIColor(red: 3/6, green: 3/6, blue: 3/6, alpha: 1)}
-		else if color == UIColor.darkGray	{color = UIColor(red: 2/6, green: 2/6, blue: 2/6, alpha: 1)}
-		else if color == UIColor.black		{color = UIColor(red: 0/6, green: 0/6, blue: 0/6, alpha: 1)}
+		if color == UIColor.white			{ color = UIColor(red: 6/6, green: 6/6, blue: 6/6, alpha: 1) }
+		else if color == UIColor.lightGray	{ color = UIColor(red: 4/6, green: 4/6, blue: 4/6, alpha: 1) }
+		else if color == UIColor.gray		{ color = UIColor(red: 3/6, green: 3/6, blue: 3/6, alpha: 1) }
+		else if color == UIColor.darkGray	{ color = UIColor(red: 2/6, green: 2/6, blue: 2/6, alpha: 1) }
+		else if color == UIColor.black		{ color = UIColor(red: 0/6, green: 0/6, blue: 0/6, alpha: 1) }
 		
 		let c = color.cgColor.components!
 		self.init(r: c[0], g: c[1], b: c[2], a: c[3], uiColor: color)

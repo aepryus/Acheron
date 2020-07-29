@@ -16,10 +16,10 @@ public class Pond {
 
 	public init() {}
 
-	public var complete: Bool {pebbles.first(where: {$0.state == .running}) == nil}
-	public var started: Bool {pebbles.first(where: {$0.state != .pending}) != nil}
+	public var complete: Bool { pebbles.first(where: {$0.state == .running}) == nil }
+	public var started: Bool { pebbles.first(where: {$0.state != .pending}) != nil }
 	private func checkIfComplete() {
-		guard complete else {return}
+		guard complete else { return }
 
 		print("\n == [ Pond Complete ]\n")
 		print("\t Succeeded Pebbles ===========")
@@ -45,7 +45,7 @@ public class Pond {
 	}
 	
 	func iterate() {
-		pebbles.forEach {$0.attemptToStart(self)}
+		pebbles.forEach { $0.attemptToStart(self) }
 		checkIfComplete()
 	}
 	

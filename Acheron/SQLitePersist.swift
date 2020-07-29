@@ -64,7 +64,7 @@ public class SQLitePersist: Persist {
 			print("\(error)")
 		}
 		
-		var result = [[String:Any]]()
+		var result: [[String:Any]] = []
 		
 		var active = true
 		var n = 0
@@ -72,7 +72,7 @@ public class SQLitePersist: Persist {
 			let sqlret = sqlite3_step(s)
 			
 			if sqlret == SQLITE_ROW {
-				var row = [String:Any]()
+				var row: [String:Any] = [:]
 				var i: Int32 = 0
 				while i < sqlite3_column_count(s) {
 					let key = String(validatingUTF8:sqlite3_column_name(s,i))!
@@ -116,7 +116,7 @@ public class SQLitePersist: Persist {
 		return result;
 	}
 	private func query(_ query: String) -> [[String:Any]] {
-		var result = [[String:Any]]()
+		var result: [[String:Any]] = []
 		queue.sync {
 			result = unprotectedQuery(query)
 		}
@@ -158,7 +158,7 @@ public class SQLitePersist: Persist {
 	
 // Persist =========================================================================================
 	override public func selectAll() -> [[String:Any]] {
-		var result = [[String:Any]]()
+		var result: [[String:Any]] = []
 		let rows = query("SELECT * FROM Document")
 		for row in rows {
 			let attributes = (row["JSON"] as! String).toAttributes()
@@ -167,7 +167,7 @@ public class SQLitePersist: Persist {
 		return result
 	}
 	override public func selectAll(type: String) -> [[String:Any]] {
-		var result = [[String:Any]]()
+		var result: [[String:Any]] = []
 		let rows = query("SELECT * FROM Document WHERE Type='\(type)'")
 		for row in rows {
 			let attributes = (row["JSON"] as! String).toAttributes()
@@ -176,7 +176,7 @@ public class SQLitePersist: Persist {
 		return result;
 	}
 	override public func select(where field: String, is value: String?, type: String) -> [[String:Any]] {
-		var result = [[String:Any]]()
+		var result: [[String:Any]] = []
 		let rows = query("SELECT * FROM Document WHERE Type='\(type)'")
 		for row in rows {
 			let attributes = (row["JSON"] as! String).toAttributes()
@@ -206,7 +206,7 @@ public class SQLitePersist: Persist {
 	override public func selectForked() -> [[String:Any]] {
 		let fork: Int = Int(get(key: "fork") ?? "0")!
 		
-		var result = [[String:Any]]()
+		var result: [[String:Any]] = []
 		let rows = query("SELECT * FROM Document WHERE Fork=\(fork+1)")
 		for row in rows {
 			let attributes = (row["JSON"] as! String).toAttributes()
@@ -217,7 +217,7 @@ public class SQLitePersist: Persist {
 	override public func selectForkedMemories() -> [[String:Any]] {
 		let fork: Int = Int(get(key: "fork") ?? "0")!
 		
-		var result = [[String:Any]]()
+		var result: [[String:Any]] = []
 		let rows = query("SELECT * FROM Memory WHERE Server=1 AND Fork=\(fork+1)")
 		for row in rows {
 			var attributes = [String:Any]()

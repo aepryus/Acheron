@@ -26,7 +26,7 @@ public extension UIImageView {
 			self.image = placeholder
 
 		}, finishedLoading: { (image: UIImage) in
-			guard UIImageView.urlLookup[self.identifier] == url else {return}
+			guard UIImageView.urlLookup[self.identifier] == url else { return }
 			self.image = image
 			complete()
 		})

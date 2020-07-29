@@ -14,11 +14,11 @@ class SafeMap<T> {
 	
 	subscript(key: String) -> T? {
 		set {
-			queue.sync {map[key] = newValue}
+			queue.sync { map[key] = newValue }
 		}
 		get {
 			var result: T? = nil
-			queue.sync {result = map[key]}
+			queue.sync { result = map[key] }
 			return result
 		}
 	}
@@ -26,10 +26,10 @@ class SafeMap<T> {
 	@discardableResult
 	func removeValue(forKey key: String) -> T? {
 		var result: T? = nil
-		queue.sync {result = map.removeValue(forKey: key)}
+		queue.sync { result = map.removeValue(forKey: key) }
 		return result
 	}
 	func removeAll() {
-		queue.sync {map.removeAll()}
+		queue.sync { map.removeAll() }
 	}
 }

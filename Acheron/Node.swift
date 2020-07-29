@@ -69,7 +69,6 @@ public class Node {
 			groups[group]!.append($0)
 		}
 		
-		
 		let node: Node = Node(data: EmptyNodeData())
 		
 		for name in groups.keys {

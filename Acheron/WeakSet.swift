@@ -10,14 +10,11 @@ import Foundation
 
 public class WeakSet<T: AnyObject>: Sequence, ExpressibleByArrayLiteral, CustomStringConvertible, CustomDebugStringConvertible {
 	
-	private var objects = NSHashTable<T>.weakObjects()
+	private var objects: NSHashTable<T> = NSHashTable<T>.weakObjects()
 	
 	public init(_ objects: [T]) {
-		for object in objects {
-			insert(object)
-		}
+		objects.forEach { insert($0) }
 	}
-	
 	public convenience required init(arrayLiteral elements: T...) {
 		self.init(elements)
 	}

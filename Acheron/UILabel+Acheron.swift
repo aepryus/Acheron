@@ -15,6 +15,6 @@ public extension UILabel {
 			textColor = newValue.color
 			textAlignment = newValue.alignment
 		}
-		get {fatalError()}
+		get { fatalError() }
 	}
 }

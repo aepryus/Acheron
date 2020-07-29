@@ -15,7 +15,7 @@ extension UIImage {
 	public static func loadImage(url: String, alreadyLoaded: @escaping (UIImage)->(), willLoad: @escaping ()->(), finishedLoading: @escaping (UIImage)->()) {
 		let image: UIImage? = UIImage.images[url]
 		
-		guard image == nil else {alreadyLoaded(image!);return}
+		guard image == nil else { alreadyLoaded(image!);return }
 		
 		willLoad()
 		
@@ -26,18 +26,18 @@ extension UIImage {
 		}
 		UIImage.listenerArrays[url]!.append(finishedLoading)
 		
-		guard needsRequest else {return}
+		guard needsRequest else { return }
 		
-		guard let URL = URL(string: url) else {return}
+		guard let URL = URL(string: url) else { return }
 		let request = URLRequest(url: URL)
 
 		URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-			guard let data = data else {return}
-			guard let image: UIImage = UIImage(data: data) else {return}
+			guard let data = data else { return }
+			guard let image: UIImage = UIImage(data: data) else { return }
 			DispatchQueue.main.async {
 				UIImage.images[url] = image
 				let listenerArray = UIImage.listenerArrays.removeValue(forKey: url)!
-				listenerArray.forEach {$0(image)}
+				listenerArray.forEach { $0(image) }
 			}
 		}.resume()
 	}

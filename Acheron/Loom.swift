@@ -24,7 +24,7 @@ public class Loom {
 		for namespace in Loom.namespaces {
 			let fullname = namespace + "." + name[0...0].uppercased()+name[1...]
 			cls =  NSClassFromString(fullname)
-			if cls != nil {break}
+			if cls != nil { break }
 		}
 		return cls
 	}
@@ -36,7 +36,7 @@ public class Loom {
 		
 		for i in 0..<Int(n) {
 			let name = String(validatingUTF8: property_getName(properties![i]))
-			if keyPath != name {continue}
+			if keyPath != name { continue }
 			
 			let attributes: UnsafePointer<Int8> = property_getAttributes(properties![i])!
 			if attributes[1] == Int8(UInt8(ascii:"@")) {

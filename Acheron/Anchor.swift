@@ -30,7 +30,7 @@ open class Anchor: Domain {
 	}
 	
 	var only: String? {
-		guard let basket = basket, let key = basket.only(type: type) else {return nil}
+		guard let basket = basket, let key = basket.only(type: type) else { return nil }
 		return value(for: key) as? String
 	}
 	
@@ -39,29 +39,20 @@ open class Anchor: Domain {
 // Actions =========================================================================================
 	override func create() {
 		super.create()
-		
-		guard let basket = basket else {return}
-		fork = basket.fork + 1
+		if let basket = basket { fork = basket.fork + 1 }
 	}
 	override func edit() {
 		super.edit()
-		
-		guard let basket = basket else {return}
-		fork = basket.fork + 1
-		basket.dirtyAnchor(self)
+		if let basket = basket { fork = basket.fork + 1 }
+		basket?.dirtyAnchor(self)
 	}
 	override public func delete()  {
 		super.delete()
-		
-		guard let basket = basket else {return}
-		basket.deleteAnchor(self)
+		basket?.deleteAnchor(self)
 	}
-	
 	override func dirty() {
 		super.dirty()
-		
-		guard let basket = basket else {return}
-		basket.dirtyAnchor(self)
+		basket?.dirtyAnchor(self)
 	}
 	
 // Anchor ==========================================================================================
@@ -71,7 +62,7 @@ open class Anchor: Domain {
 	
 // Domain ==========================================================================================
 	override public var anchor: Anchor {
-		get {return self}
+		get { return self }
 	}
 	override open var properties: [String] {
 		return super.properties + ["fork", "vers"]

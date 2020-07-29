@@ -15,7 +15,6 @@ public class Basket: NSObject {
 	
 	public var fork: Int
 
-	var busy: Bool
 	var cache: SafeMap = SafeMap<Anchor>()
 	var onlyToIden: SafeMap = SafeMap<String>()
 	var dirty = SafeSet<Anchor>()
@@ -30,7 +29,6 @@ public class Basket: NSObject {
 	public init(_ persist: Persist) {
 		self.persist = persist
 		queue = DispatchQueue(label: self.persist.name)
-		busy = false
 		fork = Int(persist.get(key: "fork") ?? "0")!
 	}
 	
@@ -73,7 +71,7 @@ public class Basket: NSObject {
 	}
 	
 	private func convert(array: [[String:Any]]) -> [Anchor] {
-		var anchors = [Anchor]()
+		var anchors: [Anchor] = []
 		for attributes in array {
 			var anchor = cache[attributes["iden"] as! String]
 			if anchor == nil {
@@ -84,7 +82,7 @@ public class Basket: NSObject {
 		return anchors;
 	}
 	private func convert(array: [[String:Any]], type:Anchor.Type) -> [Anchor] {
-		var anchors = [Anchor]()
+		var anchors: [Anchor] = []
 		for attributes in array {
 			var anchor = cache[attributes["iden"] as! String]
 			if anchor == nil {
@@ -97,37 +95,26 @@ public class Basket: NSObject {
 	
 	public func selectBy(iden: String) -> Anchor? {
 		var result: Anchor? = nil
-//		queue.sync {
-			if let anchor = cache[iden] {
-				result = anchor
-			} else if let attributes = persist.attributes(iden: iden) {
-				result = load(attributes)
-			}
-//		}
+		if let anchor = cache[iden] {
+			result = anchor
+		} else if let attributes = persist.attributes(iden: iden) {
+			result = load(attributes)
+		}
 		return result
 	}
 	public func selectBy(cls: Anchor.Type, only: String) -> Anchor? {
 		var result: Anchor? = nil
-//		queue.sync {
-			let type = String(describing: cls).lowercased()
-			if let iden = onlyToIden["\(type):\(only)"] {
-				if let anchor = cache[iden] {
-					result = anchor
-				}
-			} else if let attributes = persist.attributes(type: type, only: only) {
-				result = load(attributes)
-			}
-//		}
+		let type = String(describing: cls).lowercased()
+		if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] {
+			result = anchor
+		} else if let attributes = persist.attributes(type: type, only: only) {
+			result = load(attributes)
+		}
 		return result
 	}
 	public func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
-		guard let attributes = persist.selectOne(where: field, is: value, type: Loom.nameFromType(type))
-			else {return nil}
-		var anchor = cache[attributes["iden"] as! String]
-		if anchor == nil {
-			anchor = load(attributes, cls: type)
-		}
-		return anchor
+		guard let attributes = persist.selectOne(where: field, is: value, type: Loom.nameFromType(type)) else { return nil }
+		return cache[attributes["iden"] as! String] ?? load(attributes, cls: type)
 	}
 	public func select(where field: String, is value: String, type: Anchor.Type) -> [Domain] {
 		let array = persist.select(where: field, is: value, type: Loom.nameFromType(type))
@@ -146,10 +133,10 @@ public class Basket: NSObject {
 	}
 	
 	public func syncPacket() -> [String:Any] {
-		var attributes = [String:Any]()
+		var attributes: [String:Any] = [:]
 		
 		queue.sync {
-			var documents =  [[String:Any]]()
+			var documents: [[String:Any]] = []
 			for anchor in selectForked() {
 				if anchor.isUploaded {
 					documents.append(anchor.unload())
@@ -178,15 +165,15 @@ public class Basket: NSObject {
 	private func key(class cls: Domain.Type, action: DomainAction) -> String {
 		return "\(String(describing: cls))_\(action)"
 	}
-	public func addBlock(_ block: @escaping (Domain)->(), class cls: Domain.Type, event: DomainAction) {
-		addBlock(class: cls, action: event, block: block)
-	}
 	func addBlock(class cls: Domain.Type, action: DomainAction, block: @escaping (Domain)->()) {
 		let key = self.key(class: cls, action: action)
 		if blocks[key] == nil {
 			blocks[key] = []
 		}
 		blocks[key]!.append(block)
+	}
+	public func addBlock(_ block: @escaping (Domain)->(), class cls: Domain.Type, event: DomainAction) {
+		addBlock(class: cls, action: event, block: block)
 	}
 	func blocksFor(class cls: Domain.Type, action: DomainAction) -> [(Domain)->()] {
 		let key = self.key(class: cls, action: action)
@@ -195,7 +182,7 @@ public class Basket: NSObject {
 	
 	private static func loadDirty(into: inout Set<Domain>, domain: Domain) {
 		into.insert(domain)
-		for child in domain.allDomainChildren() {
+		for child in domain.allDomainChildren {
 			if child.status != .clean {
 				loadDirty(into:&into, domain:child)
 			}
@@ -224,9 +211,7 @@ public class Basket: NSObject {
 						}))
 					}
 					self.dirty.removeAll()
-					for domain in dirtyDomains {
-						domain.dirtied()
-					}
+					dirtyDomains.forEach { $0.dirtied() }
 				}
 				
 				deletedDomains.formUnion(self.dehydrate)
@@ -248,11 +233,11 @@ public class Basket: NSObject {
 			self.persist.transact({ () -> (Bool) in
 				autoreleasepool {
 					for anchor in deletedAnchors {
-						if let only = anchor.only {onlyToIden["\(anchor.type!):\(only)"] = nil}
+						if let only = anchor.only { onlyToIden["\(anchor.type!):\(only)"] = nil }
 						persist.delete(iden: anchor.iden)
 					}
 					for anchor in editedAnchors {
-						if let only = anchor.only {onlyToIden["\(anchor.type!):\(only)"] = anchor.iden}
+						if let only = anchor.only { onlyToIden["\(anchor.type!):\(only)"] = anchor.iden }
 						persist.store(iden: anchor.iden, attributes: anchor.unload())
 					}
 				}

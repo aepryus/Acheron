@@ -13,26 +13,24 @@ public class SafeSet<T: Hashable>: Sequence, ExpressibleByArrayLiteral {
 	private let queue: DispatchQueue = DispatchQueue(label: "SafeSet")
 
 	public init(_ objects: [T]) {
-		for object in objects {
-			insert(object)
-		}
+		objects.forEach { insert($0) }
 	}
 	public convenience required init(arrayLiteral elements: T...) {
 		self.init(elements)
 	}
 	
 	public var count: Int {
-		return queue.sync {set.count}
+		return queue.sync { set.count }
 	}
 	
 	public func makeIterator() -> Set<T>.Iterator {
-		return queue.sync {set.makeIterator()}
+		return queue.sync { set.makeIterator() }
 	}
 	@discardableResult
 	public func insert(_ object: T) -> (Bool, T) {
-		return queue.sync {set.insert(object)}
+		return queue.sync { set.insert(object) }
 	}
 	public func removeAll() {
-		queue.sync {set.removeAll()}
+		queue.sync { set.removeAll() }
 	}
 }
