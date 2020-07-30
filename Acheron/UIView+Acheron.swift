@@ -11,7 +11,7 @@ import UIKit
 public enum Screen {
 	case dim320x480, dim320x568, dim375x667, dim414x736, dim375x812, dim414x896, dim1024x768, dim1112x834, dim1194x834, dim1366x1024, dimOther
 	
-	static var keyWindow: UIWindow? {
+	public static var keyWindow: UIWindow? {
 		if #available(iOS 13.0, *) {
 			return UIApplication.shared.windows.first { $0.isKeyWindow }
 		} else {
