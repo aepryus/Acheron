@@ -67,8 +67,8 @@ open class AEViewController: UIViewController {
 		super.viewSafeAreaInsetsDidChange()
 		layout()
 	}
-	override open func viewWillLayoutSubviews() {
-		super.viewWillLayoutSubviews()
-		layout()
-	}
+//	override open func viewWillLayoutSubviews() {
+//		super.viewWillLayoutSubviews()
+//		layout()
+//	}
 }
