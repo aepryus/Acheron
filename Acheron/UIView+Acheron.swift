@@ -82,15 +82,15 @@ public enum Screen {
 		return Screen.safeTop + 44
 	}
 	public static var safeBottom: CGFloat {
-		guard #available(iOS 11.0, *), let window = Screen.keyWindow else {return 0}
+		guard #available(iOS 11.0, *), let window = Screen.keyWindow else { return 0 }
 		return window.safeAreaInsets.bottom
 	}
 	public static var safeLeft: CGFloat {
-		guard #available(iOS 11.0, *), let window = Screen.keyWindow else {return 0}
+		guard #available(iOS 11.0, *), let window = Screen.keyWindow else { return 0 }
 		return window.safeAreaInsets.left
 	}
 	public static var safeRight: CGFloat {
-		guard #available(iOS 11.0, *), let window = Screen.keyWindow else {return 0}
+		guard #available(iOS 11.0, *), let window = Screen.keyWindow else { return 0 }
 		return window.safeAreaInsets.right
 	}
 	public static var s: CGFloat {

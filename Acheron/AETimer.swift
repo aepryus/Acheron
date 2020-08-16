@@ -16,7 +16,7 @@ public class AETimer {
 		if !running { timer.resume() }
 	}
 	
-	var interval: Double = 1.0/60 {
+	public var interval: Double = 1.0/60 {
 		didSet { timer.schedule(deadline: .now(), repeating: interval) }
 	}
 	
