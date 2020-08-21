@@ -38,6 +38,7 @@
 		D8CBC9C92265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */; };
 		D8CBC9CB2265D70100B7BBC5 /* UILabel+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */; };
 		D8CBC9CD2265D7D600B7BBC5 /* NSString+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9CC2265D7D600B7BBC5 /* NSString+Acheron.swift */; };
+		D8CC366124EF3E500017808F /* AESync.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CC366024EF3E500017808F /* AESync.swift */; };
 		D8D47C3222ADD7860071DC0C /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D47C3122ADD7860071DC0C /* Node.swift */; };
 		D8D47C3422ADD7950071DC0C /* NodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D47C3322ADD7950071DC0C /* NodeView.swift */; };
 		D8D47C3622ADD83A0071DC0C /* NodeColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D47C3522ADD83A0071DC0C /* NodeColumn.swift */; };
@@ -86,6 +87,7 @@
 		D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Acheron.swift"; sourceTree = "<group>"; };
 		D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Acheron.swift"; sourceTree = "<group>"; };
 		D8CBC9CC2265D7D600B7BBC5 /* NSString+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSString+Acheron.swift"; sourceTree = "<group>"; };
+		D8CC366024EF3E500017808F /* AESync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESync.swift; sourceTree = "<group>"; };
 		D8D47C3122ADD7860071DC0C /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		D8D47C3322ADD7950071DC0C /* NodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeView.swift; sourceTree = "<group>"; };
 		D8D47C3522ADD83A0071DC0C /* NodeColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeColumn.swift; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 		D8E604E122327F91000E8AEA /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				D8CC366024EF3E500017808F /* AESync.swift */,
 				D81774A22314C0A600A49725 /* AETimer.swift */,
 				D8E604DC22327F22000E8AEA /* Pen.swift */,
 				D8E604DE22327F3E000E8AEA /* RGB.swift */,
@@ -347,6 +350,7 @@
 				D82B7D3224594B2200F9C4C4 /* UIButton+Acheron.swift in Sources */,
 				D858A920226E78A700AD831F /* SQLitePersist.swift in Sources */,
 				D858A917226E785400AD831F /* Basket.swift in Sources */,
+				D8CC366124EF3E500017808F /* AESync.swift in Sources */,
 				D81497BB2238F3D200436E00 /* AETableView.swift in Sources */,
 				D8E604D022327E2A000E8AEA /* CALayer+Acheron.swift in Sources */,
 				D8E604DB22327EEE000E8AEA /* UIViewController+Acheron.swift in Sources */,
