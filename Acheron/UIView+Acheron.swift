@@ -68,18 +68,7 @@ public enum Screen {
 	}
 	public static var safeTop: CGFloat {
 		guard let window = Screen.keyWindow else { fatalError() }
-
-		let safeTop: CGFloat
-		
-		if #available(iOS 12.0, *) {
-			safeTop = window.safeAreaInsets.top
-		} else if #available(iOS 11.0, *) {
-			safeTop = window.safeAreaInsets.top != 0 ? window.safeAreaInsets.top : 20
-		} else {
-			safeTop = 20
-		}
-
-		return safeTop
+		return window.safeAreaInsets.top
 	}
 	public static var navBottom: CGFloat {
 		return Screen.safeTop + 44
