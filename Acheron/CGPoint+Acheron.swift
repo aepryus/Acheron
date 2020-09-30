@@ -41,4 +41,7 @@ public extension CGPoint {
 	static func point(theta: CGFloat) -> CGPoint {
 		return CGPoint(x: cos(theta), y: sin(theta))
 	}
+	func ofLength(_ a: CGFloat) -> CGPoint {
+		return a*unit()
+	}
 }
