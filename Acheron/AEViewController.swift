@@ -24,13 +24,19 @@ open class AEViewController: UIViewController {
 	}
 
 	// 0.46
+	open func layout360x780() {
+		layout375x812()
+	}
 	open func layout375x812() {
 		layout375x667()
 	}
 	open func layout390x844() {
-		layout375x667()
+		layout375x812()
 	}
 	open func layout414x896() {
+		layout375x812()
+	}
+	open func layout428x926() {
 		layout375x812()
 	}
 	
@@ -57,9 +63,11 @@ open class AEViewController: UIViewController {
 			case .dim320x568:	layout320x568()
 			case .dim375x667:	layout375x667()
 			case .dim414x736:	layout414x736()
+			case .dim360x780:	layout360x780()
 			case .dim375x812:	layout375x812()
 			case .dim390x844:	layout390x844()
 			case .dim414x896:	layout414x896()
+			case .dim428x926:	layout428x926()
 			case .dim1024x768:	layout1024x768()
 			case .dim1080x810:	layout1080x810()
 			case .dim1112x834:	layout1112x834()

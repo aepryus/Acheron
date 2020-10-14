@@ -9,7 +9,7 @@
 import UIKit
 
 public enum Screen {
-	case dim320x480, dim320x568, dim375x667, dim414x736, dim375x812, dim390x844, dim414x896, dim1024x768, dim1080x810, dim1112x834, dim1194x834, dim1366x1024, dimOther
+	case dim320x480, dim320x568, dim375x667, dim414x736, dim360x780, dim375x812, dim390x844, dim414x896, dim428x926, dim1024x768, dim1080x810, dim1112x834, dim1194x834, dim1366x1024, dimOther
 	
 	public static var keyWindow: UIWindow? {
 		if #available(iOS 13.0, *) {
@@ -30,9 +30,11 @@ public enum Screen {
 			if w == 375 && h == 667 { return .dim375x667 }
 			if w == 414 && h == 736 { return .dim414x736 }
 			
-			if w == 375 && h == 812 { return .dim375x812 }		// 0.46
+			if w == 360 && h == 780 { return .dim360x780 }		// 0.46
+			if w == 375 && h == 812 { return .dim375x812 }
 			if w == 390 && h == 844 { return .dim390x844 }
 			if w == 414 && h == 896 { return .dim414x896 }
+			if w == 428 && h == 926 { return .dim428x926 }
 			
 			if w == 1024 && h == 768 { return .dim1024x768 }	// 1.33
 			if w == 1080 && h == 810 { return .dim1080x810 }
