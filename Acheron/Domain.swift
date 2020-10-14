@@ -17,8 +17,8 @@ public enum DomainAction: String {
 
 class NotFound {}
 
-public protocol Packable where Self:NSObject {
-	init(_: String)
+public protocol Packable /*where Self:NSObject*/ {
+	init?(_: String)
 	func pack() -> String
 }
 
@@ -332,7 +332,7 @@ open class Domain: NSObject {
 				}
 			}
 			
-			if value != nil {setValue(value, forKey: keyPath)}
+			if value != nil { setValue(value, forKey: keyPath) }
 			else {
 				if let currentValue = self.value(forKeyPath: keyPath) as Any? {
 					if isOptional(currentValue) {
@@ -364,7 +364,8 @@ open class Domain: NSObject {
 					}
 				} else if let cls = arrayClassForKeyPath(keyPath) as? Packable.Type {
 					for package in children as! [String] {
-						array.append(cls.init(package))
+						guard let row = cls.init(package) else { continue }
+						array.append(row)
 					}
 				} else {
 					for string in children as! [String] {
