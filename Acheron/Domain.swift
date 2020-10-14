@@ -17,7 +17,7 @@ public enum DomainAction: String {
 
 class NotFound {}
 
-public protocol Packable /*where Self:NSObject*/ {
+public protocol Packable where Self:NSObject {
 	init?(_: String)
 	func pack() -> String
 }
