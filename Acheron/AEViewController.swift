@@ -9,56 +9,48 @@
 import UIKit
 
 open class AEViewController: UIViewController {
+	open func layoutRatio067() { layoutRatio056() }
+	open func layoutRatio056() { layout375x667() }
+	open func layoutRatio046() { layoutRatio056() }
+	open func layoutRatio133() { layout1024x768() }
+	open func layoutRatio143() { layoutRatio133() }
+	
 	// 0.67
-	open func layout320x480() {
-		layout375x667()
-	}
+	open func layout320x480() { layoutRatio067() }
 
 	// 0.56
-	open func layout320x568() {
-		layout375x667()
-	}
+	open func layout320x568() { layoutRatio056() }
 	open func layout375x667() {}
-	open func layout414x736() {
-		layout375x667()
-	}
+	open func layout414x736() { layoutRatio056() }
 
 	// 0.46
-	open func layout360x780() {
-		layout375x812()
-	}
-	open func layout375x812() {
-		layout375x667()
-	}
-	open func layout390x844() {
-		layout375x812()
-	}
-	open func layout414x896() {
-		layout375x812()
-	}
-	open func layout428x926() {
-		layout375x812()
-	}
+	open func layout360x780() { layoutRatio046() }
+	open func layout375x812() { layoutRatio046() }
+	open func layout390x844() { layoutRatio046() }
+	open func layout414x896() { layoutRatio046() }
+	open func layout428x926() { layoutRatio046() }
 	
 	// 1.33
 	open func layout1024x768() {}
-	open func layout1080x810() {
-		layout1024x768()
-	}
-	open func layout1112x834() {
-		layout1024x768()
-	}
-	open func layout1366x1024() {
-		layout1024x768()
-	}
+	open func layout1080x810() { layoutRatio133() }
+	open func layout1112x834() { layoutRatio133() }
+	open func layout1366x1024() { layoutRatio133() }
 	
 	// 1.43
-	open func layout1194x834() {
-		layout1024x768()
+	open func layout1194x834() { layoutRatio143() }
+	
+	open func layoutRatio() {
+		switch Screen.ratio {
+			case .rat067:	layoutRatio067()
+			case .rat056:	layoutRatio056()
+			case .rat046:	layoutRatio046()
+			case .rat133:	layoutRatio133()
+			case .rat143:	layoutRatio143()
+		}
 	}
 
 	func layout() {
-		switch Screen.this {
+		switch Screen.dimensions {
 			case .dim320x480:	layout320x480()
 			case .dim320x568:	layout320x568()
 			case .dim375x667:	layout375x667()
@@ -73,7 +65,7 @@ open class AEViewController: UIViewController {
 			case .dim1112x834:	layout1112x834()
 			case .dim1366x1024:	layout1366x1024()
 			case .dim1194x834:	layout1194x834()
-			case .dimOther:		layout375x667()
+			case .dimOther:		layoutRatio()
 		}
 	}
 	

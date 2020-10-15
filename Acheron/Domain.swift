@@ -249,7 +249,12 @@ open class Domain: NSObject {
 		var attributes: [String:Any] = [:]
 		
 		for keyPath in properties {
-			let value = self.value(forKeyPath: keyPath) as Any?
+			let value: Any?
+			if responds(to: NSSelectorFromString(keyPath)) {
+				value = self.value(forKeyPath: keyPath)
+			} else {
+				value = self.value(forKeyPath: "\(keyPath)Proxy")
+			}
 			let unloader = self.unloader(keyPath:keyPath)
 			if let unloader = unloader {
 				attributes[keyPath] = unloader(value!)
@@ -332,7 +337,13 @@ open class Domain: NSObject {
 				}
 			}
 			
-			if value != nil { setValue(value, forKey: keyPath) }
+			if value != nil {
+				if responds(to: NSSelectorFromString(keyPath)) {
+					setValue(value, forKey: keyPath)
+				} else {
+					setValue(value, forKey: "\(keyPath)Proxy")
+				}
+			}
 			else {
 				if let currentValue = self.value(forKeyPath: keyPath) as Any? {
 					if isOptional(currentValue) {
