@@ -44,9 +44,9 @@ public class Screen {
 	let s: CGFloat
 	
 	init() {
-		if UIDevice.current.model == "iPhone" || UIDevice.current.model == "iPod touch" {
+		if UIDevice.current.userInterfaceIdiom == .phone {
 			model = .iPhone
-		} else if UIDevice.current.model == "iPad" {
+		} else if UIDevice.current.userInterfaceIdiom == .pad {
 			model = .iPad
 		} else {
 			model = .other
