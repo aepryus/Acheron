@@ -12,7 +12,7 @@ public class Screen {
 	static let current: Screen = Screen()
 	
 	public enum Model {
-		case iPhone, iPad, other
+		case iPhone, iPad, mac, other
 	}
 	public enum Dimensions {
 		case dim320x480,
@@ -44,58 +44,72 @@ public class Screen {
 	let s: CGFloat
 	
 	init() {
-		if UIDevice.current.userInterfaceIdiom == .phone {
-			model = .iPhone
-		} else if UIDevice.current.userInterfaceIdiom == .pad {
-			model = .iPad
-		} else {
-			model = .other
-		}
+		#if targetEnvironment(macCatalyst)
 		
-		let dw: CGFloat = UIScreen.main.bounds.size.width
-		let dh: CGFloat = UIScreen.main.bounds.size.height
-		
-		let w: CGFloat = model == .iPhone ? min(dw, dh) : max(dw, dh)
-		let h: CGFloat = model == .iPhone ? max(dw, dh) : min(dw, dh)
-		
-		if w == 320 && h == 480 { dimensions = .dim320x480; ratio = .rat067 }
-		
-		else if w == 320 && h == 568 { dimensions = .dim320x568; ratio = .rat056 }
-		else if w == 375 && h == 667 { dimensions = .dim375x667; ratio = .rat056 }
-		else if w == 414 && h == 736 { dimensions = .dim414x736; ratio = .rat056 }
-		
-		else if w == 360 && h == 780 { dimensions = .dim360x780; ratio = .rat046 }
-		else if w == 375 && h == 812 { dimensions = .dim375x812; ratio = .rat046 }
-		else if w == 390 && h == 844 { dimensions = .dim390x844; ratio = .rat046 }
-		else if w == 414 && h == 896 { dimensions = .dim414x896; ratio = .rat046 }
-		else if w == 428 && h == 926 { dimensions = .dim428x926; ratio = .rat046 }
-
-		else if w == 1024 && h == 768 { dimensions = .dim1024x768; ratio = .rat133 }
-		else if w == 1080 && h == 810 { dimensions = .dim1080x810; ratio = .rat133 }
-		else if w == 1112 && h == 834 { dimensions = .dim1112x834; ratio = .rat133 }
-		else if w == 1366 && h == 1024 { dimensions = .dim1366x1024; ratio = .rat133 }
-
-		else if w == 1194 && h == 834 { dimensions = .dim1194x834; ratio = .rat143 }
-		
-		else {
+			model = .mac
 			dimensions = .dimOther
-			let r: CGFloat = w/h
-			var minDelta: CGFloat = 9
-			var closest: Ratio = .rat067
-			Ratio.allCases.forEach {
-				let delta: CGFloat = abs(1 - r/$0.ratio)
-				if delta < minDelta {
-					minDelta = delta
-					closest = $0
-				}
+			ratio = .rat046
+			width = UIApplication.shared.windows[0].width
+			height = UIApplication.shared.windows[0].height
+			s = 1
+		
+		#else
+		
+			if UIDevice.current.userInterfaceIdiom == .phone {
+				model = .iPhone
+			} else if UIDevice.current.userInterfaceIdiom == .pad {
+				model = .iPad
+			} else {
+				model = .other
 			}
-			ratio = closest
-		}
 		
-		width = w
-		height = h
+			let dw: CGFloat = UIScreen.main.bounds.size.width
+			let dh: CGFloat = UIScreen.main.bounds.size.height
 		
-		s = model == .iPhone ? width / 375 : height / 768
+			let w: CGFloat = model == .iPhone ? min(dw, dh) : max(dw, dh)
+			let h: CGFloat = model == .iPhone ? max(dw, dh) : min(dw, dh)
+		
+			if w == 320 && h == 480 { dimensions = .dim320x480; ratio = .rat067 }
+		
+			else if w == 320 && h == 568 { dimensions = .dim320x568; ratio = .rat056 }
+			else if w == 375 && h == 667 { dimensions = .dim375x667; ratio = .rat056 }
+			else if w == 414 && h == 736 { dimensions = .dim414x736; ratio = .rat056 }
+		
+			else if w == 360 && h == 780 { dimensions = .dim360x780; ratio = .rat046 }
+			else if w == 375 && h == 812 { dimensions = .dim375x812; ratio = .rat046 }
+			else if w == 390 && h == 844 { dimensions = .dim390x844; ratio = .rat046 }
+			else if w == 414 && h == 896 { dimensions = .dim414x896; ratio = .rat046 }
+			else if w == 428 && h == 926 { dimensions = .dim428x926; ratio = .rat046 }
+
+			else if w == 1024 && h == 768 { dimensions = .dim1024x768; ratio = .rat133 }
+			else if w == 1080 && h == 810 { dimensions = .dim1080x810; ratio = .rat133 }
+			else if w == 1112 && h == 834 { dimensions = .dim1112x834; ratio = .rat133 }
+			else if w == 1366 && h == 1024 { dimensions = .dim1366x1024; ratio = .rat133 }
+
+			else if w == 1194 && h == 834 { dimensions = .dim1194x834; ratio = .rat143 }
+		
+			else {
+				dimensions = .dimOther
+				let r: CGFloat = w/h
+				var minDelta: CGFloat = 9
+				var closest: Ratio = .rat067
+				Ratio.allCases.forEach {
+					let delta: CGFloat = abs(1 - r/$0.ratio)
+					if delta < minDelta {
+						minDelta = delta
+						closest = $0
+					}
+				}
+				ratio = closest
+			}
+		
+			width = w
+			height = h
+		
+			s = model == .iPhone ? width / 375 : height / 768
+
+		#endif
+		
 	}
 	
 // Static ==========================================================================================
@@ -111,6 +125,9 @@ public class Screen {
 	}
 	public static var iPad: Bool {
 		return current.model == .iPad
+	}
+	public static var mac: Bool {
+		return current.model == .mac
 	}
 	
 	public static var safeTop: CGFloat {
