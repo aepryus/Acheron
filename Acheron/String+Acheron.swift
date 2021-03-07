@@ -33,10 +33,10 @@ public extension String {
 		let end = index(startIndex, offsetBy: r.upperBound-1)
 		return String(self[start...end])
 	}
-	
-	func loc(of string: String) -> Int? {
-		guard let range = range(of: string) else {return nil}
-		return distance(from: startIndex, to: range.lowerBound)
+	func loc(of string: String, after: Int = 0) -> Int? {
+		let sub = self[after...]
+		guard let range = sub.range(of: string) else { return nil }
+		return after + sub.distance(from: sub.startIndex, to: range.lowerBound)
 	}
 	var capitalize: String {
 		guard let first = first else { return "" }
