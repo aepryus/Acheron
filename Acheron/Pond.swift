@@ -8,13 +8,15 @@
 
 import Foundation
 
-public class Pond {
+open class Pond {
 	private var pebbles: [Pebble] = []
 	let queue: DispatchQueue = DispatchQueue(label: "pond")
 	private var tasks: [()->()] = []
 	private var completed: Bool = false
 
 	public init() {}
+
+	open func wirePebbles() {}
 
 	public var complete: Bool { pebbles.first(where: {$0.state == .running}) == nil }
 	public var started: Bool { pebbles.first(where: {$0.state != .pending}) != nil }
@@ -49,8 +51,8 @@ public class Pond {
 		checkIfComplete()
 	}
 	
-	public func pebble(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
-		let pebble = Pebble(name: name, payload)
+	public func pebble(name: String, failable: Bool = true, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
+		let pebble = Pebble(name: name, failable: failable, payload)
 		pebbles.append(pebble)
 		return pebble
 	}
@@ -70,8 +72,72 @@ public class Pond {
 		}
 	}
 	public func reset() {
-		queue.sync {
-			self.pebbles.forEach {$0.reset()}
+		queue.sync { self.pebbles.forEach { $0.reset() } }
+	}
+
+// Testing =========================================================================================
+	public func resetTest() {
+		pebbles.forEach { $0.testState = nil }
+	}
+	private func confirmUnfailablesOnly(_ pebbles: [Pebble]) {
+		pebbles.forEach {
+			if $0.failable {
+				print("\tpebble [\($0.name)] listed as a should pebble, only specify unfailable pebbles")
+				fatalError()
+			}
 		}
+	}
+	private func compare(should: [Pebble], actual: [Pebble]) -> Bool {
+		var equivalent: Bool = true
+		should.forEach { (a: Pebble) in
+			if !actual.contains(where: {a === $0}) {
+				print("\tpebble [\(a.name)] should appear, but does not")
+				equivalent = false
+			}
+		}
+		actual.forEach { (a: Pebble) in
+			if !should.contains(where: {a === $0}) {
+				print("\tpebble [\(a.name)] does appear, but shouldn't")
+				equivalent = false
+			}
+		}
+		return equivalent
+	}
+	public func test(shouldSucceed: [Pebble], shouldSkip: [Pebble]) -> Bool {
+		confirmUnfailablesOnly(shouldSucceed+shouldSkip)
+		let shouldSucceed: [Pebble] = shouldSucceed + pebbles.filter({ $0.failable && $0.testState == .succeeded })
+		let shouldFail: [Pebble] = pebbles.filter({ $0.failable && $0.testState == .failed })
+		let shouldSkip: [Pebble] = shouldSkip + pebbles.filter({ $0.failable && $0.testState == nil })
+		reset()
+		wirePebbles()
+		var previous: Int = 0
+		var current: Int = 0
+		repeat {
+			previous = pebbles.filter({ $0.state == .pending }).count
+			pebbles.forEach { $0.attemptToTest(self) }
+			current = pebbles.filter({ $0.state == .pending }).count
+		} while !complete || previous != current
+
+		var succeeded: [Pebble] = []
+		var failed: [Pebble] = []
+		var skipped: [Pebble] = []
+
+		pebbles.forEach {
+			switch $0.state {
+				case .succeeded:	succeeded.append($0)
+				case .failed:		failed.append($0)
+				case .pending:		skipped.append($0)
+				case .running:		fatalError()
+			}
+		}
+
+		var passed: Bool = true
+		print("\nSucceeded Pebbles =========================")
+		if !compare(should: shouldSucceed, actual: succeeded) { passed = false }
+		print("Failed Pebbles ============================")
+		if !compare(should: shouldFail, actual: failed) { passed = false }
+		print("Skipped Pebbles ===========================")
+		if !compare(should: shouldSkip, actual: skipped) { passed = false }
+		return passed
 	}
 }
