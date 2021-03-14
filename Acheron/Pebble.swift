@@ -14,7 +14,7 @@ public class Pebble {
 	}
 
 	let name: String
-	let failable: Bool
+//	let failable: Bool
 	private let payload: (_ complete: @escaping (Bool)->())->()
 	public var ready: (()->(Bool)) = { false }
 	private(set) var state: Pebble.State = .pending
@@ -26,7 +26,7 @@ public class Pebble {
 
 	init(name: String, failable: Bool, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
 		self.name = name
-		self.failable = failable
+//		self.failable = failable
 		self.payload = payload
 	}
 	
@@ -54,8 +54,6 @@ public class Pebble {
 	}
 	func attemptToTest(_ pond: Pond) {
 		guard state == .pending, ready() else { return }
-
-		guard failable else { state = .succeeded; return }
 
 		guard let testState = testState else {
 			print("ERROR: Pebble [\(name)] not provided a testState")

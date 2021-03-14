@@ -79,14 +79,6 @@ open class Pond {
 	public func resetTest() {
 		pebbles.forEach { $0.testState = nil }
 	}
-	private func confirmUnfailablesOnly(_ pebbles: [Pebble]) {
-		pebbles.forEach {
-			if $0.failable {
-				print("\tpebble [\($0.name)] listed as a should pebble, only specify unfailable pebbles")
-				fatalError()
-			}
-		}
-	}
 	private func compare(should: [Pebble], actual: [Pebble]) -> Bool {
 		var equivalent: Bool = true
 		should.forEach { (a: Pebble) in
@@ -103,17 +95,17 @@ open class Pond {
 		}
 		return equivalent
 	}
-	public func test(shouldSucceed: [Pebble], shouldSkip: [Pebble]) -> Bool {
-		confirmUnfailablesOnly(shouldSucceed+shouldSkip)
-		let shouldSucceed: [Pebble] = shouldSucceed + pebbles.filter({ $0.failable && $0.testState == .succeeded })
-		let shouldFail: [Pebble] = pebbles.filter({ $0.failable && $0.testState == .failed })
-		let shouldSkip: [Pebble] = shouldSkip + pebbles.filter({ $0.failable && $0.testState == nil })
-		reset()
+	public func test(shouldSucceed: [Pebble], shouldFail: [Pebble]) -> Bool {
 		wirePebbles()
+		reset()
+		resetTest()
+		shouldSucceed.forEach { $0.testState = .succeeded }
+		shouldFail.forEach { $0.testState = .failed }
+		let shouldSkip: [Pebble] = pebbles.filter { $0.testState == nil }
 		var previous: Int = 0
-		var current: Int = 0
+		var current: Int = pebbles.filter({ $0.state == .pending }).count
 		repeat {
-			previous = pebbles.filter({ $0.state == .pending }).count
+			previous = current
 			pebbles.forEach { $0.attemptToTest(self) }
 			current = pebbles.filter({ $0.state == .pending }).count
 		} while !complete || previous != current
