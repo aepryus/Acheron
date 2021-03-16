@@ -14,7 +14,6 @@ public class Pebble {
 	}
 
 	let name: String
-//	let failable: Bool
 	private let payload: (_ complete: @escaping (Bool)->())->()
 	public var ready: (()->(Bool)) = { false }
 	private(set) var state: Pebble.State = .pending
@@ -24,9 +23,8 @@ public class Pebble {
 	public var completed: Bool { state == .succeeded || state == .failed }
 	public var skipped: Bool { state == .pending }
 
-	init(name: String, failable: Bool, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
+	init(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
 		self.name = name
-//		self.failable = failable
 		self.payload = payload
 	}
 	

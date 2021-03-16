@@ -51,8 +51,8 @@ open class Pond {
 		checkIfComplete()
 	}
 	
-	public func pebble(name: String, failable: Bool = true, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
-		let pebble = Pebble(name: name, failable: failable, payload)
+	public func pebble(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
+		let pebble = Pebble(name: name, payload)
 		pebbles.append(pebble)
 		return pebble
 	}
