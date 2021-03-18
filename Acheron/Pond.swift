@@ -16,8 +16,6 @@ open class Pond {
 
 	public init() {}
 
-	open func wirePebbles() {}
-
 	public var complete: Bool { pebbles.first(where: {$0.state == .running}) == nil }
 	public var started: Bool { pebbles.first(where: {$0.state != .pending}) != nil }
 	private func checkIfComplete() {
@@ -96,7 +94,6 @@ open class Pond {
 		return equivalent
 	}
 	public func test(shouldSucceed: [Pebble], shouldFail: [Pebble]) -> Bool {
-		wirePebbles()
 		reset()
 		resetTest()
 		shouldSucceed.forEach { $0.testState = .succeeded }
