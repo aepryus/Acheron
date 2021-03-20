@@ -18,7 +18,7 @@ public extension UIView {
 		if let parent = superview {
 			return parent.bounds.size
 		} else {
-			return UIScreen.main.bounds.size
+			return Screen.size
 		}
 	}
 	

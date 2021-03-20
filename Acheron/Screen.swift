@@ -118,6 +118,7 @@ public class Screen {
 	public static var ratio: Ratio { current.ratio }
 	public static var width: CGFloat { current.width }
 	public static var height: CGFloat { current.height }
+	public static var size: CGSize { CGSize(width: width, height: height) }
 	public static var s: CGFloat { current.s }
 	
 	public static var iPhone: Bool {
@@ -159,4 +160,3 @@ public class Screen {
 		}
 	}
 }
-
