@@ -9,7 +9,15 @@
 import Foundation
 
 public extension Date {
-	
+
+	init(_ string: String) {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "MM/dd/yy"
+		formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale
+		let date = formatter.date(from: string)!
+		self.init(timeInterval:0, since:date)
+	}
+
 	private static var formatters: [String:DateFormatter] = [:]
 	func format(_ template: String) -> String {
 		var formatter = Date.formatters[template]
