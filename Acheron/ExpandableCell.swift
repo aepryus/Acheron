@@ -16,6 +16,7 @@ open class ExpandableCell: UITableViewCell {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
 		clipsToBounds = true
+		contentView.isUserInteractionEnabled = false
 		
 		superAddSubview(baseView)
 		

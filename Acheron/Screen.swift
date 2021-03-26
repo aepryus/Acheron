@@ -131,6 +131,9 @@ public class Screen {
 		return current.model == .mac
 	}
 	
+	public static var bounds: CGRect {
+		return CGRect(x: 0, y: 0, width: width, height: height)
+	}
 	public static var safeTop: CGFloat {
 		guard let window = Screen.keyWindow else { fatalError() }
 		return window.safeAreaInsets.top
