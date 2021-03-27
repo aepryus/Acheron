@@ -38,7 +38,7 @@ An object and set of extensions to ease using text within iOS.
 * Extensions: UIColor
 * Lines: 91
 
-RGB is a set of tools that make it easy to get tints, shades and tones of a color or blend any two colors.  It includes the RGB class which converts color into a vector allowing for mathematical manipulations of color.  It then includes an extension of UIColor that enables these manipulations to be made directly to UIColor itself.
+RGB is a set of tools that make it easy to get tints, shades and tones of a color or blend any two colors.  It includes the RGB class which converts color into a vector which can be manipulated mathematically.  It also includes an extension of UIColor that enables these manipulations to be made directly to UIColor itself.
 
 Usage:
 ```
@@ -48,7 +48,7 @@ Usage:
 
     let blueRGB: RGB = RGB(uiColor: .blue)
     let redRGB: RGB = RGB(uiColor: .red)
-    let purpleRGB: RGB = (blueRGB + redRGB)*0.5
+    let purpleRGB: RGB = (blueRGB + redRGB) * 0.5
     let purpleRGB2: RGB = blueRGB.blend(rgb: redRGB, percent: 0.5)
 ```
 
