@@ -45,11 +45,11 @@ Usage:
     let lightBlue: UIColor = UIColor.blue.tint(0.5)
     let greyGreen: UIColor = UIColor.green.tone(0.5)
     let transparentPink: UIColor = UIColor.red.tint(0.5).alpha(0.5)
-    
+
     let blueRGB: RGB = RGB(uiColor: .blue)
-    let redRGB: RGB = RGB(uicolor: .red)
-    let purpleRGB: RGB = (blueRGB + redRGB)/2
-    let purpleRGB: RGB = blueRGB.blend(rgb: redRGB, percent: 0.5)
+    let redRGB: RGB = RGB(uiColor: .red)
+    let purpleRGB: RGB = (blueRGB + redRGB)*0.5
+    let purpleRGB2: RGB = blueRGB.blend(rgb: redRGB, percent: 0.5)
 ```
 
 
