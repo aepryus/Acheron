@@ -2,7 +2,7 @@
 
 Acheron is a collection of utilties for developing iOS apps.
 
-* Total Lines: 2707
+* Total Lines: 2881
 
 
 ## Loom ORM
@@ -11,16 +11,16 @@ A lightweight threadsafe no SQL ORM.
 
 * Dependencies: Odds and Ends
 * Classes: Anchor, Basket, Domain, Persist, Loom, SQLitePersist
-* Lines: 1221
+* Lines: 1233
 
 
 ## AepLayout
 
 A collection of lightweight extensions and convenience methods for laying out iOS screens programatically.  It is particularly useful in making multiple screen sizes look the same.
 
-* Classes: AEViewController
+* Classes: AEViewController, Screen
 * Extensions: CALayer, UIView, UIViewController
-* Lines: 266
+* Lines: 319
 
 
 ## Pen
@@ -34,11 +34,23 @@ An object and set of extensions to ease using text within iOS.
 
 ## RGB
 
-A set of tools for working with color.
-
 * Classes: RGB
 * Extensions: UIColor
 * Lines: 91
+
+RGB is a set of tools that make it easy to get tints, shades and tones of a color or blend two entirely different colors.  It includes the RGB class which converts color into a vector that can then be manipulated mathematically.  It also includes an extension of UIColor that enables these manipulations to be made directly to UIColor itself.
+
+Usage:
+```
+    let lightBlue = UIColor.blue.tint(0.5)
+    let greyGreen = UIColor.green.tone(0.5)
+    let transparentPink = UIColor.red.tint(0.5).alpha(0.5)
+
+    let blueRGB = RGB(uiColor: .blue)
+    let redRGB = RGB(uiColor: .red)
+    let purpleRGB = (blueRGB + redRGB) * 0.5
+    let purpleRGB2 = blueRGB.blend(rgb: redRGB, percent: 0.5)
+```
 
 
 ## Expandable Table View
@@ -47,7 +59,7 @@ Classes and delegates for creating expandable table views.
 
 * Dependencies: AepLayout
 * Classes: ExpandableCell, ExpandableTableView
-* Lines: 191
+* Lines: 192
 
 ## Node View
 
@@ -64,18 +76,18 @@ Extensions for handling server image loading.
 * Extensions: UIImage, UIImageView
 * Lines: 66
 
-## Pebbles
+## Pond and Pebbles
 
 Asynchronous control flow.
 
 * Classes: Pebble, Pond
-* Lines: 94
+* Lines: 156
 
 ## Odds and Ends
 
-* Classes: AETimer, SafeMap, SafeSet, WeakSet, XMLtoAttributes, TripWire
-* Extensions: Array, CGPoint, Collection, Comparable, Date, Dictionary, String, UIControl
-* Lines: 391
+* Classes: AESync, AETimer, SafeMap, SafeSet, WeakSet, XMLtoAttributes, TripWire
+* Extensions: Array, CaseIterable, CGPoint, Comparable, Date, Dictionary, String, UIControl
+* Lines: 437
 
 Usage:
 ```
