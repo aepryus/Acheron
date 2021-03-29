@@ -2,7 +2,7 @@
 
 Acheron is a collection of utilties for developing iOS apps.
 
-* Total Lines: 2881
+* Total Lines: 2879
 
 
 ## Loom ORM
@@ -29,7 +29,7 @@ An object and set of extensions to ease using text within iOS.
 
 * Classes: Pen
 * Extensions: NSMutableAttributedString, NSString, UIButton, UILabel
-* Lines: 71
+* Lines: 69
 
 
 ## RGB
