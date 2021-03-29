@@ -11,20 +11,20 @@ import UIKit
 public class Pen: NSObject {
 	public let attributes: [NSAttributedString.Key:Any]
 	
-	public var font: UIFont { attributes[NSAttributedString.Key.font] as! UIFont }
-	public var color: UIColor { attributes[NSAttributedString.Key.foregroundColor] as! UIColor }
-	public var style: NSParagraphStyle { attributes[NSAttributedString.Key.paragraphStyle] as! NSParagraphStyle }
+	public var font: UIFont { attributes[.font] as! UIFont }
+	public var color: UIColor { attributes[.foregroundColor] as! UIColor }
+	public var style: NSParagraphStyle { attributes[.paragraphStyle] as! NSParagraphStyle }
 	public var alignment: NSTextAlignment { style.alignment }
-	public var kern: CGFloat? { attributes[NSAttributedString.Key.kern] as? CGFloat }
+	public var kern: CGFloat? { attributes[.kern] as? CGFloat }
 	
 	public init(font: UIFont = UIFont.systemFont(ofSize: 16), color: UIColor = UIColor.black, alignment: NSTextAlignment = .left, style: NSParagraphStyle = NSParagraphStyle.default, kern: CGFloat? = nil) {
 		var mutable: [NSAttributedString.Key:Any] = [:]
-		mutable[NSAttributedString.Key.font] = font
-		mutable[NSAttributedString.Key.foregroundColor] = color
+		mutable[.font] = font
+		mutable[.foregroundColor] = color
 		let mutableStyle: NSMutableParagraphStyle = style.mutableCopy() as! NSMutableParagraphStyle
 		mutableStyle.alignment = alignment
-		mutable[NSAttributedString.Key.paragraphStyle] = mutableStyle
-		if let kern = kern { mutable[NSAttributedString.Key.kern] = kern }
+		mutable[.paragraphStyle] = mutableStyle
+		if let kern = kern { mutable[.kern] = kern }
 		attributes = mutable
 	}
 
