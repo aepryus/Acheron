@@ -13,19 +13,16 @@ public class Pen: NSObject {
 	
 	public var font: UIFont { attributes[.font] as! UIFont }
 	public var color: UIColor { attributes[.foregroundColor] as! UIColor }
-	public var style: NSParagraphStyle { attributes[.paragraphStyle] as! NSParagraphStyle }
 	public var alignment: NSTextAlignment { style.alignment }
+	public var style: NSParagraphStyle { attributes[.paragraphStyle] as! NSParagraphStyle }
 	public var kern: CGFloat? { attributes[.kern] as? CGFloat }
 	
 	public init(font: UIFont = UIFont.systemFont(ofSize: 16), color: UIColor = UIColor.black, alignment: NSTextAlignment = .left, style: NSParagraphStyle = NSParagraphStyle.default, kern: CGFloat? = nil) {
-		var mutable: [NSAttributedString.Key:Any] = [:]
-		mutable[.font] = font
-		mutable[.foregroundColor] = color
 		let mutableStyle: NSMutableParagraphStyle = style.mutableCopy() as! NSMutableParagraphStyle
 		mutableStyle.alignment = alignment
-		mutable[.paragraphStyle] = mutableStyle
-		if let kern = kern { mutable[.kern] = kern }
-		attributes = mutable
+		var attributes: [NSAttributedString.Key:Any] = [.font:font, .foregroundColor:color, .paragraphStyle:mutableStyle]
+		if let kern = kern { attributes[.kern] = kern }
+		self.attributes = attributes
 	}
 
 	public func clone(font: UIFont? = nil, color: UIColor? = nil, alignment: NSTextAlignment? = nil, style: NSParagraphStyle? = nil, kern: CGFloat? = nil) -> Pen {
