@@ -2,7 +2,7 @@
 
 Acheron is a collection of utilties for developing iOS apps.
 
-* Total Lines: 2879
+* Total Lines: 2876
 
 
 ## Loom ORM
@@ -25,12 +25,27 @@ A collection of lightweight extensions and convenience methods for laying out iO
 
 ## Pen
 
-An object and set of extensions to ease using text within iOS.
-
 * Classes: Pen
 * Extensions: NSMutableAttributedString, NSString, UIButton, UILabel
-* Lines: 69
+* Lines: 66
 
+Pen is a set of tools that eases working with fonts within UIKit.  Mainly, it is an immutable object 'Pen' that encaspulates all of the font "attributes"; making them easy to define and access.  Slightly adjusted new Pens can be created via the clone() method.  It also includes a number of extensions to Apple classes the allows Pens to be used directly with them.
+
+Usage:
+```
+    let greenPen: Pen = Pen(font: UIFont(name: "ChicagoFLF", size: 19)!, color: UIColor.green.tint(0.7), alignment: .right)
+    let whitePen: Pen = greenPen.clone(color: .white)
+
+    let attString = NSMutableAttributedString()
+    attString.append("This is GREEN", pen: greenPen)
+    attString.append("This is WHITE", pen: whitePen)
+
+    let label = UILabel()
+    label.pen = greenPen
+
+    NSString("Hello, White Pen").draw(at: .zero, pen: whitePen)
+    NSString("Hello, Green Pen").draw(at: .zero, withAttributes: greenPen.attributes)
+```
 
 ## RGB
 
