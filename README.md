@@ -29,7 +29,7 @@ A collection of lightweight extensions and convenience methods for laying out iO
 * Extensions: NSMutableAttributedString, NSString, UIButton, UILabel
 * Lines: 66
 
-Pen is a set of tools that eases working with fonts within UIKit.  Mainly, it is an immutable object 'Pen' that encaspulates all of the font "attributes"; making them easy to define and access.  Slightly adjusted new Pens can be created via the clone() method.  It also includes a number of extensions to Apple classes the allows Pens to be used directly with them.
+Pen is a set of tools that eases working with fonts within UIKit.  Mainly, it is an immutable object, 'Pen' that encaspulates all of the font "attributes"; making them easy to define and access.  Slightly adjusted new Pens can be created via the clone() method.  It also includes a number of extensions to Apple classes the allows Pens to be used directly with them.
 
 Usage:
 ```
