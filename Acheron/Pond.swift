@@ -65,7 +65,7 @@ open class Pond {
 
 	public func start() {
 		queue.async {
-			print(" == [ Pond Starting ]")
+			print("\n == [ Pond Starting ]")
 			self.iterate()
 		}
 	}

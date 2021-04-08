@@ -33,7 +33,7 @@ public class Pebble {
 		
 		state = .running
 		DispatchQueue.main.async {
-			print("\n == [ \(self.name) ]")
+			print(" == [ \(self.name) ]")
 			self.payload { (success: Bool) in
 				pond.queue.async {
 					self.state = success ? .succeeded : .failed
