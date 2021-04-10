@@ -86,10 +86,26 @@ A view making the display of tabular data easy.
 
 ## AepImage
 
-Extensions for handling server image loading.
-
 * Extensions: UIImage, UIImageView
 * Lines: 54
+
+AepImage is an extremely light weight asynchoronous image loading and caching tool that stitches into UIImageView, but can also be used from static methods on UIImage directly.  The tool ensures UIImageViews located on UITableViews are handled correctly.  It does not, however, include a disk cache.
+
+Usage:
+```
+    imageView.loadImage(url: "https://aepryus.com/resources/aexels01s.png")
+    imageView.loadImage(url: "https://aepryus.com/resources/Force3.jpg", placeholder: tempImage) {
+        print("Image Loaded")
+    }
+    
+    UIImage.loadImage(url: "") { (image: UIImage) in
+    	print("already loaded")
+    } willLoad: {
+	    print("will load")
+    } finishedLoading: { (image: UIImage) in
+	    print("finished loading")
+    }
+```
 
 ## Pond and Pebbles
 
