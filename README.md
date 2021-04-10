@@ -2,7 +2,7 @@
 
 Acheron is a collection of utilties for developing iOS apps.
 
-* Total Lines: 2876
+* Total Lines: 2864
 
 
 ## Loom ORM
@@ -89,7 +89,7 @@ A view making the display of tabular data easy.
 Extensions for handling server image loading.
 
 * Extensions: UIImage, UIImageView
-* Lines: 66
+* Lines: 54
 
 ## Pond and Pebbles
 
