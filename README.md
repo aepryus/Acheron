@@ -98,7 +98,7 @@ imageView.loadImage(url: "https://aepryus.com/resources/Force3.jpg", placeholder
     print("Image Loaded")
 }
     
-UIImage.loadImage(url: "") { (image: UIImage) in
+UIImage.loadImage(url: "https://aepryus.com/resources/tnEvolizer1.jpg") { (image: UIImage) in
     print("already loaded")
 } willLoad: {
     print("will load")
