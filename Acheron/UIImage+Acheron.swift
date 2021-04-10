@@ -10,34 +10,32 @@ import UIKit
 
 extension UIImage {
 	private static var images: [String:UIImage] = [:]
-	private static var listenerArrays: [String:[(UIImage)->()]] = [:]
+	private static var listeners: [String:[(UIImage)->()]] = [:]
 
-	public static func loadImage(url: String, alreadyLoaded: @escaping (UIImage)->(), willLoad: @escaping ()->(), finishedLoading: @escaping (UIImage)->()) {
+	public static func loadImage(url: String, alreadyLoaded: (UIImage)->(), willLoad: ()->(), finishedLoading: @escaping (UIImage)->()) {
 		let image: UIImage? = UIImage.images[url]
 		
-		guard image == nil else { alreadyLoaded(image!);return }
+		guard image == nil else { alreadyLoaded(image!); return }
 		
 		willLoad()
 		
 		var needsRequest: Bool = false
-		if UIImage.listenerArrays[url] == nil {
+		if UIImage.listeners[url] == nil {
 			needsRequest = true
-			UIImage.listenerArrays[url] = []
+			UIImage.listeners[url] = []
 		}
-		UIImage.listenerArrays[url]!.append(finishedLoading)
+		UIImage.listeners[url]!.append(finishedLoading)
 		
-		guard needsRequest else { return }
+		guard needsRequest, let URL = URL(string: url) else { return }
 		
-		guard let URL = URL(string: url) else { return }
 		let request = URLRequest(url: URL)
 
 		URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-			guard let data = data else { return }
-			guard let image: UIImage = UIImage(data: data) else { return }
+			guard let data = data, let image: UIImage = UIImage(data: data) else { return }
 			DispatchQueue.main.async {
 				UIImage.images[url] = image
-				let listenerArray = UIImage.listenerArrays.removeValue(forKey: url)!
-				listenerArray.forEach { $0(image) }
+				let listeners: [(UIImage)->()] = UIImage.listeners.removeValue(forKey: url)!
+				listeners.forEach { $0(image) }
 			}
 		}.resume()
 	}
