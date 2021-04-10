@@ -89,7 +89,7 @@ A view making the display of tabular data easy.
 * Extensions: UIImage, UIImageView
 * Lines: 48
 
-AepImage is an extremely light weight asynchoronous image loading and caching tool that stitches into UIImageView, but can also be used from static methods on UIImage directly.  The tool ensures UIImageViews located on UITableViews are handled correctly.  It does not, however, include a disk cache.
+AepImage is an extremely light weight asynchoronous image loading and caching tool that stitches into UIImageView, but can also be used from static methods on UIImage directly.  The tool ensures UIImageViews located on UITableViews are handled correctly.  It does not include a disk cache.
 
 Usage:
 ```
