@@ -93,18 +93,18 @@ AepImage is an extremely light weight asynchoronous image loading and caching to
 
 Usage:
 ```
-    imageView.loadImage(url: "https://aepryus.com/resources/aexels01s.png")
-    imageView.loadImage(url: "https://aepryus.com/resources/Force3.jpg", placeholder: tempImage) {
-        print("Image Loaded")
-    }
+imageView.loadImage(url: "https://aepryus.com/resources/aexels01s.png")
+imageView.loadImage(url: "https://aepryus.com/resources/Force3.jpg", placeholder: tempImage) {
+    print("Image Loaded")
+}
     
-    UIImage.loadImage(url: "") { (image: UIImage) in
-    	print("already loaded")
-    } willLoad: {
-	    print("will load")
-    } finishedLoading: { (image: UIImage) in
-	    print("finished loading")
-    }
+UIImage.loadImage(url: "") { (image: UIImage) in
+    print("already loaded")
+} willLoad: {
+    print("will load")
+} finishedLoading: { (image: UIImage) in
+    print("finished loading")
+}
 ```
 
 ## Pond and Pebbles
