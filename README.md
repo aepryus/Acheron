@@ -2,7 +2,7 @@
 
 Acheron is a collection of utilties for developing iOS apps.
 
-* Total Lines: 2876
+* Total Lines: 2864
 
 
 ## Loom ORM
@@ -33,18 +33,18 @@ Pen is a set of tools that eases working with fonts within UIKit.  Mainly, it is
 
 Usage:
 ```
-    let greenPen: Pen = Pen(font: UIFont(name: "ChicagoFLF", size: 19)!, color: UIColor.green.tint(0.7), alignment: .right)
-    let whitePen: Pen = greenPen.clone(color: .white)
+let greenPen: Pen = Pen(font: UIFont(name: "ChicagoFLF", size: 19)!, color: UIColor.green.tint(0.7), alignment: .right)
+let whitePen: Pen = greenPen.clone(color: .white)
 
-    let attString = NSMutableAttributedString()
-    attString.append("This is GREEN", pen: greenPen)
-    attString.append("This is WHITE", pen: whitePen)
+let attString = NSMutableAttributedString()
+attString.append("This is GREEN", pen: greenPen)
+attString.append("This is WHITE", pen: whitePen)
 
-    let label = UILabel()
-    label.pen = greenPen
+let label = UILabel()
+label.pen = greenPen
 
-    NSString("Hello, White Pen").draw(at: .zero, pen: whitePen)
-    NSString("Hello, Green Pen").draw(at: .zero, withAttributes: greenPen.attributes)
+NSString("Hello, White Pen").draw(at: .zero, pen: whitePen)
+NSString("Hello, Green Pen").draw(at: .zero, withAttributes: greenPen.attributes)
 ```
 
 ## RGB
@@ -57,14 +57,14 @@ RGB is a set of tools that make it easy to get tints, shades and tones of a colo
 
 Usage:
 ```
-    let lightBlue = UIColor.blue.tint(0.5)
-    let greyGreen = UIColor.green.tone(0.5)
-    let transparentPink = UIColor.red.tint(0.5).alpha(0.5)
+let lightBlue = UIColor.blue.tint(0.5)
+let greyGreen = UIColor.green.tone(0.5)
+let transparentPink = UIColor.red.tint(0.5).alpha(0.5)
 
-    let blueRGB = RGB(uiColor: .blue)
-    let redRGB = RGB(uiColor: .red)
-    let purpleRGB = (blueRGB + redRGB) * 0.5
-    let purpleRGB2 = blueRGB.blend(rgb: redRGB, percent: 0.5)
+let blueRGB = RGB(uiColor: .blue)
+let redRGB = RGB(uiColor: .red)
+let purpleRGB = (blueRGB + redRGB) * 0.5
+let purpleRGB2 = blueRGB.blend(rgb: redRGB, percent: 0.5)
 ```
 
 
@@ -86,10 +86,26 @@ A view making the display of tabular data easy.
 
 ## AepImage
 
-Extensions for handling server image loading.
-
 * Extensions: UIImage, UIImageView
-* Lines: 66
+* Lines: 54
+
+AepImage is an extremely light weight asynchoronous image loading and caching tool that stitches into UIImageView, but can also be used from static methods on UIImage directly.  The tool ensures UIImageViews located on UITableViews are handled correctly.  It does not, however, include a disk cache.
+
+Usage:
+```
+imageView.loadImage(url: "https://aepryus.com/resources/aexels01s.png")
+imageView.loadImage(url: "https://aepryus.com/resources/Force3.jpg", placeholder: tempImage) {
+    print("Image Loaded")
+}
+    
+UIImage.loadImage(url: "https://aepryus.com/resources/tnEvolizer1.jpg") { (image: UIImage) in
+    print("already loaded")
+} willLoad: {
+    print("will load")
+} finishedLoading: { (image: UIImage) in
+    print("finished loading")
+}
+```
 
 ## Pond and Pebbles
 
@@ -106,8 +122,8 @@ Asynchronous control flow.
 
 Usage:
 ```
-    let button: UIButton = UIButton()
-    button.addAction {
-        print("Hello, Acheron")
-    }
+let button: UIButton = UIButton()
+button.addAction {
+    print("Hello, Acheron")
+}
 ```
