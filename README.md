@@ -2,7 +2,7 @@
 
 Acheron is a collection of utilties for developing iOS apps.
 
-* Total Lines: 2863
+* Total Lines: 2861
 
 
 ## Loom ORM
@@ -87,7 +87,7 @@ A view making the display of tabular data easy.
 ## AepImage
 
 * Extensions: UIImage, UIImageView
-* Lines: 53
+* Lines: 51
 
 AepImage is an extremely light weight asynchoronous image loading and caching tool that stitches into UIImageView, but can also be used from static methods on UIImage directly.  The tool ensures UIImageViews located on UITableViews are handled correctly.  It does not, however, include a disk cache.
 
