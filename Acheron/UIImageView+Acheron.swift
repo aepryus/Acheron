@@ -11,9 +11,7 @@ import UIKit
 public extension UIImageView {
 	static var urlLookup: [UInt:String] = [:]
 	
-	var identifier: UInt {
-		return UInt(bitPattern: ObjectIdentifier(self))
-	}
+	var identifier: UInt { UInt(bitPattern: ObjectIdentifier(self)) }
 	
 	func loadImage(url: String, placeholder: UIImage? = nil, complete: @escaping ()->() = {}) {
 		UIImage.loadImage(url: url) { (image: UIImage) in
