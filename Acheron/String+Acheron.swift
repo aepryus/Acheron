@@ -38,6 +38,10 @@ public extension String {
 		guard let range = sub.range(of: string) else { return nil }
 		return after + sub.distance(from: sub.startIndex, to: range.lowerBound)
 	}
+	func lastLoc(of string: String) -> Int? {
+		guard let range = range(of: string, options: .backwards) else { return nil }
+		return distance(from: string.startIndex, to: range.lowerBound)
+	}
 	var capitalize: String {
 		guard let first = first else { return "" }
 		return String(first).uppercased() + dropFirst()
