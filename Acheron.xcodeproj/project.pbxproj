@@ -33,6 +33,7 @@
 		D858A926226E986400AD831F /* Loom.swift in Sources */ = {isa = PBXBuildFile; fileRef = D858A925226E986400AD831F /* Loom.swift */; };
 		D85BD71A225A947B00B8989E /* UIImage+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85BD719225A947B00B8989E /* UIImage+Acheron.swift */; };
 		D86225842310C7F20014020F /* SafeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86225832310C7F20014020F /* SafeMap.swift */; };
+		D876DC532626577C0049DD38 /* BackgroundPond.swift in Sources */ = {isa = PBXBuildFile; fileRef = D876DC522626577C0049DD38 /* BackgroundPond.swift */; };
 		D877C49824638AAE0055B9A4 /* XMLtoAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */; };
 		D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B03D52245AB1F00CE6A5A /* TripWire.swift */; };
 		D8AB61E22275039400415069 /* AEViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB61E12275039400415069 /* AEViewController.swift */; };
@@ -83,6 +84,7 @@
 		D858A925226E986400AD831F /* Loom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loom.swift; sourceTree = "<group>"; };
 		D85BD719225A947B00B8989E /* UIImage+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Acheron.swift"; sourceTree = "<group>"; };
 		D86225832310C7F20014020F /* SafeMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeMap.swift; sourceTree = "<group>"; };
+		D876DC522626577C0049DD38 /* BackgroundPond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundPond.swift; sourceTree = "<group>"; };
 		D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLtoAttributes.swift; sourceTree = "<group>"; };
 		D88B03D52245AB1F00CE6A5A /* TripWire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripWire.swift; sourceTree = "<group>"; };
 		D8AB61E12275039400415069 /* AEViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AEViewController.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 			children = (
 				D83B32AD23448E160006CB03 /* Pebble.swift */,
 				D83A0E12234493F00058075B /* Pond.swift */,
+				D876DC522626577C0049DD38 /* BackgroundPond.swift */,
 			);
 			name = Pebbles;
 			sourceTree = "<group>";
@@ -348,6 +351,7 @@
 				D858A915226E784800AD831F /* Anchor.swift in Sources */,
 				D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */,
 				D83A0E13234493F00058075B /* Pond.swift in Sources */,
+				D876DC532626577C0049DD38 /* BackgroundPond.swift in Sources */,
 				D8D47C3422ADD7950071DC0C /* NodeView.swift in Sources */,
 				D858A924226E856200AD831F /* Dictionary+Acheron.swift in Sources */,
 				D847A0FA22857EB200A94232 /* WeakSet.swift in Sources */,

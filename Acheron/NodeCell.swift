@@ -45,8 +45,7 @@ public class NodeCell: UITableViewCell {
 	
 // Events ==========================================================================================
 	@objc func onTap() {
-		guard let delegate = nodeView.delegate else {return}
-		delegate.nodeView(nodeView, didTapNode: node)
+		nodeView.delegate?.nodeView(nodeView, didTapNode: node)
 	}
 	
 // UIView ==========================================================================================

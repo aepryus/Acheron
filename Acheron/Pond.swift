@@ -36,17 +36,16 @@ open class Pond {
 		}
 		print("\n =======================\n")
 		
-		DispatchQueue.main.async {
-			self.completed = true
-			self.tasks.forEach { (task: @escaping () -> ()) in
-				task()
-			}
-		}
+		DispatchQueue.main.async { self.onCompleted() }
 	}
 	
 	func iterate() {
 		pebbles.forEach { $0.attemptToStart(self) }
 		checkIfComplete()
+	}
+	func onCompleted() {
+		completed = true
+		tasks.forEach { $0() }
 	}
 	
 	public func pebble(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
@@ -56,21 +55,20 @@ open class Pond {
 	}
 	public func addCompletionTask(_ task: @escaping ()->()) {
 		dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
-		if completed {
-			task()
-		} else {
-			tasks.append(task)
-		}
+		if completed { task() }
+		else { tasks.append(task) }
 	}
 
 	public func start() {
+		guard !started || completed else { return }
+		reset()
 		queue.async {
 			print("\n == [ Pond Starting ]")
 			self.iterate()
 		}
 	}
 	public func reset() {
-		queue.sync { self.pebbles.forEach { $0.reset() } }
+		queue.sync { pebbles.forEach { $0.reset() } }
 	}
 
 // Testing =========================================================================================
