@@ -173,7 +173,7 @@ class BootPond: Pond {
 
         isLocallySubscribed.ready = { self.loadToken.succeeded }
         isRemotelySubscribed.ready = {
-            self.ping.completed
+            self.ping.succeeded
             && self.isLocallySubscribed.failed
         }
 
