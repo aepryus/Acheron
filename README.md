@@ -116,161 +116,161 @@ Pond and Pebbles is an asynchronos control flow system that greatly helps detang
 Usage:
 ```
 class BootPond: Pond {
-	let forceUnsubscribed: Bool = false
+    let forceUnsubscribed: Bool = false
 
-	lazy var needNotMigrate: Pebble = {/*...*/}()
-	lazy var migrate: Pebble = {/*...*/}
-	lazy var ping: Pebble = {
-		pebble(name: "Ping") { (complete: @escaping (Bool) -> ()) in
-			Pequod.ping { complete(true) }
-				failure: { complete(false) }
-		}
-	}()
+    lazy var needNotMigrate: Pebble = {/*...*/}()
+    lazy var migrate: Pebble = {/*...*/}
+    lazy var ping: Pebble = {
+        pebble(name: "Ping") { (complete: @escaping (Bool) -> ()) in
+            Pequod.ping { complete(true) }
+                failure: { complete(false) }
+        }
+    }()
 
-	lazy var loadOTID: Pebble = {
-		pebble(name: "Load OTID") { (complete: @escaping (Bool) -> ()) in
-			complete(Pequod.loadOTID() && Pequod.loadExpired())
-		}
-	}()
-	lazy var loadUser: Pebble = {
-		pebble(name: "Load User") { (complete: (Bool) -> ()) in
-			complete(Pequod.loadUser())
-		}
-	}()
-	lazy var loadToken: Pebble = {
-		pebble(name: "Load Token") { (complete: (Bool) -> ()) in
-			complete(Pequod.loadToken())
-		}
-	}()
+    lazy var loadOTID: Pebble = {
+        pebble(name: "Load OTID") { (complete: @escaping (Bool) -> ()) in
+            complete(Pequod.loadOTID() && Pequod.loadExpired())
+        }
+    }()
+    lazy var loadUser: Pebble = {
+        pebble(name: "Load User") { (complete: (Bool) -> ()) in
+            complete(Pequod.loadUser())
+        }
+    }()
+    lazy var loadToken: Pebble = {
+        pebble(name: "Load Token") { (complete: (Bool) -> ()) in
+            complete(Pequod.loadToken())
+        }
+    }()
 
-	lazy var isLocallySubscribed: Pebble = {/*...*/}()
-	lazy var isRemotelySubscribed: Pebble = {/*...*/}()
+    lazy var isLocallySubscribed: Pebble = {/*...*/}()
+    lazy var isRemotelySubscribed: Pebble = {/*...*/}()
 
-	lazy var receiptValidation: Pebble = {/*...*/}()
-	lazy var userLogin: Pebble = {/*...*/}()
-	lazy var otidLogin: Pebble = {/*...*/}()
+    lazy var receiptValidation: Pebble = {/*...*/}()
+    lazy var userLogin: Pebble = {/*...*/}()
+    lazy var otidLogin: Pebble = {/*...*/}()
 
-	lazy var showOffline: Pebble = {/*...*/}()
-	lazy var showSubscribe: Pebble = {/*...*/}()
-	lazy var showSignUp: Pebble = {/*...*/}()
-	lazy var queryCloud: Pebble = {/*...*/}()
-	lazy var startOovium: Pebble = {/*...*/}()
+    lazy var showOffline: Pebble = {/*...*/}()
+    lazy var showSubscribe: Pebble = {/*...*/}()
+    lazy var showSignUp: Pebble = {/*...*/}()
+    lazy var queryCloud: Pebble = {/*...*/}()
+    lazy var startOovium: Pebble = {/*...*/}()
 
-	lazy var invalid: Pebble = {/*...*/}()
+    lazy var invalid: Pebble = {/*...*/}()
 
 // Init ============================================================================================
-	override init() {
-		super.init()
+    override init() {
+         super.init()
 
-		loadOTID.ready = { true }
-		loadToken.ready = { true }
-		loadUser.ready = { true }
-		needNotMigrate.ready = { true }
-		ping.ready = { true }
-		queryCloud.ready = { true }
+        loadOTID.ready = { true }
+        loadToken.ready = { true }
+        loadUser.ready = { true }
+        needNotMigrate.ready = { true }
+        ping.ready = { true }
+        queryCloud.ready = { true }
 
-		migrate.ready = { self.needNotMigrate.failed }
+        migrate.ready = { self.needNotMigrate.failed }
 
-		isLocallySubscribed.ready = { self.loadToken.succeeded }
-		isRemotelySubscribed.ready = {
-			self.ping.completed
-			&& self.isLocallySubscribed.failed
-		}
+        isLocallySubscribed.ready = { self.loadToken.succeeded }
+        isRemotelySubscribed.ready = {
+            self.ping.completed
+            && self.isLocallySubscribed.failed
+        }
 
-		userLogin.ready = {
-			self.ping.succeeded
-			&& self.loadToken.failed
-			&& self.loadUser.succeeded
-		}
+        userLogin.ready = {
+            self.ping.succeeded
+            && self.loadToken.failed
+            && self.loadUser.succeeded
+        }
 
-		receiptValidation.ready = {
-			self.ping.succeeded
-			&& self.loadToken.failed
-			&& self.loadOTID.failed
-			&& (self.loadUser.failed || self.userLogin.failed)
-		}
+        receiptValidation.ready = {
+            self.ping.succeeded
+            && self.loadToken.failed
+            && self.loadOTID.failed
+            && (self.loadUser.failed || self.userLogin.failed)
+        }
 
-		otidLogin.ready = {
-			self.ping.succeeded
-			&& self.loadToken.failed
-			&& (self.loadOTID.succeeded || self.receiptValidation.succeeded)
-			&& (self.loadUser.failed || self.userLogin.failed)
-		}
+        otidLogin.ready = {
+            self.ping.succeeded
+            && self.loadToken.failed
+            && (self.loadOTID.succeeded || self.receiptValidation.succeeded)
+            && (self.loadUser.failed || self.userLogin.failed)
+        }
 
-		showOffline.ready = {
-			self.ping.failed
-			&& self.loadToken.failed
-		}
+        showOffline.ready = {
+            self.ping.failed
+            && self.loadToken.failed
+        }
 
-		showSubscribe.ready = {
-			self.ping.succeeded
-			&& (self.receiptValidation.failed || self.isRemotelySubscribed.failed)
-		}
+        showSubscribe.ready = {
+            self.ping.succeeded
+            && (self.receiptValidation.failed || self.isRemotelySubscribed.failed)
+        }
 
-		showSignUp.ready = {
-			self.ping.succeeded
-			&& self.loadToken.succeeded
-			&& self.loadOTID.succeeded
-			&& (self.isLocallySubscribed.succeeded || self.isRemotelySubscribed.succeeded)
-			&& self.loadUser.failed
-		}
+        showSignUp.ready = {
+            self.ping.succeeded
+            && self.loadToken.succeeded
+            && self.loadOTID.succeeded
+            && (self.isLocallySubscribed.succeeded || self.isRemotelySubscribed.succeeded)
+            && self.loadUser.failed
+        }
 
-		startOovium.ready = {
-			self.loadToken.succeeded
-			&& self.loadOTID.succeeded
-			&& (self.loadUser.succeeded || self.ping.failed)
-			&& (self.isLocallySubscribed.succeeded || self.isRemotelySubscribed.succeeded)
-			&& (self.needNotMigrate.succeeded || self.migrate.succeeded)
-			&& self.queryCloud.succeeded
-		}
+        startOovium.ready = {
+            self.loadToken.succeeded
+            && self.loadOTID.succeeded
+            && (self.loadUser.succeeded || self.ping.failed)
+            && (self.isLocallySubscribed.succeeded || self.isRemotelySubscribed.succeeded)
+            && (self.needNotMigrate.succeeded || self.migrate.succeeded)
+            && self.queryCloud.succeeded
+        }
 
-		invalid.ready = {
-			self.loadToken.succeeded
-			&& self.loadOTID.failed
-		}
-	}
+        invalid.ready = {
+            self.loadToken.succeeded
+            && self.loadOTID.failed
+        }
+    }
 }
 
 class ExitPond: BackgroundPond {
-	lazy var saveAether: Pebble = {
-		pebble(name: "Save Aether") { (complete: @escaping (Bool) -> ()) in
-			Oovium.aetherView.saveAether { (success: Bool) in
-				complete(success)
-			}
-		}
-	}()
+    lazy var saveAether: Pebble = {
+        pebble(name: "Save Aether") { (complete: @escaping (Bool) -> ()) in
+            Oovium.aetherView.saveAether { (success: Bool) in
+                complete(success)
+            }
+        }
+    }()
 
     init() {
-		super.init { print("ExitPond timed Out without completing.") }
-		saveAether.ready = { true }
-	}
+        super.init { print("ExitPond timed Out without completing.") }
+        saveAether.ready = { true }
+    }
 }
 
 class OoviumDelegate: UIResponder, UIApplicationDelegate {
     let bootPond: BootPond = BootPond()
     let exitPond: ExitPond = ExitPond()
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         bootPond.start()
-		return true
-	}
-	func applicationWillResignActive(_ application: UIApplication) {
-		exitPond.start()
-	}
+        return true
+    }
+    func applicationWillResignActive(_ application: UIApplication) {
+        exitPond.start()
+    }
 }
 ```
 
 It also includes mechanisms for writing tests for various asynchronous pathways:
 ```
 XCTAssert(pond.test(shouldSucceed: [
-	pond.needNotMigrate,
-	pond.ping,
-	pond.queryCloud,
-	pond.showSubscribe,
+    pond.needNotMigrate,
+    pond.ping,
+    pond.queryCloud,
+    pond.showSubscribe,
 ], shouldFail: [
-	pond.loadOTID,
-	pond.loadUser,
-	pond.loadToken,
-	pond.receiptValidation,
+    pond.loadOTID,
+    pond.loadUser,
+    pond.loadToken,
+    pond.receiptValidation,
 ]))
 ```
 
