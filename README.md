@@ -116,8 +116,6 @@ Pond and Pebbles is an asynchronous control flow system that greatly helps detan
 Usage:
 ```
 class BootPond: Pond {
-    let forceUnsubscribed: Bool = false
-
     lazy var needNotMigrate: Pebble = {/*...*/}()
     lazy var migrate: Pebble = {/*...*/}
     lazy var ping: Pebble = {
