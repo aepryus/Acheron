@@ -16,7 +16,7 @@ public class Pebble {
 	let name: String
 	private let payload: (_ complete: @escaping (Bool)->())->()
 	public var ready: (()->(Bool)) = { false }
-	private(set) var state: Pebble.State = .pending
+	private(set) var state: State = .pending
 	
 	public var succeeded: Bool { state == .succeeded }
 	public var failed: Bool { state == .failed }
@@ -47,7 +47,7 @@ public class Pebble {
 	}
 
 // Testing =========================================================================================
-	public var testState: Pebble.State? = nil {
+	public var testState: State? = nil {
 		didSet { guard testState != .pending && testState != .running else { fatalError() } }
 	}
 	func attemptToTest(_ pond: Pond) {

@@ -16,22 +16,22 @@ open class Pond {
 
 	public init() {}
 
-	public var complete: Bool { pebbles.first(where: {$0.state == .running}) == nil }
-	public var started: Bool { pebbles.first(where: {$0.state != .pending}) != nil }
+	public var complete: Bool { pebbles.first(where: { $0.state == .running }) == nil }
+	public var started: Bool { pebbles.first(where: { $0.state != .pending }) != nil }
 	private func checkIfComplete() {
 		guard complete else { return }
 
 		print("\n == [ Pond Complete ]\n")
 		print("\t Succeeded Pebbles ===========")
-		for pebble in pebbles.filter({$0.state == .succeeded}) {
+		for pebble in pebbles.filter({ $0.state == .succeeded }) {
 			print("\t\t - \(pebble.name)")
 		}
 		print("\n\t Failed Pebbles ==============")
-		for pebble in pebbles.filter({$0.state == .failed}) {
+		for pebble in pebbles.filter({ $0.state == .failed }) {
 			print("\t\t - \(pebble.name)")
 		}
 		print("\n\t Skipped Pebbles =============")
-		for pebble in pebbles.filter({$0.state == .pending}) {
+		for pebble in pebbles.filter({ $0.state == .pending }) {
 			print("\t\t - \(pebble.name)")
 		}
 		print("\n =======================\n")
