@@ -28,8 +28,8 @@ open class BackgroundPond: Pond {
 	}
 	override func onCompleted() {
 		super.onCompleted()
-		UIApplication.shared.endBackgroundTask(self.backgroundTaskID)
-		self.backgroundTaskID = .invalid
+		UIApplication.shared.endBackgroundTask(backgroundTaskID)
+		backgroundTaskID = .invalid
 		print(" == [ Pond Background Complete ]\n")
 	}
 }
