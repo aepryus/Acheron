@@ -111,7 +111,7 @@ UIImage.loadImage(url: "https://aepryus.com/resources/tnEvolizer1.jpg") { (image
 * Classes: Pebble, Pond, BackgroundPond
 * Lines: 177
 
-Pond and Pebbles is an asynchronos control flow system that greatly helps detangle complex asynchronous tasks like app initialization.  Through the BackgroundPond it also makes finishing up asynchronous tasks after your app is closed much easier.
+Pond and Pebbles is an asynchronous control flow system that greatly helps detangle complex asynchronous tasks like app initialization.  Through the BackgroundPond it also makes finishing up asynchronous tasks after your app is closed much easier.
 
 Usage:
 ```
