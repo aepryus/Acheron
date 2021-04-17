@@ -2,7 +2,7 @@
 
 Acheron is a collection of utilties for developing iOS apps.
 
-* Total Lines: 2858
+* Total Lines: 2882
 
 
 ## Loom ORM
@@ -67,7 +67,6 @@ let purpleRGB = (blueRGB + redRGB) * 0.5
 let purpleRGB2 = blueRGB.blend(rgb: redRGB, percent: 0.5)
 ```
 
-
 ## Expandable Table View
 
 Classes and delegates for creating expandable table views.
@@ -82,7 +81,7 @@ A view making the display of tabular data easy.
 
 * Dependencies: AepLayout
 * Classes: AETableView, Node, NodeCell, NodeColumn, NodeData, NodeHeader, NodeView
-* Lines: 316
+* Lines: 315
 
 ## AepImage
 
@@ -109,16 +108,177 @@ UIImage.loadImage(url: "https://aepryus.com/resources/tnEvolizer1.jpg") { (image
 
 ## Pond and Pebbles
 
-Asynchronous control flow.
+* Classes: Pebble, Pond, BackgroundPond
+* Lines: 177
 
-* Classes: Pebble, Pond
-* Lines: 156
+Pond and Pebbles is an asynchronos control flow system that greatly helps detangle complex asynchronous tasks like app initialization.  Through the BackgroundPond it also makes finishing up asynchronous tasks after your app is closed much easier.
+
+Usage:
+```
+class BootPond: Pond {
+    let forceUnsubscribed: Bool = false
+
+    lazy var needNotMigrate: Pebble = {/*...*/}()
+    lazy var migrate: Pebble = {/*...*/}
+    lazy var ping: Pebble = {
+        pebble(name: "Ping") { (complete: @escaping (Bool) -> ()) in
+            Pequod.ping { complete(true) }
+                failure: { complete(false) }
+        }
+    }()
+
+    lazy var loadOTID: Pebble = {
+        pebble(name: "Load OTID") { (complete: @escaping (Bool) -> ()) in
+            complete(Pequod.loadOTID() && Pequod.loadExpired())
+        }
+    }()
+    lazy var loadUser: Pebble = {
+        pebble(name: "Load User") { (complete: (Bool) -> ()) in
+            complete(Pequod.loadUser())
+        }
+    }()
+    lazy var loadToken: Pebble = {
+        pebble(name: "Load Token") { (complete: (Bool) -> ()) in
+            complete(Pequod.loadToken())
+        }
+    }()
+
+    lazy var isLocallySubscribed: Pebble = {/*...*/}()
+    lazy var isRemotelySubscribed: Pebble = {/*...*/}()
+
+    lazy var receiptValidation: Pebble = {/*...*/}()
+    lazy var userLogin: Pebble = {/*...*/}()
+    lazy var otidLogin: Pebble = {/*...*/}()
+
+    lazy var showOffline: Pebble = {/*...*/}()
+    lazy var showSubscribe: Pebble = {/*...*/}()
+    lazy var showSignUp: Pebble = {/*...*/}()
+    lazy var queryCloud: Pebble = {/*...*/}()
+    lazy var startOovium: Pebble = {/*...*/}()
+
+    lazy var invalid: Pebble = {/*...*/}()
+
+// Init ============================================================================================
+    override init() {
+         super.init()
+
+        loadOTID.ready = { true }
+        loadToken.ready = { true }
+        loadUser.ready = { true }
+        needNotMigrate.ready = { true }
+        ping.ready = { true }
+        queryCloud.ready = { true }
+
+        migrate.ready = { self.needNotMigrate.failed }
+
+        isLocallySubscribed.ready = { self.loadToken.succeeded }
+        isRemotelySubscribed.ready = {
+            self.ping.succeeded
+            && self.isLocallySubscribed.failed
+        }
+
+        userLogin.ready = {
+            self.ping.succeeded
+            && self.loadToken.failed
+            && self.loadUser.succeeded
+        }
+
+        receiptValidation.ready = {
+            self.ping.succeeded
+            && self.loadToken.failed
+            && self.loadOTID.failed
+            && (self.loadUser.failed || self.userLogin.failed)
+        }
+
+        otidLogin.ready = {
+            self.ping.succeeded
+            && self.loadToken.failed
+            && (self.loadOTID.succeeded || self.receiptValidation.succeeded)
+            && (self.loadUser.failed || self.userLogin.failed)
+        }
+
+        showOffline.ready = {
+            self.ping.failed
+            && self.loadToken.failed
+        }
+
+        showSubscribe.ready = {
+            self.ping.succeeded
+            && (self.receiptValidation.failed || self.isRemotelySubscribed.failed)
+        }
+
+        showSignUp.ready = {
+            self.ping.succeeded
+            && self.loadToken.succeeded
+            && self.loadOTID.succeeded
+            && (self.isLocallySubscribed.succeeded || self.isRemotelySubscribed.succeeded)
+            && self.loadUser.failed
+        }
+
+        startOovium.ready = {
+            self.loadToken.succeeded
+            && self.loadOTID.succeeded
+            && (self.loadUser.succeeded || self.ping.failed)
+            && (self.isLocallySubscribed.succeeded || self.isRemotelySubscribed.succeeded)
+            && (self.needNotMigrate.succeeded || self.migrate.succeeded)
+            && self.queryCloud.succeeded
+        }
+
+        invalid.ready = {
+            self.loadToken.succeeded
+            && self.loadOTID.failed
+        }
+    }
+}
+
+class ExitPond: BackgroundPond {
+    lazy var saveAether: Pebble = {
+        pebble(name: "Save Aether") { (complete: @escaping (Bool) -> ()) in
+            Oovium.aetherView.saveAether { (success: Bool) in
+                complete(success)
+            }
+        }
+    }()
+
+    init() {
+        super.init { print("ExitPond timed out without completing.") }
+        saveAether.ready = { true }
+    }
+}
+
+class OoviumDelegate: UIResponder, UIApplicationDelegate {
+    let bootPond: BootPond = BootPond()
+    let exitPond: ExitPond = ExitPond()
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        bootPond.start()
+        return true
+    }
+    func applicationWillResignActive(_ application: UIApplication) {
+        exitPond.start()
+    }
+}
+```
+
+It also includes mechanisms for writing tests for various asynchronous pathways:
+```
+XCTAssert(pond.test(shouldSucceed: [
+    pond.needNotMigrate,
+    pond.ping,
+    pond.queryCloud,
+    pond.showSubscribe,
+], shouldFail: [
+    pond.loadOTID,
+    pond.loadUser,
+    pond.loadToken,
+    pond.receiptValidation,
+]))
+```
 
 ## Odds and Ends
 
 * Classes: AESync, AETimer, SafeMap, SafeSet, WeakSet, XMLtoAttributes, TripWire
 * Extensions: Array, CaseIterable, CGPoint, Comparable, Date, Dictionary, String, UIControl
-* Lines: 437
+* Lines: 441
 
 Usage:
 ```
