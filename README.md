@@ -241,7 +241,7 @@ class ExitPond: BackgroundPond {
     }()
 
     init() {
-        super.init { print("ExitPond timed Out without completing.") }
+        super.init { print("ExitPond timed out without completing.") }
         saveAether.ready = { true }
     }
 }
