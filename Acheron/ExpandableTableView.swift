@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol ExpandableTableViewDelegate: class {
+public protocol ExpandableTableViewDelegate: AnyObject {
 	func numberOfSections(in tableView: ExpandableTableView) -> Int
 	func expandableTableView(_ tableView: ExpandableTableView, heightForHeaderInSection section: Int) -> CGFloat
 	func expandableTableView(_ tableView: ExpandableTableView, viewForHeaderInSection section: Int) -> UIView?

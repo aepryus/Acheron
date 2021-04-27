@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol NodeViewDelegate: class {
+public protocol NodeViewDelegate: AnyObject {
 	func nodeView(_ nodeView: NodeView, didTapNode node: Node)
 }
 public extension NodeViewDelegate {
