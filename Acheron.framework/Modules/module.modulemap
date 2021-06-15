@@ -1,0 +1,11 @@
+framework module Acheron {
+  umbrella header "Acheron.h"
+
+  export *
+  module * { export * }
+}
+
+module Acheron.Swift {
+    header "Acheron-Swift.h"
+    requires objc
+}

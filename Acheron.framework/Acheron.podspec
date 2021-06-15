@@ -17,5 +17,5 @@ Pod::Spec.new do |spec|
   spec.platform				= :ios, "11.0"
   spec.source				= { :git => "https://github.com/aepryus/Acheron/Acheron.git", :branch => "cocoaPod" }
 #  spec.source_files			= "Acheron"
-  spec.vendored_frameworks	= "Acheron.framework"
+  spec.vendored_frameworks	= "Frameworks/Acheron.framework"
 end
