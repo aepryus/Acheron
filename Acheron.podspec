@@ -10,12 +10,12 @@ Pod::Spec.new do |spec|
 
   spec.name         = "Acheron"
   spec.version      = "0.0.1"
-  spec.summary      = "A short description of Acheron."
-  spec.description  = <<-DESC
-                   DESC
+  spec.summary      = "Acheron is a collection of utilties for developing iOS apps."
+#  spec.description  = <<-DESC
+#                   DESC
 
   spec.homepage     = "https://github.com/aepryus/Acheron"
-  spec.license      = "MIT (example)"
+  spec.license      = "Copyright Aepryus Software, All Rights Reserved"
   spec.author       = "Aepryus Software"
   spec.platform     = :ios, "11.0"
 
@@ -25,7 +25,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "http://EXAMPLE/Acheron.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "https://github.com/aepryus/Acheron", :branch => "cocoaPod" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -36,7 +36,7 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "Classes", "Classes/**/*.{h,m}"
+  spec.source_files  = "Acheron", "Acheron/**/*.{h,m}"
 
   # spec.public_header_files = "Classes/**/*.h"
 
