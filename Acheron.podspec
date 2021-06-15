@@ -9,13 +9,13 @@
 Pod::Spec.new do |spec|
 
   spec.name					= "Acheron"
-  spec.version				= "0.0.10"
+  spec.version				= "0.0.11"
   spec.summary				= "Acheron is a collection of utilties for developing iOS apps."
   spec.homepage				= "https://github.com/aepryus/Acheron"
   spec.license				= "MIT"
   spec.author				= { "Aepryus Software" => "contact@aepryus.com" }
   spec.platform				= :ios, "11.0"
   spec.source				= { :git => "https://github.com/aepryus/Acheron/Acheron.git", :branch => "cocoaPod" }
-  spec.source_files			= "Acheron"
-  spec.vendored_frameworks	= "Acheron.framework"
+#  spec.source_files			= "Acheron"
+  spec.vendored_frameworks	= "Frameworks/Acheron.framework"
 end
