@@ -9,7 +9,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "Acheron"
-  spec.version      = "0.0.1"
+  spec.version      = "0.0.2"
   spec.summary      = "Acheron is a collection of utilties for developing iOS apps."
   spec.homepage     = "https://github.com/aepryus/Acheron"
   spec.license      = "MIT"
