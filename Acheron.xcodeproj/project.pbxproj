@@ -37,7 +37,7 @@
 		D877C49824638AAE0055B9A4 /* XMLtoAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */; };
 		D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B03D52245AB1F00CE6A5A /* TripWire.swift */; };
 		D8AB61E22275039400415069 /* AEViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB61E12275039400415069 /* AEViewController.swift */; };
-		D8B4116B26788B7E006415E5 /* Acheron.podspec in Resources */ = {isa = PBXBuildFile; fileRef = D8B4116926788B7E006415E5 /* Acheron.podspec */; };
+		D8B4116B26788B7E006415E5 /* acheron.podspec in Resources */ = {isa = PBXBuildFile; fileRef = D8B4116926788B7E006415E5 /* acheron.podspec */; };
 		D8B4116C26788B7E006415E5 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D8B4116A26788B7E006415E5 /* README.md */; };
 		D8CBC9C92265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */; };
 		D8CBC9CB2265D70100B7BBC5 /* UILabel+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */; };
@@ -90,7 +90,7 @@
 		D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLtoAttributes.swift; sourceTree = "<group>"; };
 		D88B03D52245AB1F00CE6A5A /* TripWire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripWire.swift; sourceTree = "<group>"; };
 		D8AB61E12275039400415069 /* AEViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AEViewController.swift; sourceTree = "<group>"; };
-		D8B4116926788B7E006415E5 /* Acheron.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = Acheron.podspec; sourceTree = SOURCE_ROOT; };
+		D8B4116926788B7E006415E5 /* acheron.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = acheron.podspec; sourceTree = SOURCE_ROOT; };
 		D8B4116A26788B7E006415E5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Acheron.swift"; sourceTree = "<group>"; };
 		D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Acheron.swift"; sourceTree = "<group>"; };
@@ -160,7 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				D8B4116A26788B7E006415E5 /* README.md */,
-				D8B4116926788B7E006415E5 /* Acheron.podspec */,
+				D8B4116926788B7E006415E5 /* acheron.podspec */,
 			);
 			name = Meta;
 			sourceTree = "<group>";
@@ -342,7 +342,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8B4116C26788B7E006415E5 /* README.md in Resources */,
-				D8B4116B26788B7E006415E5 /* Acheron.podspec in Resources */,
+				D8B4116B26788B7E006415E5 /* acheron.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +410,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -475,6 +476,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
