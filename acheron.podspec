@@ -16,5 +16,5 @@ Pod::Spec.new do |spec|
   spec.author				= { "Aepryus Software" => "contact@aepryus.com" }
   spec.platform				= :ios, "11.0"
   spec.source				= { :git => "https://github.com/aepryus/Acheron/Acheron.git", :branch => "cocoaPod" }
-  spec.vendored_frameworks	= "acheron.framework"
+  spec.vendored_frameworks	= "Acheron.framework"
 end

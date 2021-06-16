@@ -101,7 +101,7 @@
 		D8D47C3522ADD83A0071DC0C /* NodeColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeColumn.swift; sourceTree = "<group>"; };
 		D8D47C3722ADD8AB0071DC0C /* NodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeData.swift; sourceTree = "<group>"; };
 		D8D47C3922AE06C10071DC0C /* NodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeCell.swift; sourceTree = "<group>"; };
-		D8E604C122327C81000E8AEA /* Acheron.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Acheron.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8E604C122327C81000E8AEA /* acheron.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = acheron.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8E604C422327C81000E8AEA /* Acheron.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Acheron.h; sourceTree = "<group>"; };
 		D8E604C522327C82000E8AEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Acheron.swift"; sourceTree = "<group>"; };
@@ -190,7 +190,7 @@
 		D8E604C222327C81000E8AEA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D8E604C122327C81000E8AEA /* Acheron.framework */,
+				D8E604C122327C81000E8AEA /* acheron.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -285,9 +285,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D8E604C022327C81000E8AEA /* Acheron */ = {
+		D8E604C022327C81000E8AEA /* acheron */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D8E604C922327C82000E8AEA /* Build configuration list for PBXNativeTarget "Acheron" */;
+			buildConfigurationList = D8E604C922327C82000E8AEA /* Build configuration list for PBXNativeTarget "acheron" */;
 			buildPhases = (
 				D8E604BC22327C81000E8AEA /* Headers */,
 				D8E604BD22327C81000E8AEA /* Sources */,
@@ -298,9 +298,9 @@
 			);
 			dependencies = (
 			);
-			name = Acheron;
+			name = acheron;
 			productName = Acheron;
-			productReference = D8E604C122327C81000E8AEA /* Acheron.framework */;
+			productReference = D8E604C122327C81000E8AEA /* acheron.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -331,7 +331,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D8E604C022327C81000E8AEA /* Acheron */,
+				D8E604C022327C81000E8AEA /* acheron */,
 			);
 		};
 /* End PBXProject section */
@@ -597,7 +597,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D8E604C922327C82000E8AEA /* Build configuration list for PBXNativeTarget "Acheron" */ = {
+		D8E604C922327C82000E8AEA /* Build configuration list for PBXNativeTarget "acheron" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D8E604CA22327C82000E8AEA /* Debug */,

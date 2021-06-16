@@ -1,0 +1,820 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.4 (swiftlang-1205.0.26.9 clang-1205.0.19.55)
+// swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name acheron
+import Foundation
+import QuartzCore
+import SQLite3
+import Swift
+import UIKit
+@_exported import acheron
+extension UIImageView {
+  public static var urlLookup: [Swift.UInt : Swift.String]
+  public var identifier: Swift.UInt {
+    get
+  }
+  public func loadImage(url: Swift.String, placeholder: UIKit.UIImage? = nil, complete: @escaping () -> () = {})
+  @objc dynamic public func loadImage(atURL: Foundation.URL?, placeholder: UIKit.UIImage? = nil, complete: @escaping () -> () = {})
+}
+extension UIImage {
+  public static func loadImage(url: Swift.String, alreadyLoaded: (UIKit.UIImage) -> (), willLoad: () -> (), finishedLoading: @escaping (UIKit.UIImage) -> ())
+  public static func loadImage(url: Swift.String, _ complete: @escaping (UIKit.UIImage) -> ())
+}
+extension UIControl {
+  @objc dynamic public func addAction(for controlEvents: UIKit.UIControl.Event = .touchUpInside, _ closure: @escaping () -> ())
+}
+extension UIView {
+  public var s: CoreGraphics.CGFloat {
+    get
+  }
+  public func center(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, width: CoreGraphics.CGFloat = -1, height: CoreGraphics.CGFloat = -1)
+  public func right(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, width: CoreGraphics.CGFloat = -1, height: CoreGraphics.CGFloat = -1)
+  public func left(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, width: CoreGraphics.CGFloat = -1, height: CoreGraphics.CGFloat = -1)
+  public func top(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, width: CoreGraphics.CGFloat = -1, height: CoreGraphics.CGFloat = -1)
+  public func bottom(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, width: CoreGraphics.CGFloat = -1, height: CoreGraphics.CGFloat = -1)
+  public func topLeft(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, width: CoreGraphics.CGFloat = -1, height: CoreGraphics.CGFloat = -1)
+  public func topRight(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, width: CoreGraphics.CGFloat = -1, height: CoreGraphics.CGFloat = -1)
+  public func bottomLeft(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, width: CoreGraphics.CGFloat = -1, height: CoreGraphics.CGFloat = -1)
+  public func bottomRight(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, width: CoreGraphics.CGFloat = -1, height: CoreGraphics.CGFloat = -1)
+  public func center(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, size: CoreGraphics.CGSize)
+  public func right(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, size: CoreGraphics.CGSize)
+  public func left(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, size: CoreGraphics.CGSize)
+  public func top(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, size: CoreGraphics.CGSize)
+  public func bottom(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, size: CoreGraphics.CGSize)
+  public func topLeft(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, size: CoreGraphics.CGSize)
+  public func topRight(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, size: CoreGraphics.CGSize)
+  public func bottomLeft(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, size: CoreGraphics.CGSize)
+  public func bottomRight(dx: CoreGraphics.CGFloat = 0, dy: CoreGraphics.CGFloat = 0, size: CoreGraphics.CGSize)
+  public var top: CoreGraphics.CGFloat {
+    get
+  }
+  public var bottom: CoreGraphics.CGFloat {
+    get
+  }
+  public var left: CoreGraphics.CGFloat {
+    get
+  }
+  public var right: CoreGraphics.CGFloat {
+    get
+  }
+  public var width: CoreGraphics.CGFloat {
+    get
+  }
+  public var height: CoreGraphics.CGFloat {
+    get
+  }
+  public func pointOnScreen(_ point: CoreGraphics.CGPoint) -> CoreGraphics.CGPoint
+  public func rectOnScreen(_ rect: CoreGraphics.CGRect) -> CoreGraphics.CGRect
+}
+extension Array where Element : Swift.Equatable {
+  public mutating func remove(object: Element)
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class NodeCell : UIKit.UITableViewCell {
+  public var node: acheron.Node! {
+    get
+    set
+  }
+  @objc override dynamic public func layoutSubviews()
+  @objc deinit
+}
+extension NSMutableAttributedString {
+  public func append(_ string: Swift.String, pen: acheron.Pen)
+  public func append(image: UIKit.UIImage)
+}
+public protocol ExpandableTableViewDelegate : AnyObject {
+  func numberOfSections(in tableView: acheron.ExpandableTableView) -> Swift.Int
+  func expandableTableView(_ tableView: acheron.ExpandableTableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
+  func expandableTableView(_ tableView: acheron.ExpandableTableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  func expandableTableView(_ tableView: acheron.ExpandableTableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  func expandableTableView(_ tableView: acheron.ExpandableTableView, cellForRowAt indexPath: Foundation.IndexPath) -> acheron.ExpandableCell
+  func expandableTableView(_ tableView: acheron.ExpandableTableView, expansionForRowAt indexPath: Foundation.IndexPath) -> UIKit.UIView
+  func expandableTableView(_ tableView: acheron.ExpandableTableView, baseHeightForRowAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  func expandableTableView(_ tableView: acheron.ExpandableTableView, expansionHeightForRowAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  func expandableTableView(_ tableView: acheron.ExpandableTableView, expandableRowAt indexPath: Foundation.IndexPath) -> Swift.Bool
+  func expandableTableView(_ tableView: acheron.ExpandableTableView, reload expansion: UIKit.UIView, at indexPath: Foundation.IndexPath)
+}
+extension ExpandableTableViewDelegate {
+  public func numberOfSections(in tableView: acheron.ExpandableTableView) -> Swift.Int
+  public func expandableTableView(_ tableView: acheron.ExpandableTableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
+  public func expandableTableView(_ tableView: acheron.ExpandableTableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  public func expandableTableView(_ tableView: acheron.ExpandableTableView, expansionForRowAt indexPath: Foundation.IndexPath) -> UIKit.UIView
+  public func expandableTableView(_ tableView: acheron.ExpandableTableView, baseHeightForRowAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  public func expandableTableView(_ tableView: acheron.ExpandableTableView, expansionHeightForRowAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  public func expandableTableView(_ tableView: acheron.ExpandableTableView, expandableRowAt indexPath: Foundation.IndexPath) -> Swift.Bool
+  public func expandableTableView(_ tableView: acheron.ExpandableTableView, reload expansion: UIKit.UIView, at indexPath: Foundation.IndexPath)
+}
+@objc public class ExpandableTableView : acheron.AETableView, UIKit.UITableViewDelegate, UIKit.UITableViewDataSource {
+  public var baseHeight: CoreGraphics.CGFloat
+  public var expansionHeight: CoreGraphics.CGFloat
+  unowned public var expandableTableViewDelegate: acheron.ExpandableTableViewDelegate
+  public var expandedPath: Foundation.IndexPath?
+  public var exposeBottom: Swift.Bool
+  public init(delegate: acheron.ExpandableTableViewDelegate)
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  public func collapse()
+  public func collapseSilent()
+  public func dequeueExpansionView() -> UIKit.UIView?
+  @objc public func tableView(_ tableView: UIKit.UITableView, heightForRowAt indexPath: Foundation.IndexPath) -> CoreGraphics.CGFloat
+  @objc public func tableView(_ tableView: UIKit.UITableView, heightForHeaderInSection section: Swift.Int) -> CoreGraphics.CGFloat
+  @objc public func numberOfSections(in tableView: UIKit.UITableView) -> Swift.Int
+  @objc public func tableView(_ tableView: UIKit.UITableView, viewForHeaderInSection section: Swift.Int) -> UIKit.UIView?
+  @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension Comparable {
+  public func clamped(to limits: Swift.ClosedRange<Self>) -> Self
+}
+@_hasMissingDesignatedInitializers public class Screen {
+  public enum Model {
+    case iPhone, iPad, mac, other
+    public static func == (a: acheron.Screen.Model, b: acheron.Screen.Model) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum Dimensions {
+    case dim320x480, dim320x568, dim375x667, dim414x736, dim360x780, dim375x812, dim390x844, dim414x896, dim428x926, dim1024x768, dim1080x810, dim1112x834, dim1366x1024, dim1194x834, dimOther
+    public static func == (a: acheron.Screen.Dimensions, b: acheron.Screen.Dimensions) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum Ratio : Swift.CaseIterable {
+    case rat067, rat056, rat046, rat133, rat143
+    public static func == (a: acheron.Screen.Ratio, b: acheron.Screen.Ratio) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public typealias AllCases = [acheron.Screen.Ratio]
+    public static var allCases: [acheron.Screen.Ratio] {
+      get
+    }
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public static var model: acheron.Screen.Model {
+    get
+  }
+  public static var dimensions: acheron.Screen.Dimensions {
+    get
+  }
+  public static var ratio: acheron.Screen.Ratio {
+    get
+  }
+  public static var width: CoreGraphics.CGFloat {
+    get
+  }
+  public static var height: CoreGraphics.CGFloat {
+    get
+  }
+  public static var size: CoreGraphics.CGSize {
+    get
+  }
+  public static var s: CoreGraphics.CGFloat {
+    get
+  }
+  public static var iPhone: Swift.Bool {
+    get
+  }
+  public static var iPad: Swift.Bool {
+    get
+  }
+  public static var mac: Swift.Bool {
+    get
+  }
+  public static var bounds: CoreGraphics.CGRect {
+    get
+  }
+  public static var safeTop: CoreGraphics.CGFloat {
+    get
+  }
+  public static var safeBottom: CoreGraphics.CGFloat {
+    get
+  }
+  public static var safeLeft: CoreGraphics.CGFloat {
+    get
+  }
+  public static var safeRight: CoreGraphics.CGFloat {
+    get
+  }
+  public static var navBottom: CoreGraphics.CGFloat {
+    get
+  }
+  public static var keyWindow: UIKit.UIWindow? {
+    get
+  }
+  @objc deinit
+}
+extension Date {
+  public init(_ string: Swift.String)
+  public func format(_ template: Swift.String) -> Swift.String
+  public static var now: Foundation.Date {
+    get
+  }
+  public static var isoFormatter: Foundation.DateFormatter
+  public static var iso8601Formatter: Foundation.ISO8601DateFormatter
+  public func toISOFormattedString() -> Swift.String
+  public static func fromISOFormatted(string: Swift.String) -> Foundation.Date?
+}
+@objc open class Anchor : acheron.Domain {
+  @objc dynamic public var fork: Swift.Int
+  @objc dynamic public var vers: Swift.Int
+  unowned public var basket: acheron.Basket?
+  @objc override dynamic public init()
+  required public init(attributes: [Swift.String : Any], parent: acheron.Domain? = nil)
+  required public init(basket: acheron.Basket)
+  required public init(basket: acheron.Basket, attributes: [Swift.String : Any])
+  public func resolveConflicts(_ attributes: [Swift.String : Any])
+  override public func delete()
+  open var isUploaded: Swift.Bool {
+    get
+  }
+  override public var anchor: acheron.Anchor {
+    get
+  }
+  override open var properties: [Swift.String] {
+    get
+  }
+  override public init(parent: acheron.Domain)
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers public class TripWire : UIKit.UIView {
+  public var onTrip: () -> ()
+  public init(frame: CoreGraphics.CGRect = CGRect.zero, onTrip: @escaping () -> ())
+  @objc override dynamic public func hitTest(_ point: CoreGraphics.CGPoint, with event: UIKit.UIEvent?) -> UIKit.UIView?
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc deinit
+}
+open class Pond {
+  public init()
+  public var complete: Swift.Bool {
+    get
+  }
+  public var started: Swift.Bool {
+    get
+  }
+  public func pebble(name: Swift.String, _ payload: @escaping (@escaping (Swift.Bool) -> ()) -> ()) -> acheron.Pebble
+  public func addCompletionTask(_ task: @escaping () -> ())
+  public func start()
+  public func reset()
+  public func resetTest()
+  public func test(shouldSucceed: [acheron.Pebble], shouldFail: [acheron.Pebble]) -> Swift.Bool
+  @objc deinit
+}
+open class BackgroundPond : acheron.Pond {
+  public init(timedOut: @escaping () -> ())
+  override public func start()
+  override public init()
+  @objc deinit
+}
+public protocol NodeViewDelegate : AnyObject {
+  func nodeView(_ nodeView: acheron.NodeView, didTapNode node: acheron.Node)
+}
+extension NodeViewDelegate {
+  public func nodeView(_ nodeView: acheron.NodeView, didTapNode node: acheron.Node)
+}
+@objc @_hasMissingDesignatedInitializers public class NodeView : UIKit.UIView, UIKit.UITableViewDataSource {
+  public var node: acheron.Node! {
+    get
+    set
+  }
+  public var columns: [acheron.NodeColumn]
+  weak public var delegate: acheron.NodeViewDelegate?
+  public var forEachCell: (acheron.NodeCell) -> ()
+  @objc dynamic public init()
+  public var rowHeight: CoreGraphics.CGFloat {
+    get
+    set
+  }
+  @objc override dynamic public func layoutSubviews()
+  @objc public func tableView(_ tableView: UIKit.UITableView, numberOfRowsInSection section: Swift.Int) -> Swift.Int
+  @objc public func tableView(_ tableView: UIKit.UITableView, cellForRowAt indexPath: Foundation.IndexPath) -> UIKit.UITableViewCell
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc deinit
+}
+extension Dictionary where Key == Swift.String {
+  public func toJSON() -> Swift.String
+}
+public class WeakSet<T> : Swift.Sequence, Swift.ExpressibleByArrayLiteral, Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible where T : AnyObject {
+  public init(_ objects: [T])
+  convenience required public init(arrayLiteral elements: T...)
+  public var allObjects: [T] {
+    get
+  }
+  public var count: Swift.Int {
+    get
+  }
+  public func contains(_ object: T) -> Swift.Bool
+  public func insert(_ object: T)
+  public func union(_ other: acheron.WeakSet<T>) -> acheron.WeakSet<T>
+  public func formUnion(_ other: acheron.WeakSet<T>)
+  public func formIntersection(_ other: acheron.WeakSet<T>)
+  public func subtracting(_ other: acheron.WeakSet<T>) -> acheron.WeakSet<T>
+  public func remove(_ object: T)
+  public func removeAll()
+  public func makeIterator() -> Swift.AnyIterator<T>
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+  public static func != (lhs: acheron.WeakSet<T>, rhs: acheron.WeakSet<T>) -> Swift.Bool
+  public typealias ArrayLiteralElement = T
+  public typealias Element = T
+  public typealias Iterator = Swift.AnyIterator<T>
+  @objc deinit
+}
+extension UIButton {
+  public func setTitlePen(_ pen: acheron.Pen, for state: UIKit.UIControl.State)
+}
+@objc @_inheritsConvenienceInitializers public class SQLitePersist : acheron.Persist {
+  override public init(_ name: Swift.String)
+  override public func selectAll() -> [[Swift.String : Any]]
+  override public func selectAll(type: Swift.String) -> [[Swift.String : Any]]
+  override public func select(where field: Swift.String, is value: Swift.String?, type: Swift.String) -> [[Swift.String : Any]]
+  override public func selectOne(where field: Swift.String, is value: Swift.String, type: Swift.String) -> [Swift.String : Any]?
+  override public func selectForked() -> [[Swift.String : Any]]
+  override public func selectForkedMemories() -> [[Swift.String : Any]]
+  override public func attributes(iden: Swift.String) -> [Swift.String : Any]?
+  override public func attributes(type: Swift.String, only: Swift.String) -> [Swift.String : Any]?
+  override public func delete(iden: Swift.String)
+  override public func store(iden: Swift.String, attributes: [Swift.String : Any])
+  override public func transact(_ transact: () -> (Swift.Bool))
+  override public func wipe()
+  override public func wipeDocuments()
+  override public func show()
+  override public func show(_ iden: Swift.String)
+  override public func census()
+  override open func set(key: Swift.String, value: Swift.String)
+  override open func setServer(key: Swift.String, value: Swift.String)
+  override open func get(key: Swift.String) -> Swift.String?
+  override open func unset(key: Swift.String)
+  @objc deinit
+}
+@objc public class Basket : ObjectiveC.NSObject {
+  public var fork: Swift.Int
+  public init(_ persist: acheron.Persist)
+  public func associate(type: Swift.String, only: Swift.String)
+  public func only(type: Swift.String) -> Swift.String?
+  public func inject(_ attributes: [Swift.String : Any]) -> acheron.Anchor
+  public func createBy(cls: acheron.Anchor.Type, only: Swift.String? = nil) -> acheron.Anchor
+  public func selectBy(iden: Swift.String) -> acheron.Anchor?
+  public func selectBy(cls: acheron.Anchor.Type, only: Swift.String) -> acheron.Anchor?
+  public func selectOne(where field: Swift.String, is value: Swift.String, type: acheron.Anchor.Type) -> acheron.Domain?
+  public func select(where field: Swift.String, is value: Swift.String, type: acheron.Anchor.Type) -> [acheron.Domain]
+  public func selectAll(_ type: acheron.Anchor.Type) -> [acheron.Anchor]
+  public func selectForked() -> [acheron.Anchor]
+  public func selectForkedMemories() -> [[Swift.String : Any]]
+  public func syncPacket() -> [Swift.String : Any]
+  public func addBlock(_ block: @escaping (acheron.Domain) -> (), class cls: acheron.Domain.Type, event: acheron.DomainAction)
+  public func transact(_ closure: () -> ())
+  public func clearCache()
+  public func set(key: Swift.String, value: Swift.String)
+  public func setServer(key: Swift.String, value: Swift.String)
+  public func get(key: Swift.String) -> Swift.String?
+  public func unset(key: Swift.String)
+  public func show()
+  public func wipe()
+  public func wipeDocuments()
+  public func printDocuments()
+  public func printCensus()
+  @objc override dynamic public init()
+  @objc deinit
+}
+public class AESync {
+  public var onFire: (QuartzCore.CADisplayLink, @escaping () -> ()) -> ()
+  public var link: QuartzCore.CADisplayLink {
+    get
+    set
+  }
+  public init()
+  @objc deinit
+  public var running: Swift.Bool
+  public func start()
+  public func stop()
+}
+@objc open class AETableView : UIKit.UITableView {
+  public var minimumContentHeight: CoreGraphics.CGFloat?
+  @objc dynamic public init()
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc override dynamic public var refreshControl: UIKit.UIRefreshControl? {
+    @objc get
+    @objc set
+  }
+  @objc override dynamic public var contentSize: CoreGraphics.CGSize {
+    @objc get
+    @objc set
+  }
+  @objc override dynamic public init(frame: CoreGraphics.CGRect, style: UIKit.UITableView.Style)
+  @objc deinit
+}
+extension CALayer {
+  public var top: CoreGraphics.CGFloat {
+    get
+  }
+  public var bottom: CoreGraphics.CGFloat {
+    get
+  }
+  public var left: CoreGraphics.CGFloat {
+    get
+  }
+  public var right: CoreGraphics.CGFloat {
+    get
+  }
+  public var width: CoreGraphics.CGFloat {
+    get
+  }
+  public var height: CoreGraphics.CGFloat {
+    get
+  }
+}
+extension UIViewController {
+  public var s: CoreGraphics.CGFloat {
+    get
+  }
+  public var safeTop: CoreGraphics.CGFloat {
+    get
+  }
+  public var safeBottom: CoreGraphics.CGFloat {
+    get
+  }
+}
+extension CGPoint {
+  public static func + (a: CoreGraphics.CGPoint, b: CoreGraphics.CGPoint) -> CoreGraphics.CGPoint
+  public static func - (a: CoreGraphics.CGPoint, b: CoreGraphics.CGPoint) -> CoreGraphics.CGPoint
+  public static func * (a: CoreGraphics.CGPoint, b: CoreGraphics.CGFloat) -> CoreGraphics.CGPoint
+  public static func * (a: CoreGraphics.CGFloat, b: CoreGraphics.CGPoint) -> CoreGraphics.CGPoint
+  public static func / (a: CoreGraphics.CGPoint, b: CoreGraphics.CGFloat) -> CoreGraphics.CGPoint
+  public func perpendicular() -> CoreGraphics.CGPoint
+  public func lengthSquared() -> CoreGraphics.CGFloat
+  public func length() -> CoreGraphics.CGFloat
+  public func unit() -> CoreGraphics.CGPoint
+  public static func point(theta: CoreGraphics.CGFloat) -> CoreGraphics.CGPoint
+  public func ofLength(_ a: CoreGraphics.CGFloat) -> CoreGraphics.CGPoint
+}
+extension String {
+  public subscript(i: Swift.Int) -> Swift.Character {
+    get
+  }
+  public subscript(r: Swift.CountableClosedRange<Swift.Int>) -> Swift.String {
+    get
+  }
+  public subscript(r: Swift.CountablePartialRangeFrom<Swift.Int>) -> Swift.String {
+    get
+  }
+  public subscript(r: Swift.PartialRangeThrough<Swift.Int>) -> Swift.String {
+    get
+  }
+  public subscript(r: Swift.PartialRangeUpTo<Swift.Int>) -> Swift.String {
+    get
+  }
+  public func loc(of string: Swift.String, after: Swift.Int = 0) -> Swift.Int?
+  public func lastLoc(of string: Swift.String) -> Swift.Int?
+  public var capitalize: Swift.String {
+    get
+  }
+  public var localized: Swift.String {
+    get
+  }
+  public func toInt8() -> Swift.UnsafeMutablePointer<Swift.Int8>
+  public func toCString() -> [Swift.CChar]?
+  public func toAttributes() -> [Swift.String : Any]
+  public func xmlToAttributes() -> [Swift.String : Any]
+  public func toArray() -> [[Swift.String : Any]]
+  public static func uuid() -> Swift.String
+}
+@objc public class Pen : ObjectiveC.NSObject {
+  final public let attributes: [Foundation.NSAttributedString.Key : Any]
+  public var font: UIKit.UIFont {
+    get
+  }
+  public var color: UIKit.UIColor {
+    get
+  }
+  public var alignment: UIKit.NSTextAlignment {
+    get
+  }
+  public var style: UIKit.NSParagraphStyle {
+    get
+  }
+  public var kern: CoreGraphics.CGFloat? {
+    get
+  }
+  public init(font: UIKit.UIFont = UIFont.systemFont(ofSize: 16), color: UIKit.UIColor = UIColor.black, alignment: UIKit.NSTextAlignment = .left, style: UIKit.NSParagraphStyle = NSParagraphStyle.default, kern: CoreGraphics.CGFloat? = nil)
+  public func clone(font: UIKit.UIFont? = nil, color: UIKit.UIColor? = nil, alignment: UIKit.NSTextAlignment? = nil, style: UIKit.NSParagraphStyle? = nil, kern: CoreGraphics.CGFloat? = nil) -> acheron.Pen
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension UIColor {
+  public func alpha(_ alpha: CoreGraphics.CGFloat) -> UIKit.UIColor
+  public func shade(_ percent: CoreGraphics.CGFloat) -> UIKit.UIColor
+  public func tone(_ percent: CoreGraphics.CGFloat) -> UIKit.UIColor
+  public func tint(_ percent: CoreGraphics.CGFloat) -> UIKit.UIColor
+  convenience public init(rgb: Swift.Int)
+}
+extension UILabel {
+  public var pen: acheron.Pen {
+    get
+    set
+  }
+}
+@_hasMissingDesignatedInitializers public class Pebble {
+  public enum State {
+    case pending, running, succeeded, failed
+    public static func == (a: acheron.Pebble.State, b: acheron.Pebble.State) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public var ready: () -> (Swift.Bool)
+  public var succeeded: Swift.Bool {
+    get
+  }
+  public var failed: Swift.Bool {
+    get
+  }
+  public var completed: Swift.Bool {
+    get
+  }
+  public var skipped: Swift.Bool {
+    get
+  }
+  public var testState: acheron.Pebble.State? {
+    get
+    set
+  }
+  @objc deinit
+}
+public struct RGB {
+  public let uiColor: UIKit.UIColor
+  public init(r: CoreGraphics.CGFloat, g: CoreGraphics.CGFloat, b: CoreGraphics.CGFloat, a: CoreGraphics.CGFloat)
+  public init(r: CoreGraphics.CGFloat, g: CoreGraphics.CGFloat, b: CoreGraphics.CGFloat)
+  public init(r: Swift.Int, g: Swift.Int, b: Swift.Int)
+  public init(uiColor: UIKit.UIColor)
+  public static func + (p: acheron.RGB, q: acheron.RGB) -> acheron.RGB
+  public static func - (p: acheron.RGB, q: acheron.RGB) -> acheron.RGB
+  public static func * (p: acheron.RGB, q: CoreGraphics.CGFloat) -> acheron.RGB
+  public func blend(rgb: acheron.RGB, percent: CoreGraphics.CGFloat) -> acheron.RGB
+  public func tint(_ percent: CoreGraphics.CGFloat) -> acheron.RGB
+  public func tone(_ percent: CoreGraphics.CGFloat) -> acheron.RGB
+  public func shade(_ percent: CoreGraphics.CGFloat) -> acheron.RGB
+  public var cgColor: CoreGraphics.CGColor {
+    get
+  }
+  public static var black: acheron.RGB
+  public static var white: acheron.RGB
+  public static var grey: acheron.RGB
+  public static func tint(color: UIKit.UIColor, percent: CoreGraphics.CGFloat) -> UIKit.UIColor
+  public static func tone(color: UIKit.UIColor, percent: CoreGraphics.CGFloat) -> UIKit.UIColor
+  public static func shade(color: UIKit.UIColor, percent: CoreGraphics.CGFloat) -> UIKit.UIColor
+}
+public protocol NodeData {
+  var availableNames: [Swift.String] { get }
+  func value(for name: Swift.String) -> Any?
+}
+extension Domain : acheron.NodeData {
+  public var availableNames: [Swift.String] {
+    get
+  }
+  public func value(for name: Swift.String) -> Any?
+}
+extension Dictionary : acheron.NodeData where Key == Swift.String {
+  public var availableNames: [Swift.String] {
+    get
+  }
+  public func value(for name: Swift.String) -> Any?
+}
+@objc @_inheritsConvenienceInitializers open class AEViewController : UIKit.UIViewController {
+  open func layoutRatio067()
+  open func layoutRatio056()
+  open func layoutRatio046()
+  open func layoutRatio133()
+  open func layoutRatio143()
+  open func layout320x480()
+  open func layout320x568()
+  open func layout375x667()
+  open func layout414x736()
+  open func layout360x780()
+  open func layout375x812()
+  open func layout390x844()
+  open func layout414x896()
+  open func layout428x926()
+  open func layout1024x768()
+  open func layout1080x810()
+  open func layout1112x834()
+  open func layout1366x1024()
+  open func layout1194x834()
+  open func layoutRatio()
+  @objc override dynamic open func viewSafeAreaInsetsDidChange()
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public class AETimer {
+  public init()
+  @objc deinit
+  public var interval: Swift.Double {
+    get
+    set
+  }
+  public func configure(interval: Swift.Double, _ closure: @escaping () -> ())
+  public func start()
+  public func stop()
+  public func reschedule()
+}
+public class Node {
+  public var data: acheron.NodeData
+  public init(data: acheron.NodeData)
+  public init(datum: [acheron.NodeData])
+  public func value(for name: Swift.String) -> Any?
+  public func sort(by: Swift.String)
+  public func node(groupedBy: Swift.String, sortedBy: Swift.String) -> acheron.Node
+  @objc deinit
+}
+public class NodeColumn {
+  public var pen: acheron.Pen?
+  public var format: (Any?) -> (Swift.String)
+  public var width: CoreGraphics.CGFloat
+  public var alignment: UIKit.NSTextAlignment
+  public var createView: (acheron.NodeColumn) -> (UIKit.UIView)
+  public var loadView: (acheron.NodeColumn, UIKit.UIView, Any?) -> ()
+  public init(title: Swift.String? = nil, token: Swift.String, pen: acheron.Pen? = nil, format: ((Any?) -> (Swift.String))? = nil)
+  @objc deinit
+}
+extension CaseIterable {
+  public static func from(string: Swift.String) -> Self?
+  public func toString() -> Swift.String
+}
+public class SafeSet<T> : Swift.Sequence, Swift.ExpressibleByArrayLiteral where T : Swift.Hashable {
+  public init(_ objects: [T])
+  convenience required public init(arrayLiteral elements: T...)
+  public var count: Swift.Int {
+    get
+  }
+  public func makeIterator() -> Swift.Set<T>.Iterator
+  @discardableResult
+  public func insert(_ object: T) -> (Swift.Bool, T)
+  public func removeAll()
+  public typealias ArrayLiteralElement = T
+  public typealias Element = T
+  public typealias Iterator = Swift.Set<T>.Iterator
+  @objc deinit
+}
+extension NSString {
+  public func draw(at point: CoreGraphics.CGPoint, pen: acheron.Pen)
+  @objc(drawInRect:pen:) dynamic public func draw(in rect: CoreGraphics.CGRect, pen: acheron.Pen)
+  public func draw(with rect: CoreGraphics.CGRect, options: UIKit.NSStringDrawingOptions, pen: acheron.Pen, context: UIKit.NSStringDrawingContext?)
+  @objc dynamic public func size(pen: acheron.Pen) -> CoreGraphics.CGSize
+  @objc dynamic public func size(pen: acheron.Pen, width: CoreGraphics.CGFloat) -> CoreGraphics.CGSize
+}
+@objc @_inheritsConvenienceInitializers open class ExpandableCell : UIKit.UITableViewCell {
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  public var expanded: Swift.Bool {
+    get
+  }
+  public var baseHeight: CoreGraphics.CGFloat {
+    get
+  }
+  open func onWillExpand()
+  open func onWillCollapse()
+  @objc open func onTap()
+  @objc override dynamic open func layoutSubviews()
+  @objc override dynamic open func addSubview(_ view: UIKit.UIView)
+  @objc override dynamic open func addGestureRecognizer(_ gestureRecognizer: UIKit.UIGestureRecognizer)
+  @objc override dynamic open func sendSubviewToBack(_ view: UIKit.UIView)
+  @objc override dynamic open var backgroundColor: UIKit.UIColor? {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class Loom {
+  public static var basket: acheron.Basket!
+  public static func classForKeyPath(keyPath: Swift.String, parent: acheron.Domain.Type) -> Swift.AnyClass?
+  public static func arrayClassForKeyPath(keyPath: Swift.String, parent: Swift.AnyObject) -> Swift.AnyClass?
+  public static func set(key: Swift.String, value: Swift.String)
+  public static func get(key: Swift.String) -> Swift.String?
+  public static func unset(key: Swift.String)
+  public static func create(cls: acheron.Anchor.Type, only: Swift.String? = nil) -> acheron.Anchor
+  public static func selectBy(iden: Swift.String) -> acheron.Anchor?
+  public static func selectBy(cls: acheron.Anchor.Type, only: Swift.String) -> acheron.Anchor?
+  public static func selectOne(where field: Swift.String, is value: Swift.String, type: acheron.Anchor.Type) -> acheron.Domain?
+  public static func select(where field: Swift.String, is value: Swift.String, type: acheron.Anchor.Type) -> [acheron.Domain]
+  public static func selectAll(_ type: acheron.Anchor.Type) -> [acheron.Anchor]
+  public static func transact(_ closure: () -> ())
+  public static func start(basket: acheron.Basket, namespaces: [Swift.String])
+  @objc deinit
+}
+@objc open class Persist : ObjectiveC.NSObject {
+  open var name: Swift.String
+  public init(_ name: Swift.String)
+  public func associate(type: Swift.String, only: Swift.String)
+  public func only(type: Swift.String) -> Swift.String?
+  open func selectAll() -> [[Swift.String : Any]]
+  open func selectAll(type: Swift.String) -> [[Swift.String : Any]]
+  open func select(where: Swift.String, is value: Swift.String?, type: Swift.String) -> [[Swift.String : Any]]
+  open func selectOne(where: Swift.String, is value: Swift.String, type: Swift.String) -> [Swift.String : Any]?
+  open func selectForked() -> [[Swift.String : Any]]
+  open func selectForkedMemories() -> [[Swift.String : Any]]
+  open func attributes(iden: Swift.String) -> [Swift.String : Any]?
+  open func attributes(type: Swift.String, only: Swift.String) -> [Swift.String : Any]?
+  open func delete(iden: Swift.String)
+  open func store(iden: Swift.String, attributes: [Swift.String : Any])
+  open func transact(_ closure: () -> (Swift.Bool))
+  open func wipe()
+  open func wipeDocuments()
+  open func show()
+  open func show(_ iden: Swift.String)
+  open func census()
+  open func set(key: Swift.String, value: Swift.String)
+  open func setServer(key: Swift.String, value: Swift.String)
+  open func get(key: Swift.String) -> Swift.String?
+  open func unset(key: Swift.String)
+  open func logError(_ error: Swift.Error)
+  open func logError(message: Swift.String)
+  @objc override dynamic public init()
+  @objc deinit
+}
+public enum DomainStatus {
+  case loading, clean, dirty, deleted
+  public static func == (a: acheron.DomainStatus, b: acheron.DomainStatus) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum DomainAction : Swift.String {
+  case create, edit, delete, added, removed, load, save, dirty
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public protocol Packable : ObjectiveC.NSObject {
+  init?(_: Swift.String)
+  func pack() -> Swift.String
+}
+@objc @_inheritsConvenienceInitializers open class Domain : ObjectiveC.NSObject {
+  @objc dynamic public var iden: Swift.String!
+  @objc dynamic public var type: Swift.String!
+  @objc dynamic public var modified: Foundation.Date!
+  weak public var parent: acheron.Domain?
+  public var status: acheron.DomainStatus {
+    get
+    set
+  }
+  @objc override dynamic public init()
+  public init(parent: acheron.Domain)
+  required public init(attributes: [Swift.String : Any], parent: acheron.Domain? = nil)
+  @objc deinit
+  public func add(_ domain: acheron.Domain)
+  public func remove(_ domain: acheron.Domain)
+  public func delete()
+  open func onCreate()
+  open func onEdit()
+  open func onDelete()
+  open func onLoaded()
+  open func onAdded()
+  open func onRemoved()
+  open func onInit()
+  open func onDirty()
+  open func onSave()
+  open func onLoad()
+  open func loader(keyPath: Swift.String) -> ((Any) -> (Any?))?
+  open func unloader(keyPath: Swift.String) -> ((Any) -> (Any?))?
+  public func unload() -> [Swift.String : Any]
+  public func load(attributes: [Swift.String : Any])
+  public func dirtyUsingAttributes(_ attributes: [Swift.String : Any])
+  public func dirtyUsingDomain(_ domain: acheron.Domain)
+  public func editUsingAttributes(_ attributes: [Swift.String : Any])
+  public func editUsingDomain(_ domain: acheron.Domain)
+  open var properties: [Swift.String] {
+    get
+  }
+  open var children: [Swift.String] {
+    get
+  }
+  public var anchor: acheron.Anchor? {
+    get
+  }
+  @objc override dynamic open func observeValue(forKeyPath keyPath: Swift.String?, of object: Any?, change: [Foundation.NSKeyValueChangeKey : Any]?, context: Swift.UnsafeMutableRawPointer?)
+}
+extension acheron.Screen.Model : Swift.Equatable {}
+extension acheron.Screen.Model : Swift.Hashable {}
+extension acheron.Screen.Dimensions : Swift.Equatable {}
+extension acheron.Screen.Dimensions : Swift.Hashable {}
+extension acheron.Screen.Ratio : Swift.Equatable {}
+extension acheron.Screen.Ratio : Swift.Hashable {}
+extension acheron.Pebble.State : Swift.Equatable {}
+extension acheron.Pebble.State : Swift.Hashable {}
+extension acheron.DomainStatus : Swift.Equatable {}
+extension acheron.DomainStatus : Swift.Hashable {}
+extension acheron.DomainAction : Swift.Equatable {}
+extension acheron.DomainAction : Swift.Hashable {}
+extension acheron.DomainAction : Swift.RawRepresentable {}

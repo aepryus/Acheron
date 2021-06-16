@@ -205,14 +205,14 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #if __has_attribute(external_source_symbol)
 # pragma push_macro("any")
 # undef any
-# pragma clang attribute push(__attribute__((external_source_symbol(language="Swift", defined_in="Acheron",generated_declaration))), apply_to=any(function,enum,objc_interface,objc_category,objc_protocol))
+# pragma clang attribute push(__attribute__((external_source_symbol(language="Swift", defined_in="acheron",generated_declaration))), apply_to=any(function,enum,objc_interface,objc_category,objc_protocol))
 # pragma pop_macro("any")
 #endif
 
 @class NSCoder;
 @class UIRefreshControl;
 
-SWIFT_CLASS("_TtC7Acheron11AETableView")
+SWIFT_CLASS("_TtC7acheron11AETableView")
 @interface AETableView : UITableView
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
@@ -224,7 +224,7 @@ SWIFT_CLASS("_TtC7Acheron11AETableView")
 @class NSString;
 @class NSBundle;
 
-SWIFT_CLASS("_TtC7Acheron16AEViewController")
+SWIFT_CLASS("_TtC7acheron16AEViewController")
 @interface AEViewController : UIViewController
 - (void)viewSafeAreaInsetsDidChange;
 - (nonnull instancetype)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
@@ -233,7 +233,7 @@ SWIFT_CLASS("_TtC7Acheron16AEViewController")
 
 @class NSDate;
 
-SWIFT_CLASS("_TtC7Acheron6Domain")
+SWIFT_CLASS("_TtC7acheron6Domain")
 @interface Domain : NSObject
 @property (nonatomic, copy) NSString * _Null_unspecified iden;
 @property (nonatomic, copy) NSString * _Null_unspecified type;
@@ -244,7 +244,7 @@ SWIFT_CLASS("_TtC7Acheron6Domain")
 
 @class NSNumber;
 
-SWIFT_CLASS("_TtC7Acheron6Anchor")
+SWIFT_CLASS("_TtC7acheron6Anchor")
 @interface Anchor : Domain
 @property (nonatomic) NSInteger fork;
 @property (nonatomic) NSInteger vers;
@@ -252,7 +252,7 @@ SWIFT_CLASS("_TtC7Acheron6Anchor")
 @end
 
 
-SWIFT_CLASS("_TtC7Acheron6Basket")
+SWIFT_CLASS("_TtC7acheron6Basket")
 @interface Basket : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -265,7 +265,7 @@ SWIFT_CLASS("_TtC7Acheron6Basket")
 @class UIGestureRecognizer;
 @class UIColor;
 
-SWIFT_CLASS("_TtC7Acheron14ExpandableCell")
+SWIFT_CLASS("_TtC7acheron14ExpandableCell")
 @interface ExpandableCell : UITableViewCell
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
@@ -279,7 +279,7 @@ SWIFT_CLASS("_TtC7Acheron14ExpandableCell")
 
 @class NSIndexPath;
 
-SWIFT_CLASS("_TtC7Acheron19ExpandableTableView")
+SWIFT_CLASS("_TtC7acheron19ExpandableTableView")
 @interface ExpandableTableView : AETableView <UITableViewDataSource, UITableViewDelegate>
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
 - (CGFloat)tableView:(UITableView * _Nonnull)tableView heightForRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
@@ -295,14 +295,14 @@ SWIFT_CLASS("_TtC7Acheron19ExpandableTableView")
 
 @class Pen;
 
-@interface NSString (SWIFT_EXTENSION(Acheron))
+@interface NSString (SWIFT_EXTENSION(acheron))
 - (void)drawInRect:(CGRect)rect pen:(Pen * _Nonnull)pen;
 - (CGSize)sizeWithPen:(Pen * _Nonnull)pen SWIFT_WARN_UNUSED_RESULT;
 - (CGSize)sizeWithPen:(Pen * _Nonnull)pen width:(CGFloat)width SWIFT_WARN_UNUSED_RESULT;
 @end
 
 
-SWIFT_CLASS("_TtC7Acheron8NodeCell")
+SWIFT_CLASS("_TtC7acheron8NodeCell")
 @interface NodeCell : UITableViewCell
 - (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier SWIFT_UNAVAILABLE;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
@@ -310,7 +310,7 @@ SWIFT_CLASS("_TtC7Acheron8NodeCell")
 @end
 
 
-SWIFT_CLASS("_TtC7Acheron8NodeView")
+SWIFT_CLASS("_TtC7acheron8NodeView")
 @interface NodeView : UIView <UITableViewDataSource>
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
@@ -321,27 +321,27 @@ SWIFT_CLASS("_TtC7Acheron8NodeView")
 @end
 
 
-SWIFT_CLASS("_TtC7Acheron3Pen")
+SWIFT_CLASS("_TtC7acheron3Pen")
 @interface Pen : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
-SWIFT_CLASS("_TtC7Acheron7Persist")
+SWIFT_CLASS("_TtC7acheron7Persist")
 @interface Persist : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 
-SWIFT_CLASS("_TtC7Acheron13SQLitePersist")
+SWIFT_CLASS("_TtC7acheron13SQLitePersist")
 @interface SQLitePersist : Persist
 @end
 
 @class UIEvent;
 
-SWIFT_CLASS("_TtC7Acheron8TripWire")
+SWIFT_CLASS("_TtC7acheron8TripWire")
 @interface TripWire : UIView
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
 - (UIView * _Nullable)hitTest:(CGPoint)point withEvent:(UIEvent * _Nullable)event SWIFT_WARN_UNUSED_RESULT;
@@ -351,7 +351,7 @@ SWIFT_CLASS("_TtC7Acheron8TripWire")
 
 
 
-@interface UIControl (SWIFT_EXTENSION(Acheron))
+@interface UIControl (SWIFT_EXTENSION(acheron))
 - (void)addActionFor:(UIControlEvents)controlEvents :(void (^ _Nonnull)(void))closure;
 @end
 
@@ -359,7 +359,7 @@ SWIFT_CLASS("_TtC7Acheron8TripWire")
 @class NSURL;
 @class UIImage;
 
-@interface UIImageView (SWIFT_EXTENSION(Acheron))
+@interface UIImageView (SWIFT_EXTENSION(acheron))
 - (void)loadImageAtURL:(NSURL * _Nullable)atURL placeholder:(UIImage * _Nullable)placeholder complete:(void (^ _Nonnull)(void))complete;
 @end
 
