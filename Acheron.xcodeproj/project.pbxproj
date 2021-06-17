@@ -37,7 +37,7 @@
 		D877C49824638AAE0055B9A4 /* XMLtoAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */; };
 		D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B03D52245AB1F00CE6A5A /* TripWire.swift */; };
 		D8AB61E22275039400415069 /* AEViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB61E12275039400415069 /* AEViewController.swift */; };
-		D8B4116B26788B7E006415E5 /* acheron.podspec in Resources */ = {isa = PBXBuildFile; fileRef = D8B4116926788B7E006415E5 /* acheron.podspec */; };
+		D8B4116B26788B7E006415E5 /* Acheron.podspec in Resources */ = {isa = PBXBuildFile; fileRef = D8B4116926788B7E006415E5 /* Acheron.podspec */; };
 		D8B4116C26788B7E006415E5 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D8B4116A26788B7E006415E5 /* README.md */; };
 		D8CBC9C92265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */; };
 		D8CBC9CB2265D70100B7BBC5 /* UILabel+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */; };
@@ -90,7 +90,7 @@
 		D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLtoAttributes.swift; sourceTree = "<group>"; };
 		D88B03D52245AB1F00CE6A5A /* TripWire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripWire.swift; sourceTree = "<group>"; };
 		D8AB61E12275039400415069 /* AEViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AEViewController.swift; sourceTree = "<group>"; };
-		D8B4116926788B7E006415E5 /* acheron.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = acheron.podspec; sourceTree = SOURCE_ROOT; };
+		D8B4116926788B7E006415E5 /* Acheron.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = Acheron.podspec; sourceTree = SOURCE_ROOT; };
 		D8B4116A26788B7E006415E5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Acheron.swift"; sourceTree = "<group>"; };
 		D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Acheron.swift"; sourceTree = "<group>"; };
@@ -101,7 +101,7 @@
 		D8D47C3522ADD83A0071DC0C /* NodeColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeColumn.swift; sourceTree = "<group>"; };
 		D8D47C3722ADD8AB0071DC0C /* NodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeData.swift; sourceTree = "<group>"; };
 		D8D47C3922AE06C10071DC0C /* NodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeCell.swift; sourceTree = "<group>"; };
-		D8E604C122327C81000E8AEA /* acheron.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = acheron.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8E604C122327C81000E8AEA /* Acheron.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Acheron.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8E604C422327C81000E8AEA /* Acheron.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Acheron.h; sourceTree = "<group>"; };
 		D8E604C522327C82000E8AEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Acheron.swift"; sourceTree = "<group>"; };
@@ -160,7 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				D8B4116A26788B7E006415E5 /* README.md */,
-				D8B4116926788B7E006415E5 /* acheron.podspec */,
+				D8B4116926788B7E006415E5 /* Acheron.podspec */,
 			);
 			name = Meta;
 			sourceTree = "<group>";
@@ -190,7 +190,7 @@
 		D8E604C222327C81000E8AEA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D8E604C122327C81000E8AEA /* acheron.framework */,
+				D8E604C122327C81000E8AEA /* Acheron.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -285,9 +285,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D8E604C022327C81000E8AEA /* acheron */ = {
+		D8E604C022327C81000E8AEA /* Acheron */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D8E604C922327C82000E8AEA /* Build configuration list for PBXNativeTarget "acheron" */;
+			buildConfigurationList = D8E604C922327C82000E8AEA /* Build configuration list for PBXNativeTarget "Acheron" */;
 			buildPhases = (
 				D8E604BC22327C81000E8AEA /* Headers */,
 				D8E604BD22327C81000E8AEA /* Sources */,
@@ -298,9 +298,9 @@
 			);
 			dependencies = (
 			);
-			name = acheron;
+			name = Acheron;
 			productName = Acheron;
-			productReference = D8E604C122327C81000E8AEA /* acheron.framework */;
+			productReference = D8E604C122327C81000E8AEA /* Acheron.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -331,7 +331,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D8E604C022327C81000E8AEA /* acheron */,
+				D8E604C022327C81000E8AEA /* Acheron */,
 			);
 		};
 /* End PBXProject section */
@@ -342,7 +342,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8B4116C26788B7E006415E5 /* README.md in Resources */,
-				D8B4116B26788B7E006415E5 /* acheron.podspec in Resources */,
+				D8B4116B26788B7E006415E5 /* Acheron.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,7 +597,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D8E604C922327C82000E8AEA /* Build configuration list for PBXNativeTarget "acheron" */ = {
+		D8E604C922327C82000E8AEA /* Build configuration list for PBXNativeTarget "Acheron" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D8E604CA22327C82000E8AEA /* Debug */,

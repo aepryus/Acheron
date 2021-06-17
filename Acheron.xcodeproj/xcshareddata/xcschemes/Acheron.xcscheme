@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D8E604C022327C81000E8AEA"
-               BuildableName = "acheron.framework"
-               BlueprintName = "acheron"
+               BuildableName = "Acheron.framework"
+               BlueprintName = "Acheron"
                ReferencedContainer = "container:Acheron.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,8 +44,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D8E604C022327C81000E8AEA"
-            BuildableName = "acheron.framework"
-            BlueprintName = "acheron"
+            BuildableName = "Acheron.framework"
+            BlueprintName = "Acheron"
             ReferencedContainer = "container:Acheron.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -60,8 +60,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D8E604C022327C81000E8AEA"
-            BuildableName = "acheron.framework"
-            BlueprintName = "acheron"
+            BuildableName = "Acheron.framework"
+            BlueprintName = "Acheron"
             ReferencedContainer = "container:Acheron.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
