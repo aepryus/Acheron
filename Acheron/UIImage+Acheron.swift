@@ -13,7 +13,7 @@ extension UIImage {
 	private static var listeners: [String:[(UIImage)->()]] = [:]
 
 	public static func loadImage(url: String, alreadyLoaded: (UIImage)->(), willLoad: ()->(), finishedLoading: @escaping (UIImage)->()) {
-		guard let URL: URL = URL(string: url) else { return }
+		guard let URL: URL = URL(string: url) else { willLoad(); return }
 
 		let image: UIImage? = UIImage.images[url]
 
