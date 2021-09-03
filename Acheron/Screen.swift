@@ -47,11 +47,11 @@ public class Screen {
 		#if targetEnvironment(macCatalyst)
 		
 			model = .mac
-			dimensions = .dimOther
-			ratio = .rat046
-			width = UIApplication.shared.windows[0].width
-			height = UIApplication.shared.windows[0].height
-			s = 1
+			dimensions = .dim1194x834
+			ratio = .rat143
+			width = UIApplication.shared.windows.first?.width ?? 1194 / 0.77
+			height = UIApplication.shared.windows.first?.height ?? 834 / 0.77
+			s = 790 / 748 / 0.77
 		
 		#else
 		
@@ -139,15 +139,15 @@ public class Screen {
 		return window.safeAreaInsets.top
 	}
 	public static var safeBottom: CGFloat {
-		guard #available(iOS 11.0, *), let window = Screen.keyWindow else { return 0 }
+		guard let window = Screen.keyWindow else { fatalError() }
 		return window.safeAreaInsets.bottom
 	}
 	public static var safeLeft: CGFloat {
-		guard #available(iOS 11.0, *), let window = Screen.keyWindow else { return 0 }
+		guard let window = Screen.keyWindow else { fatalError() }
 		return window.safeAreaInsets.left
 	}
 	public static var safeRight: CGFloat {
-		guard #available(iOS 11.0, *), let window = Screen.keyWindow else { return 0 }
+		guard let window = Screen.keyWindow else { fatalError() }
 		return window.safeAreaInsets.right
 	}
 	
