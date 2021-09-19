@@ -37,6 +37,7 @@
 		D877C49824638AAE0055B9A4 /* XMLtoAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */; };
 		D88B03D62245AB1F00CE6A5A /* TripWire.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88B03D52245AB1F00CE6A5A /* TripWire.swift */; };
 		D8AB61E22275039400415069 /* AEViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB61E12275039400415069 /* AEViewController.swift */; };
+		D8B4122D26F1933E001D1502 /* SplitterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B4122C26F1933E001D1502 /* SplitterView.swift */; };
 		D8CBC9C92265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */; };
 		D8CBC9CB2265D70100B7BBC5 /* UILabel+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */; };
 		D8CBC9CD2265D7D600B7BBC5 /* NSString+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CBC9CC2265D7D600B7BBC5 /* NSString+Acheron.swift */; };
@@ -88,6 +89,7 @@
 		D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLtoAttributes.swift; sourceTree = "<group>"; };
 		D88B03D52245AB1F00CE6A5A /* TripWire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripWire.swift; sourceTree = "<group>"; };
 		D8AB61E12275039400415069 /* AEViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AEViewController.swift; sourceTree = "<group>"; };
+		D8B4122C26F1933E001D1502 /* SplitterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitterView.swift; sourceTree = "<group>"; };
 		D8CBC9C82265D6A800B7BBC5 /* NSMutableAttributedString+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSMutableAttributedString+Acheron.swift"; sourceTree = "<group>"; };
 		D8CBC9CA2265D70100B7BBC5 /* UILabel+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Acheron.swift"; sourceTree = "<group>"; };
 		D8CBC9CC2265D7D600B7BBC5 /* NSString+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSString+Acheron.swift"; sourceTree = "<group>"; };
@@ -252,6 +254,7 @@
 				D81497B82238F39F00436E00 /* ExpandableCell.swift */,
 				D81497B62238F39100436E00 /* ExpandableTableView.swift */,
 				D853EB8D25382A5B0087DE95 /* Screen.swift */,
+				D8B4122C26F1933E001D1502 /* SplitterView.swift */,
 				D88B03D52245AB1F00CE6A5A /* TripWire.swift */,
 			);
 			name = Interface;
@@ -384,6 +387,7 @@
 				D858A91B226E787500AD831F /* Persist.swift in Sources */,
 				D858A919226E785F00AD831F /* Domain.swift in Sources */,
 				D877C49824638AAE0055B9A4 /* XMLtoAttributes.swift in Sources */,
+				D8B4122D26F1933E001D1502 /* SplitterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
