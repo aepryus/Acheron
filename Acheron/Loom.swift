@@ -31,14 +31,14 @@ public class Loom {
 	
 	public static func classForKeyPath(keyPath: String, parent: Domain.Type) -> AnyClass? {
 		var n: UInt32 = 0
-		let properties: UnsafeMutablePointer<objc_property_t>? = class_copyPropertyList(parent, &n)
+		guard let properties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(parent, &n) else { return nil }
 		var cls: AnyClass?
 		
 		for i in 0..<Int(n) {
-			let name = String(validatingUTF8: property_getName(properties![i]))
+			let name = String(validatingUTF8: property_getName(properties[i]))
 			if keyPath != name { continue }
 			
-			let attributes: UnsafePointer<Int8> = property_getAttributes(properties![i])!
+			let attributes: UnsafePointer<Int8> = property_getAttributes(properties[i])!
 			if attributes[1] == Int8(UInt8(ascii:"@")) {
 				var className: String = String()
 				var j = 3
