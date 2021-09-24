@@ -42,16 +42,23 @@ public class Screen {
 	let width: CGFloat
 	let height: CGFloat
 	let s: CGFloat
+	let scaler: CGFloat
 	
 	init() {
 		#if targetEnvironment(macCatalyst)
 		
+			if UIScreen.main.bounds.width <= 1800 {
+				scaler = 1
+			} else {
+				scaler = 0.77
+			}
+		
 			model = .mac
 			dimensions = .dim1194x834
 			ratio = .rat143
-			width = UIApplication.shared.windows.first?.width ?? 1194 / 0.77
-			height = UIApplication.shared.windows.first?.height ?? 834 / 0.77
-			s = 790 / 748 / 0.77
+			width = UIApplication.shared.windows.first?.width ?? 1194 / scaler
+			height = UIApplication.shared.windows.first?.height ?? 834 / scaler
+			s = 790 / 748 / scaler
 		
 		#else
 		
@@ -120,6 +127,7 @@ public class Screen {
 	public static var height: CGFloat { current.height }
 	public static var size: CGSize { CGSize(width: width, height: height) }
 	public static var s: CGFloat { current.s }
+	public static var scaler: CGFloat { current.scaler }
 	
 	public static var iPhone: Bool {
 		return current.model == .iPhone
