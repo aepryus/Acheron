@@ -42,7 +42,7 @@ public class Screen {
 	let width: CGFloat
 	let height: CGFloat
 	let s: CGFloat
-	let scaler: CGFloat = 1
+	let scaler: CGFloat
 	
 	init() {
 		#if targetEnvironment(macCatalyst)
@@ -61,6 +61,8 @@ public class Screen {
 			s = 790 / 748 / scaler
 		
 		#else
+
+			scaler = 1
 		
 			if UIDevice.current.userInterfaceIdiom == .phone {
 				model = .iPhone
