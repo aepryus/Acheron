@@ -42,7 +42,7 @@ public class Screen {
 	let width: CGFloat
 	let height: CGFloat
 	let s: CGFloat
-	let scaler: CGFloat
+	let scaler: CGFloat = 1
 	
 	init() {
 		#if targetEnvironment(macCatalyst)
@@ -116,7 +116,6 @@ public class Screen {
 			s = model == .iPhone ? width / 375 : height / 768
 
 		#endif
-		
 	}
 	
 // Static ==========================================================================================
