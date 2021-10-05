@@ -18,4 +18,19 @@ extension Dictionary where Key == String {
 			return ""
 		}
 	}
+	public func modify(query: [String], convert: (Value)->(Value)) -> Self {
+		var result: Self = [:]
+		keys.forEach { (key: String) in
+			if query.contains(key) { result[key] = convert(self[key]!) }
+			else if let subAtts = self[key] as? [String:Value] { result[key] = subAtts.modify(query: query, convert: convert) as? Value }
+			else if let subArray = self[key] as? [[String:Value]] {
+				var subResult: [[String:Value]] = []
+				subArray.forEach { subResult.append($0.modify(query: query, convert: convert)) }
+				result[key] = subResult as? Value
+			} else {
+				result[key] = self[key]
+			}
+		}
+		return result
+	}
 }
