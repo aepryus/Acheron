@@ -15,15 +15,16 @@ public class Screen {
 		case iPhone, iPad, mac, other
 	}
 	public enum Dimensions {
-		case dim320x480,
-			 dim320x568, dim375x667, dim414x736,
-			 dim360x780, dim375x812, dim390x844, dim414x896, dim428x926,
-			 dim1024x768, dim1080x810, dim1112x834, dim1366x1024,
-			 dim1194x834,
+		case dim320x480,														// 0.67
+			 dim320x568, dim375x667, dim414x736,								// 0.56
+			 dim360x780, dim375x812, dim390x844, dim414x896, dim428x926,		// 0.46
+			 dim1024x768, dim1080x810, dim1112x834, dim1366x1024,				// 1.33
+			 dim1180x820, dim1194x834,											// 1.43
+			 dim1133x744,														// 1.52
 			 dimOther
 	}
 	public enum Ratio: CaseIterable {
-		case rat067, rat056, rat046, rat133, rat143
+		case rat067, rat056, rat046, rat133, rat143, rat152
 		
 		var ratio: CGFloat {
 			switch self {
@@ -32,6 +33,7 @@ public class Screen {
 				case .rat046: return 0.46
 				case .rat133: return 1.33
 				case .rat143: return 1.43
+				case .rat152: return 1.52
 			}
 		}
 	}
@@ -95,7 +97,10 @@ public class Screen {
 			else if w == 1112 && h == 834 { dimensions = .dim1112x834; ratio = .rat133 }
 			else if w == 1366 && h == 1024 { dimensions = .dim1366x1024; ratio = .rat133 }
 
+			else if w == 1180 && h == 820 { dimensions = .dim1180x820; ratio = .rat143 }
 			else if w == 1194 && h == 834 { dimensions = .dim1194x834; ratio = .rat143 }
+		
+			else if w == 1133 && h == 744 { dimensions = .dim1133x744; ratio = .rat152 }
 		
 			else {
 				dimensions = .dimOther

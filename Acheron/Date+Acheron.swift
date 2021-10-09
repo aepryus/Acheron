@@ -29,7 +29,7 @@ public extension Date {
 		return formatter!.string(from: self)
 	}
 
-	static var now: Date {return Date()}
+	static var now: Date { Date() }
 	
 	static var isoFormatter: DateFormatter = {
 		var formatter = DateFormatter()

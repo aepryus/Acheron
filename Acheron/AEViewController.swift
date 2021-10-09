@@ -14,6 +14,7 @@ open class AEViewController: UIViewController {
 	open func layoutRatio046() { layoutRatio056() }
 	open func layoutRatio133() { layout1024x768() }
 	open func layoutRatio143() { layoutRatio133() }
+	open func layoutRatio152() { layoutRatio143() }
 	
 	// 0.67
 	open func layout320x480() { layoutRatio067() }
@@ -37,7 +38,11 @@ open class AEViewController: UIViewController {
 	open func layout1366x1024() { layoutRatio133() }
 	
 	// 1.43
+	open func layout1180x820() { layoutRatio143() }
 	open func layout1194x834() { layoutRatio143() }
+	
+	// 1.52
+	open func layout1133x744() { layoutRatio152() }
 	
 	open func layoutRatio() {
 		switch Screen.ratio {
@@ -46,6 +51,7 @@ open class AEViewController: UIViewController {
 			case .rat046:	layoutRatio046()
 			case .rat133:	layoutRatio133()
 			case .rat143:	layoutRatio143()
+			case .rat152:	layoutRatio152()
 		}
 	}
 
@@ -64,7 +70,9 @@ open class AEViewController: UIViewController {
 			case .dim1080x810:	layout1080x810()
 			case .dim1112x834:	layout1112x834()
 			case .dim1366x1024:	layout1366x1024()
+			case .dim1180x820:	layout1180x820()
 			case .dim1194x834:	layout1194x834()
+			case .dim1133x744:	layout1133x744()
 			case .dimOther:		layoutRatio()
 		}
 	}
