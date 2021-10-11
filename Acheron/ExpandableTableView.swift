@@ -63,7 +63,8 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		backgroundColor = UIColor.clear
 		self.delegate = self
 		dataSource = self
-		showsVerticalScrollIndicator = false
+		showsVerticalScrollIndicator = false		
+		if #available(iOS 15.0, *) { sectionHeaderTopPadding = 0 }
 	}
 	public required init?(coder aDecoder: NSCoder) {fatalError()}
 	
