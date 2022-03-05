@@ -6,7 +6,7 @@
 //  Copyright © 2021 Aepryus Software. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 open class BackgroundPond: Pond {
 	var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid

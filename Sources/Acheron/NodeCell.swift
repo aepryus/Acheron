@@ -6,7 +6,7 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 public class NodeCell: UITableViewCell {
 	public var node: Node! {

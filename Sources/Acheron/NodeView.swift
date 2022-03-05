@@ -6,7 +6,7 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 public protocol NodeViewDelegate: AnyObject {
 	func nodeView(_ nodeView: NodeView, didTapNode node: Node)

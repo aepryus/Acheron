@@ -6,7 +6,7 @@
 //  Copyright © 2020 Aepryus Software. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 public extension UIButton {
 	func setTitlePen(_ pen: Pen, for state: UIControl.State) {

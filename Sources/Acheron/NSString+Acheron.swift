@@ -6,7 +6,7 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 public extension NSString {
 	func draw(at point: CGPoint, pen: Pen) {

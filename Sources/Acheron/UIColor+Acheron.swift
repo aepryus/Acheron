@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+import UIKit
+
 extension UIColor {
 	public func alpha(_ alpha: CGFloat) -> UIColor {
 		return withAlphaComponent(alpha)

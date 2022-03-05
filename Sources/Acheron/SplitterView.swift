@@ -6,7 +6,7 @@
 //  Copyright © 2021 Aepryus Software. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 public class SplitterView: UIView {
 	public enum Split { case horizontal, vertical, both }
