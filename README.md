@@ -4,6 +4,18 @@ Acheron is a collection of utilties for developing iOS apps.
 
 * Total Lines: 2882
 
+### Swift Package Manager
+
+You can use SPM, to integrate Acheron into your project.  You can add the following to your dependencies:
+
+```swift
+.package(url: "https://github.com/aepryus/Acheron.git", from: "1.0.0"),
+```
+
+Or from Xcode just go to `File/Add Packages' and enter the URL: `https://github.com/aepryus/Acheron.git`.
+
+
+Note that you may need to add both products, `CocoaLumberjack` and `CocoaLumberjackSwift` to your target since SPM sometimes fails to detect that `CocoaLumerjackSwift` depends on `CocoaLumberjack`.
 
 ## Loom ORM
 
