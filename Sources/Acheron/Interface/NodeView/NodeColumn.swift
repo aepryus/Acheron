@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class NodeColumn {
@@ -38,3 +40,5 @@ public class NodeColumn {
 		self.format = format != nil ? format! : NodeColumn.defaultFormat
 	}
 }
+
+#endif

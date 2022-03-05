@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public extension UIViewController {
@@ -19,3 +21,5 @@ public extension UIViewController {
 		return Screen.safeBottom
 	}	
 }
+
+#endif

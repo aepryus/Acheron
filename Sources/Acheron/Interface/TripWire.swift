@@ -6,6 +6,8 @@
 //  Copyright © 2018 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class TripWire: UIView {
@@ -24,3 +26,5 @@ public class TripWire: UIView {
 		return nil
 	}
 }
+
+#endif

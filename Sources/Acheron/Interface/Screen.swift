@@ -6,6 +6,8 @@
 //  Copyright © 2020 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class Screen {
@@ -177,3 +179,5 @@ public class Screen {
 		}
 	}
 }
+
+#endif

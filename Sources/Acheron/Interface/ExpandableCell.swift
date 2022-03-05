@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 open class ExpandableCell: UITableViewCell {
@@ -76,3 +78,5 @@ open class ExpandableCell: UITableViewCell {
 		get {return baseView.backgroundColor}
 	}
 }
+
+#endif

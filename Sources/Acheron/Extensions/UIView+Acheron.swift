@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public extension UIView {
@@ -112,3 +114,5 @@ public extension UIView {
 		return CGRect(origin: pointOnScreen(rect.origin), size: rect.size)
 	}
 }
+
+#endif

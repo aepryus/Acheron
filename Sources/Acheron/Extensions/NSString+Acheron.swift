@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public extension NSString {
@@ -25,3 +27,5 @@ public extension NSString {
 		return boundingRect(with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin , .usesFontLeading], attributes: pen.attributes, context: nil).size
 	}
 }
+
+#endif

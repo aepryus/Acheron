@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import Foundation
 import QuartzCore
 
@@ -46,3 +48,5 @@ public class AESync {
 		}
 	}
 }
+
+#endif

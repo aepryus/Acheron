@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public protocol ExpandableTableViewDelegate: AnyObject {
@@ -159,3 +161,5 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		return cell
 	}
 }
+
+#endif

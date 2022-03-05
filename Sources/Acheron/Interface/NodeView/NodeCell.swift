@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class NodeCell: UITableViewCell {
@@ -64,3 +66,5 @@ public class NodeCell: UITableViewCell {
 		lineView.bottom(width: width, height: 0.5*s)
 	}
 }
+
+#endif

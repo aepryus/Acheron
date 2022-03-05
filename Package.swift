@@ -5,8 +5,8 @@ import PackageDescription
 let package = Package(
     name: "Acheron",
     platforms: [
-        .iOS(.v11)
-    ]
+        .iOS(.v11), .macOS(.v10_13)
+    ],
     products: [
         .library(name: "Acheron", targets: ["Acheron"]),
     ],

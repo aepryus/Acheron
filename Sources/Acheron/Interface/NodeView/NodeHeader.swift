@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 class NodeHeader: UITableViewCell {
@@ -58,3 +60,5 @@ class NodeHeader: UITableViewCell {
 		}
 	}
 }
+
+#endif

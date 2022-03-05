@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public struct RGB {
@@ -86,3 +88,5 @@ public struct RGB {
 		return RGB(uiColor: color).blend(rgb: black, percent: percent).uiColor
 	}
 }
+
+#endif

@@ -55,6 +55,7 @@
 		D8E604DB22327EEE000E8AEA /* UIViewController+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604DA22327EEE000E8AEA /* UIViewController+Acheron.swift */; };
 		D8E604DD22327F22000E8AEA /* Pen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604DC22327F22000E8AEA /* Pen.swift */; };
 		D8E604DF22327F3E000E8AEA /* RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604DE22327F3E000E8AEA /* RGB.swift */; };
+		D8FF016227D3364900BC73AA /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FF016127D3364900BC73AA /* Package.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -107,6 +108,7 @@
 		D8E604DA22327EEE000E8AEA /* UIViewController+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Acheron.swift"; sourceTree = "<group>"; };
 		D8E604DC22327F22000E8AEA /* Pen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pen.swift; sourceTree = "<group>"; };
 		D8E604DE22327F3E000E8AEA /* RGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RGB.swift; sourceTree = "<group>"; };
+		D8FF016127D3364900BC73AA /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 		D8E604B722327C81000E8AEA = {
 			isa = PBXGroup;
 			children = (
+				D8FF016127D3364900BC73AA /* Package.swift */,
 				D8E604C322327C81000E8AEA /* Acheron */,
 				D8E604C222327C81000E8AEA /* Products */,
 			);
@@ -351,6 +354,7 @@
 				D8CC366124EF3E500017808F /* AESync.swift in Sources */,
 				D81497BB2238F3D200436E00 /* AETableView.swift in Sources */,
 				D8E604D022327E2A000E8AEA /* CALayer+Acheron.swift in Sources */,
+				D8FF016227D3364900BC73AA /* Package.swift in Sources */,
 				D8E604DB22327EEE000E8AEA /* UIViewController+Acheron.swift in Sources */,
 				D8E604D222327E47000E8AEA /* CGPoint+Acheron.swift in Sources */,
 				D858A922226E7A2000AD831F /* String+Acheron.swift in Sources */,

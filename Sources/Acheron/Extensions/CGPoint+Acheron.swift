@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public extension CGPoint {
@@ -45,3 +47,5 @@ public extension CGPoint {
 		return a*unit()
 	}
 }
+
+#endif

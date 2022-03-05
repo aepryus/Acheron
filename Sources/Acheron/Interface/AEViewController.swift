@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 open class AEViewController: UIViewController {
@@ -88,3 +90,5 @@ open class AEViewController: UIViewController {
 //		layout()
 //	}
 }
+
+#endif

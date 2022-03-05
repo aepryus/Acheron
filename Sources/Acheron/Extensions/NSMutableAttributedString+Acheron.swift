@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public extension NSMutableAttributedString {
@@ -18,3 +20,5 @@ public extension NSMutableAttributedString {
 		self.append(NSAttributedString(attachment: attachment))
 	}
 }
+
+#endif

@@ -6,6 +6,8 @@
 //  Copyright © 2020 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public extension UIButton {
@@ -14,3 +16,5 @@ public extension UIButton {
 		titleLabel?.pen = pen
 	}
 }
+
+#endif

@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public extension UIImageView {
@@ -47,3 +49,5 @@ public extension UIImageView {
 		loadImage(url: atURL.absoluteString, placeholder: placeholder, complete: {})
 	}
 }
+
+#endif

@@ -6,6 +6,8 @@
 //  Copyright © 2021 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 open class BackgroundPond: Pond {
@@ -33,3 +35,5 @@ open class BackgroundPond: Pond {
 		print(" == [ Pond Background Complete ]\n")
 	}
 }
+
+#endif
