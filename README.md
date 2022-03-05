@@ -12,7 +12,7 @@ You can use SPM, to integrate Acheron into your project.  You can add the follow
 .package(url: "https://github.com/aepryus/Acheron.git", from: "1.0.0"),
 ```
 
-Or from Xcode just go to `File/Add Packages` and enter the URL: `https://github.com/aepryus/Acheron.git`.
+Or from Xcode go to `File/Add Packages` and enter the URL: `https://github.com/aepryus/Acheron.git`.
 
 ## Loom ORM
 
