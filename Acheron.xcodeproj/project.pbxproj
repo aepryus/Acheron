@@ -47,7 +47,6 @@
 		D8D47C3622ADD83A0071DC0C /* NodeColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D47C3522ADD83A0071DC0C /* NodeColumn.swift */; };
 		D8D47C3822ADD8AB0071DC0C /* NodeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D47C3722ADD8AB0071DC0C /* NodeData.swift */; };
 		D8D47C3A22AE06C10071DC0C /* NodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D47C3922AE06C10071DC0C /* NodeCell.swift */; };
-		D8E604C622327C82000E8AEA /* Acheron.h in Headers */ = {isa = PBXBuildFile; fileRef = D8E604C422327C81000E8AEA /* Acheron.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D8E604D022327E2A000E8AEA /* CALayer+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */; };
 		D8E604D222327E47000E8AEA /* CGPoint+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604D122327E47000E8AEA /* CGPoint+Acheron.swift */; };
 		D8E604D422327E63000E8AEA /* UIColor+Acheron.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E604D322327E63000E8AEA /* UIColor+Acheron.swift */; };
@@ -100,8 +99,6 @@
 		D8D47C3722ADD8AB0071DC0C /* NodeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeData.swift; sourceTree = "<group>"; };
 		D8D47C3922AE06C10071DC0C /* NodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeCell.swift; sourceTree = "<group>"; };
 		D8E604C122327C81000E8AEA /* Acheron.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Acheron.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8E604C422327C81000E8AEA /* Acheron.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Acheron.h; sourceTree = "<group>"; };
-		D8E604C522327C82000E8AEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8E604CF22327E2A000E8AEA /* CALayer+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Acheron.swift"; sourceTree = "<group>"; };
 		D8E604D122327E47000E8AEA /* CGPoint+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Acheron.swift"; sourceTree = "<group>"; };
 		D8E604D322327E63000E8AEA /* UIColor+Acheron.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Acheron.swift"; sourceTree = "<group>"; };
@@ -123,50 +120,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D83B32AC23448DD20006CB03 /* Pebbles */ = {
-			isa = PBXGroup;
-			children = (
-				D83B32AD23448E160006CB03 /* Pebble.swift */,
-				D83A0E12234493F00058075B /* Pond.swift */,
-				D876DC522626577C0049DD38 /* BackgroundPond.swift */,
-			);
-			name = Pebbles;
-			sourceTree = "<group>";
-		};
-		D858A913226E780500AD831F /* Loom */ = {
-			isa = PBXGroup;
-			children = (
-				D858A914226E784800AD831F /* Anchor.swift */,
-				D858A916226E785400AD831F /* Basket.swift */,
-				D858A918226E785F00AD831F /* Domain.swift */,
-				D858A91A226E787500AD831F /* Persist.swift */,
-				D858A925226E986400AD831F /* Loom.swift */,
-				D858A91C226E787F00AD831F /* SQLLite */,
-			);
-			name = Loom;
-			sourceTree = "<group>";
-		};
-		D858A91C226E787F00AD831F /* SQLLite */ = {
-			isa = PBXGroup;
-			children = (
-				D858A91F226E78A700AD831F /* SQLitePersist.swift */,
-			);
-			name = SQLLite;
-			sourceTree = "<group>";
-		};
-		D8D47C3022ADD7740071DC0C /* NodeView */ = {
-			isa = PBXGroup;
-			children = (
-				D8D47C3122ADD7860071DC0C /* Node.swift */,
-				D8D47C3722ADD8AB0071DC0C /* NodeData.swift */,
-				D8D47C3522ADD83A0071DC0C /* NodeColumn.swift */,
-				D80548C922AFD39C008F021E /* NodeHeader.swift */,
-				D8D47C3922AE06C10071DC0C /* NodeCell.swift */,
-				D8D47C3322ADD7950071DC0C /* NodeView.swift */,
-			);
-			name = NodeView;
-			sourceTree = "<group>";
-		};
 		D8E604B722327C81000E8AEA = {
 			isa = PBXGroup;
 			children = (
@@ -186,18 +139,91 @@
 		D8E604C322327C81000E8AEA /* Acheron */ = {
 			isa = PBXGroup;
 			children = (
-				D8E604E022327F8A000E8AEA /* Extensions */,
-				D8E604E122327F91000E8AEA /* Utility */,
-				D83B32AC23448DD20006CB03 /* Pebbles */,
-				D858A913226E780500AD831F /* Loom */,
-				D8E604E422327FB8000E8AEA /* Interface */,
-				D8E604E222327F98000E8AEA /* Global */,
+				D8FF015A27D3333000BC73AA /* Extensions */,
+				D8FF015927D3331A00BC73AA /* Utility */,
+				D8FF015827D3330000BC73AA /* Pebbles */,
+				D8FF015627D332CE00BC73AA /* Loom */,
+				D8FF015427D3329800BC73AA /* Interface */,
 			);
 			name = Acheron;
 			path = Sources/Acheron;
 			sourceTree = "<group>";
 		};
-		D8E604E022327F8A000E8AEA /* Extensions */ = {
+		D8FF015427D3329800BC73AA /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				D8FF015527D332A400BC73AA /* NodeView */,
+				D81497BA2238F3D200436E00 /* AETableView.swift */,
+				D8AB61E12275039400415069 /* AEViewController.swift */,
+				D81497B82238F39F00436E00 /* ExpandableCell.swift */,
+				D81497B62238F39100436E00 /* ExpandableTableView.swift */,
+				D853EB8D25382A5B0087DE95 /* Screen.swift */,
+				D8B4122C26F1933E001D1502 /* SplitterView.swift */,
+				D88B03D52245AB1F00CE6A5A /* TripWire.swift */,
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
+		D8FF015527D332A400BC73AA /* NodeView */ = {
+			isa = PBXGroup;
+			children = (
+				D8D47C3122ADD7860071DC0C /* Node.swift */,
+				D8D47C3722ADD8AB0071DC0C /* NodeData.swift */,
+				D8D47C3522ADD83A0071DC0C /* NodeColumn.swift */,
+				D80548C922AFD39C008F021E /* NodeHeader.swift */,
+				D8D47C3922AE06C10071DC0C /* NodeCell.swift */,
+				D8D47C3322ADD7950071DC0C /* NodeView.swift */,
+			);
+			path = NodeView;
+			sourceTree = "<group>";
+		};
+		D8FF015627D332CE00BC73AA /* Loom */ = {
+			isa = PBXGroup;
+			children = (
+				D858A914226E784800AD831F /* Anchor.swift */,
+				D858A916226E785400AD831F /* Basket.swift */,
+				D858A918226E785F00AD831F /* Domain.swift */,
+				D858A91A226E787500AD831F /* Persist.swift */,
+				D858A925226E986400AD831F /* Loom.swift */,
+				D8FF015727D332D400BC73AA /* SQLite */,
+			);
+			path = Loom;
+			sourceTree = "<group>";
+		};
+		D8FF015727D332D400BC73AA /* SQLite */ = {
+			isa = PBXGroup;
+			children = (
+				D858A91F226E78A700AD831F /* SQLitePersist.swift */,
+			);
+			path = SQLite;
+			sourceTree = "<group>";
+		};
+		D8FF015827D3330000BC73AA /* Pebbles */ = {
+			isa = PBXGroup;
+			children = (
+				D83B32AD23448E160006CB03 /* Pebble.swift */,
+				D83A0E12234493F00058075B /* Pond.swift */,
+				D876DC522626577C0049DD38 /* BackgroundPond.swift */,
+			);
+			path = Pebbles;
+			sourceTree = "<group>";
+		};
+		D8FF015927D3331A00BC73AA /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				D8CC366024EF3E500017808F /* AESync.swift */,
+				D81774A22314C0A600A49725 /* AETimer.swift */,
+				D8E604DC22327F22000E8AEA /* Pen.swift */,
+				D8E604DE22327F3E000E8AEA /* RGB.swift */,
+				D86225832310C7F20014020F /* SafeMap.swift */,
+				D83A874323682F580083812E /* SafeSet.swift */,
+				D847A0F922857EB200A94232 /* WeakSet.swift */,
+				D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		D8FF015A27D3333000BC73AA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				D847A0F722857DC000A94232 /* Array+Acheron.swift */,
@@ -219,46 +245,7 @@
 				D8E604D822327EC3000E8AEA /* UIView+Acheron.swift */,
 				D8E604DA22327EEE000E8AEA /* UIViewController+Acheron.swift */,
 			);
-			name = Extensions;
-			sourceTree = "<group>";
-		};
-		D8E604E122327F91000E8AEA /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				D8CC366024EF3E500017808F /* AESync.swift */,
-				D81774A22314C0A600A49725 /* AETimer.swift */,
-				D8E604DC22327F22000E8AEA /* Pen.swift */,
-				D8E604DE22327F3E000E8AEA /* RGB.swift */,
-				D86225832310C7F20014020F /* SafeMap.swift */,
-				D83A874323682F580083812E /* SafeSet.swift */,
-				D847A0F922857EB200A94232 /* WeakSet.swift */,
-				D877C49724638AAE0055B9A4 /* XMLtoAttributes.swift */,
-			);
-			name = Utility;
-			sourceTree = "<group>";
-		};
-		D8E604E222327F98000E8AEA /* Global */ = {
-			isa = PBXGroup;
-			children = (
-				D8E604C522327C82000E8AEA /* Info.plist */,
-				D8E604C422327C81000E8AEA /* Acheron.h */,
-			);
-			name = Global;
-			sourceTree = "<group>";
-		};
-		D8E604E422327FB8000E8AEA /* Interface */ = {
-			isa = PBXGroup;
-			children = (
-				D8D47C3022ADD7740071DC0C /* NodeView */,
-				D81497BA2238F3D200436E00 /* AETableView.swift */,
-				D8AB61E12275039400415069 /* AEViewController.swift */,
-				D81497B82238F39F00436E00 /* ExpandableCell.swift */,
-				D81497B62238F39100436E00 /* ExpandableTableView.swift */,
-				D853EB8D25382A5B0087DE95 /* Screen.swift */,
-				D8B4122C26F1933E001D1502 /* SplitterView.swift */,
-				D88B03D52245AB1F00CE6A5A /* TripWire.swift */,
-			);
-			name = Interface;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -268,7 +255,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8E604C622327C82000E8AEA /* Acheron.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -530,7 +516,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Sources/Acheron/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -557,7 +543,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Sources/Acheron/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
