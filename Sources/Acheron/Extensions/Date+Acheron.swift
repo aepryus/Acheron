@@ -29,8 +29,13 @@ public extension Date {
 		return formatter!.string(from: self)
 	}
 
+	@available(iOS, obsoleted: 15.0)
+	@available(macOS, obsoleted: 12.0)
+	@available(macCatalyst, obsoleted: 15.0)
+	@available(tvOS, obsoleted: 15.0)
+	@available(watchOS, obsoleted: 8.0)
 	static var now: Date { Date() }
-	
+
 	static var isoFormatter: DateFormatter = {
 		var formatter = DateFormatter()
 		formatter.locale = Locale(identifier: "en_US_POSIX")
