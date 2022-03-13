@@ -4,6 +4,15 @@ Acheron is a collection of utilties for developing iOS apps.
 
 * Total Lines: 2882
 
+### Swift Package Manager
+
+You can use SPM, to integrate Acheron into your project.  You can add the following to your dependencies:
+
+```swift
+.package(url: "https://github.com/aepryus/Acheron.git", from: "1.0.0"),
+```
+
+Or from Xcode go to `File/Add Packages` and enter the URL: `https://github.com/aepryus/Acheron.git`.
 
 ## Loom ORM
 
@@ -32,7 +41,7 @@ A collection of lightweight extensions and convenience methods for laying out iO
 Pen is a set of tools that eases working with fonts within UIKit.  Mainly, it is an immutable object, 'Pen' that encaspulates all of the font "attributes"; making them easy to define and access.  Slightly adjusted new Pens can be created via the clone() method.  It also includes a number of extensions to Apple classes that allows Pens to be used directly with them.
 
 Usage:
-```
+```swift
 let greenPen: Pen = Pen(font: UIFont(name: "ChicagoFLF", size: 19)!, color: UIColor.green.tint(0.7), alignment: .right)
 let whitePen: Pen = greenPen.clone(color: .white)
 
@@ -56,7 +65,7 @@ NSString("Hello, Green Pen").draw(at: .zero, withAttributes: greenPen.attributes
 RGB is a set of tools that make it easy to get tints, shades and tones of a color or blend two entirely different colors.  It includes the RGB class which converts color into a vector that can then be manipulated mathematically.  It also includes an extension of UIColor that enables these manipulations to be made directly to UIColor itself.
 
 Usage:
-```
+```swift
 let lightBlue = UIColor.blue.tint(0.5)
 let greyGreen = UIColor.green.tone(0.5)
 let transparentPink = UIColor.red.tint(0.5).alpha(0.5)
@@ -91,7 +100,7 @@ A view making the display of tabular data easy.
 AepImage is an extremely light weight asynchoronous image loading and caching tool that stitches into UIImageView, but can also be used from static methods on UIImage directly.  The tool ensures UIImageViews located on UITableViews are handled correctly.  It does not include a disk cache.
 
 Usage:
-```
+```swift
 imageView.loadImage(url: "https://aepryus.com/resources/aexels01s.png")
 imageView.loadImage(url: "https://aepryus.com/resources/Force3.jpg", placeholder: tempImage) {
     print("Image Loaded")
@@ -114,7 +123,7 @@ UIImage.loadImage(url: "https://aepryus.com/resources/tnEvolizer1.jpg") { (image
 Pond and Pebbles is an asynchronous control flow system that greatly helps detangle complex asynchronous tasks like app initialization.  Through the BackgroundPond it also makes finishing up asynchronous tasks after your app is closed much easier.
 
 Usage:
-```
+```swift
 class BootPond: Pond {
     lazy var needNotMigrate: Pebble = {/*...*/}()
     lazy var migrate: Pebble = {/*...*/}
@@ -258,7 +267,7 @@ class OoviumDelegate: UIResponder, UIApplicationDelegate {
 ```
 
 It also includes mechanisms for writing tests for various asynchronous pathways:
-```
+```swift
 XCTAssert(pond.test(shouldSucceed: [
     pond.needNotMigrate,
     pond.ping,
@@ -279,7 +288,7 @@ XCTAssert(pond.test(shouldSucceed: [
 * Lines: 441
 
 Usage:
-```
+```swift
 let button: UIButton = UIButton()
 button.addAction {
     print("Hello, Acheron")
