@@ -11,7 +11,7 @@ import Foundation
 public class Loom {
 	public static var basket: Basket!
 
-	private static var namespaces: [String] = []
+	public static var namespaces: [String] = []
 	static var domains = [String:[String:AnyClass]]()
 
 	static func nameFromType(_ type: Domain.Type) -> String {
