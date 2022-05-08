@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension Dictionary where Key == String {
-	public func toJSON() -> String {
+public extension Dictionary where Key == String {
+	func toJSON() -> String {
 		do {
 			let data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
 			return String(data:data, encoding: .utf8)!
@@ -18,7 +18,7 @@ extension Dictionary where Key == String {
 			return ""
 		}
 	}
-	public func modify(query: [String], convert: (Value)->(Value)) -> Self {
+	func modify(query: [String], convert: (Value)->(Value)) -> Self {
 		var result: Self = [:]
 		keys.forEach { (key: String) in
 			if query.contains(key) { result[key] = convert(self[key]!) }
