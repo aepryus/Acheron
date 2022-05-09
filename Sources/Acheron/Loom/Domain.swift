@@ -264,6 +264,14 @@ open class Domain: NSObject {
 				attributes[keyPath] = value.pack()
 			} else if let value = value as? Domain {
 				attributes[keyPath] = value.unload() as NSDictionary
+			} else if let value = value as? [Domain] {
+				var array: [Any] = []
+				value.forEach { array.append($0.unload()) }
+				attributes[keyPath] = array as NSArray;
+			} else if let value = value as? [Packable] {
+				var array: [Any] = []
+				value.forEach { array.append($0.pack()) }
+				attributes[keyPath] = array as NSArray;
 			} else {
 				attributes[keyPath] = value
 			}
@@ -333,6 +341,26 @@ open class Domain: NSObject {
 						domain.load(attributes:valueAtts)
 						load(domain)
 						value = domain;
+					} else if let cls = arrayClassForKeyPath(keyPath) as? Domain.Type {
+						var array: [Any] = []
+						let existing = indexOfChildren(keyPath)
+						for child in value as! [[String:Any]] {
+							var domain: Domain? = existing[child["iden"] as! String]
+							if domain == nil {
+								domain = cls.init(attributes: child, parent: self)
+							}
+							domain!.load(attributes:child)
+							load(domain!)
+							array.append(domain!)
+						}
+						value = array
+					} else if let cls = arrayClassForKeyPath(keyPath) as? Packable.Type {
+						var array: [Any] = []
+						for package in value as! [String] {
+							guard let row = cls.init(package) else { continue }
+							array.append(row)
+						}
+						value = array
 					}
 				}
 			}

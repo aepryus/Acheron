@@ -26,4 +26,9 @@ public extension Array {
 			return ""
 		}
 	}
+	func summate(_ value: (Element)->(Int)) -> Int {
+		var sum: Int = 0
+		forEach { sum += value($0) }
+		return sum
+	}
 }
