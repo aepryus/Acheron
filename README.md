@@ -283,9 +283,9 @@ XCTAssert(pond.test(shouldSucceed: [
 
 ## Odds and Ends
 
-* Classes: AESync, AETimer, SafeMap, SafeSet, WeakSet, XMLtoAttributes, TripWire
-* Extensions: Array, CaseIterable, CGPoint, Comparable, Date, Dictionary, String, UIControl
-* Lines: 485
+* Classes: AESync, AETimer, SafeMap, SafeSet, WeakSet, XMLtoAttributes, SplitterView, TripWire
+* Extensions: Array, CaseIterable, CGPoint, Codable, Comparable, Date, Dictionary, String, UIControl
+* Lines: 503
 
 Usage:
 ```swift
