@@ -11,18 +11,10 @@
 import UIKit
 
 extension UIColor {
-	public func alpha(_ alpha: CGFloat) -> UIColor {
-		return withAlphaComponent(alpha)
-	}
-	public func shade(_ percent: CGFloat) -> UIColor {
-		return RGB.shade(color: self, percent: percent)
-	}
-	public func tone(_ percent: CGFloat) -> UIColor {
-		return RGB.tone(color: self, percent: percent)
-	}
-	public func tint(_ percent: CGFloat) -> UIColor {
-		return RGB.tint(color: self, percent: percent)
-	}
+	public func alpha(_ alpha: CGFloat) -> UIColor { withAlphaComponent(alpha) }
+	public func shade(_ percent: CGFloat) -> UIColor { RGB.shade(color: self, percent: percent) }
+	public func tone(_ percent: CGFloat) -> UIColor { RGB.tone(color: self, percent: percent) }
+	public func tint(_ percent: CGFloat) -> UIColor { RGB.tint(color: self, percent: percent) }
 	
 	private convenience init(red: Int, green: Int, blue: Int) {
 		self.init(red: CGFloat(red)/255, green: CGFloat(green)/255, blue: CGFloat(blue)/255, alpha: 1)

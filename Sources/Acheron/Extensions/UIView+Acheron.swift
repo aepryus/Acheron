@@ -12,9 +12,7 @@ import UIKit
 
 public extension UIView {
 	
-	var s: CGFloat {
-		return Screen.s
-	}
+	var s: CGFloat { Screen.s }
 	
 	private var parent: CGSize {
 		if let parent = superview {
@@ -88,31 +86,15 @@ public extension UIView {
 		bottomRight(dx: dx, dy: dy, width: size.width, height: size.height)
 	}
 
-	var top: CGFloat {
-		return frame.origin.y
-	}
-	var bottom: CGFloat {
-		return frame.origin.y + frame.size.height
-	}
-	var left: CGFloat {
-		return frame.origin.x
-	}
-	var right: CGFloat {
-		return frame.origin.x + frame.size.width
-	}
-	var width: CGFloat {
-		return bounds.size.width
-	}
-	var height: CGFloat {
-		return bounds.size.height
-	}
+	var top: CGFloat { frame.origin.y }
+	var bottom: CGFloat { frame.origin.y + frame.size.height }
+	var left: CGFloat { frame.origin.x }
+	var right: CGFloat { frame.origin.x + frame.size.width }
+	var width: CGFloat { bounds.size.width }
+	var height: CGFloat { bounds.size.height }
 	
-	func pointOnScreen(_ point: CGPoint) -> CGPoint {
-		return convert(point, to: Screen.keyWindow)
-	}
-	func rectOnScreen(_ rect: CGRect) -> CGRect {
-		return CGRect(origin: pointOnScreen(rect.origin), size: rect.size)
-	}
+	func pointOnScreen(_ point: CGPoint) -> CGPoint { convert(point, to: Screen.keyWindow) }
+	func rectOnScreen(_ rect: CGRect) -> CGRect { CGRect(origin: pointOnScreen(rect.origin), size: rect.size) }
 }
 
 #endif
