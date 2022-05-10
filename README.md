@@ -2,7 +2,7 @@
 
 Acheron is a collection of utilties for developing iOS apps.
 
-* Total Lines: 2882
+* Total Lines: 3122
 
 ### Swift Package Manager
 
@@ -20,7 +20,7 @@ A lightweight threadsafe no SQL ORM.
 
 * Dependencies: Odds and Ends
 * Classes: Anchor, Basket, Domain, Persist, Loom, SQLitePersist
-* Lines: 1233
+* Lines: 1261
 
 
 ## AepLayout
@@ -29,14 +29,14 @@ A collection of lightweight extensions and convenience methods for laying out iO
 
 * Classes: AEViewController, Screen
 * Extensions: CALayer, UIView, UIViewController
-* Lines: 319
+* Lines: 347
 
 
 ## Pen
 
 * Classes: Pen
 * Extensions: NSMutableAttributedString, NSString, UIButton, UILabel
-* Lines: 66
+* Lines: 76
 
 Pen is a set of tools that eases working with fonts within UIKit.  Mainly, it is an immutable object, 'Pen' that encaspulates all of the font "attributes"; making them easy to define and access.  Slightly adjusted new Pens can be created via the clone() method.  It also includes a number of extensions to Apple classes that allows Pens to be used directly with them.
 
@@ -60,7 +60,7 @@ NSString("Hello, Green Pen").draw(at: .zero, withAttributes: greenPen.attributes
 
 * Classes: RGB
 * Extensions: UIColor
-* Lines: 91
+* Lines: 96
 
 RGB is a set of tools that make it easy to get tints, shades and tones of a color or blend two entirely different colors.  It includes the RGB class which converts color into a vector that can then be manipulated mathematically.  It also includes an extension of UIColor that enables these manipulations to be made directly to UIColor itself.
 
@@ -82,7 +82,7 @@ Classes and delegates for creating expandable table views.
 
 * Dependencies: AepLayout
 * Classes: ExpandableCell, ExpandableTableView
-* Lines: 192
+* Lines: 197
 
 ## Node View
 
@@ -90,12 +90,12 @@ A view making the display of tabular data easy.
 
 * Dependencies: AepLayout
 * Classes: AETableView, Node, NodeCell, NodeColumn, NodeData, NodeHeader, NodeView
-* Lines: 315
+* Lines: 325
 
 ## AepImage
 
 * Extensions: UIImage, UIImageView
-* Lines: 48
+* Lines: 66
 
 AepImage is an extremely light weight asynchoronous image loading and caching tool that stitches into UIImageView, but can also be used from static methods on UIImage directly.  The tool ensures UIImageViews located on UITableViews are handled correctly.  It does not include a disk cache.
 
@@ -118,7 +118,7 @@ UIImage.loadImage(url: "https://aepryus.com/resources/tnEvolizer1.jpg") { (image
 ## Pond and Pebbles
 
 * Classes: Pebble, Pond, BackgroundPond
-* Lines: 177
+* Lines: 179
 
 Pond and Pebbles is an asynchronous control flow system that greatly helps detangle complex asynchronous tasks like app initialization.  Through the BackgroundPond it also makes finishing up asynchronous tasks after your app is closed much easier.
 
@@ -283,9 +283,9 @@ XCTAssert(pond.test(shouldSucceed: [
 
 ## Odds and Ends
 
-* Classes: AESync, AETimer, SafeMap, SafeSet, WeakSet, XMLtoAttributes, TripWire
-* Extensions: Array, CaseIterable, CGPoint, Comparable, Date, Dictionary, String, UIControl
-* Lines: 441
+* Classes: AESync, AETimer, SafeMap, SafeSet, WeakSet, XMLtoAttributes, SplitterView, TripWire
+* Extensions: Array, CaseIterable, CGPoint, Codable, Comparable, Date, Dictionary, String, UIControl
+* Lines: 503
 
 Usage:
 ```swift
