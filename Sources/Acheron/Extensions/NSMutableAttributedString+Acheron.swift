@@ -11,13 +11,17 @@
 import UIKit
 
 public extension NSMutableAttributedString {
-	func append(_ string: String, pen: Pen) {
+	@discardableResult
+	func append(_ string: String, pen: Pen) -> NSMutableAttributedString {
 		self.append(NSAttributedString(string: string, attributes: pen.attributes))
+		return self
 	}
-	func append(image: UIImage) {
+	@discardableResult
+	func append(image: UIImage) -> NSMutableAttributedString{
 		let attachment = NSTextAttachment()
 		attachment.image = image
 		self.append(NSAttributedString(attachment: attachment))
+		return self
 	}
 }
 

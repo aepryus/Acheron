@@ -85,4 +85,6 @@ public extension String {
 	static func uuid() -> String {
 		return UUID().uuidString
 	}
+
+	func attributed(pen: Pen) -> NSMutableAttributedString { NSMutableAttributedString(string: self, attributes: pen.attributes) }
 }
