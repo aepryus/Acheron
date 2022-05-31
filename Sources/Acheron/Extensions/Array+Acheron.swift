@@ -16,7 +16,7 @@ public extension Array where Element: Equatable {
 	}
 }
 
-public extension Array {
+public extension Collection {
 	func toJSON() -> String {
 		do {
 			let data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
@@ -30,5 +30,13 @@ public extension Array {
 		var sum: Int = 0
 		forEach { sum += value($0) }
 		return sum
+	}
+	func maximum(_ value: (Element)->(Int)) -> Int? {
+		var maximum: Int? = nil
+		forEach {
+			let v = value($0)
+			if maximum == nil || v > maximum! { maximum = v }
+		}
+		return maximum
 	}
 }
