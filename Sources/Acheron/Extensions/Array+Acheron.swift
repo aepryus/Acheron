@@ -26,13 +26,18 @@ public extension Collection {
 			return ""
 		}
 	}
-	func summate(_ value: (Element)->(Int)) -> Int {
-		var sum: Int = 0
+	func summate<T: BinaryInteger>(_ value: (Element)->(T)) -> T {
+		var sum: T = 0
 		forEach { sum += value($0) }
 		return sum
 	}
-	func maximum(_ value: (Element)->(Int)) -> Int? {
-		var maximum: Int? = nil
+	func summate<T: FloatingPoint>(_ value: (Element)->(T)) -> T {
+		var sum: T = 0
+		forEach { sum += value($0) }
+		return sum
+	}
+	func maximum<T: BinaryInteger>(_ value: (Element)->(T)) -> T? {
+		var maximum: T? = nil
 		forEach {
 			let v = value($0)
 			if maximum == nil || v > maximum! { maximum = v }
