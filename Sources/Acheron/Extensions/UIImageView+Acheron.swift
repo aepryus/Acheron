@@ -48,6 +48,10 @@ public extension UIImageView {
 		guard let atURL = atURL else {return}
 		loadImage(url: atURL.absoluteString, placeholder: placeholder, complete: {})
 	}
+	@objc func cancelLoadImage() {
+		UIImageView.urlLookup[identifier] = nil
+		image = nil
+	}
 }
 
 #endif
