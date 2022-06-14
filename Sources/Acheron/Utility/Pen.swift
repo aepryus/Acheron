@@ -18,17 +18,19 @@ public class Pen: NSObject {
 	public var alignment: NSTextAlignment { style.alignment }
 	public var style: NSParagraphStyle { attributes[.paragraphStyle] as! NSParagraphStyle }
 	public var kern: CGFloat? { attributes[.kern] as? CGFloat }
+	public var baselineOffset: CGFloat? { attributes[.baselineOffset] as? CGFloat }
 	
-	public init(font: UIFont = UIFont.systemFont(ofSize: 16), color: UIColor = UIColor.black, alignment: NSTextAlignment = .left, style: NSParagraphStyle = NSParagraphStyle.default, kern: CGFloat? = nil) {
+	public init(font: UIFont = UIFont.systemFont(ofSize: 16), color: UIColor = UIColor.black, alignment: NSTextAlignment = .left, style: NSParagraphStyle = NSParagraphStyle.default, kern: CGFloat? = nil, baselineOffset: CGFloat? = nil) {
 		let mutableStyle: NSMutableParagraphStyle = style.mutableCopy() as! NSMutableParagraphStyle
 		mutableStyle.alignment = alignment
 		var attributes: [NSAttributedString.Key:Any] = [.font:font, .foregroundColor:color, .paragraphStyle:mutableStyle]
 		if let kern = kern { attributes[.kern] = kern }
+		if let baselineOffset = baselineOffset { attributes[.baselineOffset] = baselineOffset }
 		self.attributes = attributes
 	}
 
-	public func clone(font: UIFont? = nil, color: UIColor? = nil, alignment: NSTextAlignment? = nil, style: NSParagraphStyle? = nil, kern: CGFloat? = nil) -> Pen {
-		return Pen(font: font ?? self.font, color: color ?? self.color, alignment: alignment ?? self.alignment, style: style ?? self.style, kern: kern ?? self.kern)
+	public func clone(font: UIFont? = nil, color: UIColor? = nil, alignment: NSTextAlignment? = nil, style: NSParagraphStyle? = nil, kern: CGFloat? = nil, baselineOffset: CGFloat? = nil) -> Pen {
+		return Pen(font: font ?? self.font, color: color ?? self.color, alignment: alignment ?? self.alignment, style: style ?? self.style, kern: kern ?? self.kern, baselineOffset: baselineOffset ?? self.baselineOffset)
 	}
 }
 
