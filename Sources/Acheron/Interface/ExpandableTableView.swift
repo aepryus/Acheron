@@ -33,9 +33,7 @@ public extension ExpandableTableViewDelegate {
 		return nil
 	}
 	func expandableTableView(_ tableView: ExpandableTableView, expansionForRowAt indexPath: IndexPath) -> UIView {
-		let view = UIView()
-		view.backgroundColor = UIColor.blue.tint(0.5)
-		return view
+		return ColorView(.blue.tint(0.5))
 	}
 	func expandableTableView(_ tableView: ExpandableTableView, baseHeightForRowAt indexPath: IndexPath) -> CGFloat {
 		return tableView.baseHeight
@@ -58,7 +56,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	
 	private var currentExpandedView: UIView? = nil
 	private var expandedViews: [UIView] = []
-	
+
 	public init(delegate: ExpandableTableViewDelegate) {
 		expandableTableViewDelegate = delegate
 		super.init()
@@ -117,10 +115,10 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	}
 	
 	public func dequeueExpansionView() -> UIView? {
-		guard expandedViews.count > 0 else {return nil}
+		guard expandedViews.count > 0 else { return nil }
 		return expandedViews.removeLast()
 	}
-	
+
 // UITableViewDelegate =============================================================================
 	public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		var height: CGFloat = expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, baseHeightForRowAt:indexPath)
