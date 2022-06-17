@@ -7,8 +7,8 @@
 
 import UIKit
 
-class ColorView: UIView {
-	init(_ color: UIColor) {
+public class ColorView: UIView {
+	public init(_ color: UIColor) {
 		super.init(frame: .zero)
 		backgroundColor = color
 	}
