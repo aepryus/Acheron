@@ -95,6 +95,8 @@ public extension UIView {
 	
 	func pointOnScreen(_ point: CGPoint) -> CGPoint { convert(point, to: Screen.keyWindow) }
 	func rectOnScreen(_ rect: CGRect) -> CGRect { CGRect(origin: pointOnScreen(rect.origin), size: rect.size) }
+
+	func asImage() -> UIImage { UIGraphicsImageRenderer(bounds: bounds).image { layer.render(in: $0.cgContext) } }
 }
 
 #endif
