@@ -86,5 +86,7 @@ public extension String {
 		return UUID().uuidString
 	}
 
+#if canImport(UIKit)
 	func attributed(pen: Pen) -> NSMutableAttributedString { NSMutableAttributedString(string: self, attributes: pen.attributes) }
+#endif
 }
