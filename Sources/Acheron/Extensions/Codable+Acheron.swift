@@ -9,7 +9,7 @@
 import Foundation
 
 extension Decodable {
-	init?(json: String) throws {
+	public init?(json: String) throws {
 		guard let data = json.data(using: .utf8) else { return nil }
 		let decoder = JSONDecoder()
 		decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -18,7 +18,7 @@ extension Decodable {
 	}
 }
 extension Encodable {
-	func toJSON() -> String {
+	public func toJSON() -> String {
 		let encoder = JSONEncoder()
 		encoder.outputFormatting = .prettyPrinted
 		let data = try! encoder.encode(self)
