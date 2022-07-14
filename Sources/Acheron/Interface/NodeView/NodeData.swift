@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import Foundation
 
 public protocol NodeData {
@@ -47,3 +49,5 @@ extension Dictionary: NodeData where Key == String {
 		return self[name]
 	}
 }
+
+#endif
