@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if canImport(SQLite3)
+
 import Foundation
 import SQLite3
 
@@ -466,3 +468,5 @@ public class SQLitePersist: Persist {
 		}
 	}
 }
+
+#endif
