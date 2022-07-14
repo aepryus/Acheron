@@ -7,6 +7,9 @@
 //
 
 import Foundation
+#if canImport(FoundationXML)
+import FoundationXML
+#endif
 
 fileprivate class AnyStack {
 	var stack: [[String:Any]] = []
