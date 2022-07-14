@@ -6,6 +6,8 @@
 //  Copyright © 2018 Aepryus Software. All rights reserved.
 //
 
+#if !os(Linux)
+
 import Foundation
 
 public class WeakSet<T: AnyObject>: Sequence, ExpressibleByArrayLiteral, CustomStringConvertible, CustomDebugStringConvertible {
@@ -82,3 +84,5 @@ public class WeakSet<T: AnyObject>: Sequence, ExpressibleByArrayLiteral, CustomS
 		return !lhs.objects.isEqual(to: rhs.objects)
 	}
 }
+
+#endif
