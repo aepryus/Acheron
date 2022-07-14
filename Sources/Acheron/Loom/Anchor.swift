@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if !os(Linux)
+
 import Foundation
 
 open class Anchor: Domain {
@@ -68,3 +70,5 @@ open class Anchor: Domain {
 		return super.properties + ["fork", "vers"]
 	}
 }
+
+#endif

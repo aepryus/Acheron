@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if !os(Linux)
+
 import Foundation
 
 public enum DomainStatus {
@@ -453,3 +455,5 @@ open class Domain: NSObject {
 		if newValue != oldValue { edit() }
 	}
 }
+
+#endif

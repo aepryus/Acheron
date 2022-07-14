@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if !os(Linux)
+
 import Foundation
 
 public class Loom {
@@ -118,3 +120,5 @@ public class Loom {
 		Loom.namespaces = namespaces
 	}
 }
+
+#endif

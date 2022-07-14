@@ -6,7 +6,7 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
-#if canImport(SQLite3)
+#if !os(Linux)
 
 import Foundation
 import SQLite3
