@@ -33,7 +33,7 @@ open class Anchor: Domain {
 	
 	var only: String? {
 		guard let basket = basket, let key = basket.only(type: type) else { return nil }
-		return value(for: key) as? String
+		return value(forKey: key) as? String
 	}
 	
 	public func resolveConflicts(_ attributes: [String:Any]) {}
