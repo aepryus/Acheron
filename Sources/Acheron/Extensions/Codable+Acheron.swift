@@ -9,12 +9,17 @@
 import Foundation
 
 extension Decodable {
-	public init?(json: String) throws {
+	public init?(json: String) {
 		guard let data = json.data(using: .utf8) else { return nil }
 		let decoder = JSONDecoder()
 		decoder.keyDecodingStrategy = .convertFromSnakeCase
 		decoder.dateDecodingStrategy = .iso8601
-		self = try decoder.decode(Self.self, from: data)
+        do {
+            self = try decoder.decode(Self.self, from: data)
+        } catch {
+            print("ERROR: Decodable.init?(json: String) [\(error)]")
+            return nil
+        }
 	}
 }
 extension Encodable {
