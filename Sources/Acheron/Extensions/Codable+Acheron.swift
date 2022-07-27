@@ -26,6 +26,7 @@ extension Encodable {
 	public func toJSON() -> String {
 		let encoder = JSONEncoder()
 		encoder.outputFormatting = .prettyPrinted
+        encoder.dateEncodingStrategy = .iso8601
 		let data = try! encoder.encode(self)
 		return String(data: data, encoding: .utf8)!
 	}
