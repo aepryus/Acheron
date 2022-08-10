@@ -5,6 +5,8 @@
 //  Created by Joe Charlier on 6/15/22.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class ColorView: UIView {
@@ -14,3 +16,5 @@ public class ColorView: UIView {
 	}
 	required init?(coder: NSCoder) { fatalError() }
 }
+
+#endif

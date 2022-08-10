@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if !os(Linux)
+
 import Foundation
 
 open class Persist: NSObject {
@@ -70,3 +72,5 @@ open class Persist: NSObject {
 	open func logError(_ error: Error) {}
 	open func logError(message: String) {}
 }
+
+#endif

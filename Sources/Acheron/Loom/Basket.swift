@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if !os(Linux)
+
 import Foundation
 
 public class Basket: NSObject {
@@ -298,3 +300,5 @@ public class Basket: NSObject {
 		persist.census()
 	}
 }
+
+#endif

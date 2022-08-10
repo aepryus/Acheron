@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if !os(Linux)
+
 import Foundation
 
 open class Anchor: Domain {
@@ -31,7 +33,7 @@ open class Anchor: Domain {
 	
 	var only: String? {
 		guard let basket = basket, let key = basket.only(type: type) else { return nil }
-		return value(for: key) as? String
+		return value(forKey: key) as? String
 	}
 	
 	public func resolveConflicts(_ attributes: [String:Any]) {}
@@ -68,3 +70,5 @@ open class Anchor: Domain {
 		return super.properties + ["fork", "vers"]
 	}
 }
+
+#endif

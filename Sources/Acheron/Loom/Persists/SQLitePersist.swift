@@ -6,6 +6,8 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
+#if !os(Linux)
+
 import Foundation
 import SQLite3
 
@@ -466,3 +468,5 @@ public class SQLitePersist: Persist {
 		}
 	}
 }
+
+#endif
