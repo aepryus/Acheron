@@ -21,7 +21,7 @@ open class Pond {
 	private func checkIfComplete() {
 		guard complete else { return }
 
-		print("\n == [ Pond Complete ]\n")
+        print("\n[ Pond Complete ] ====================================\n")
 		print("\t Succeeded Pebbles ===========")
 		for pebble in pebbles.filter({ $0.state == .succeeded }) {
 			print("\t\t - \(pebble.name)")
@@ -63,7 +63,7 @@ open class Pond {
 		guard !started || completed else { return }
 		reset()
 		queue.async {
-			print("\n == [ Pond Starting ]")
+			print("\n[ Pond Starting ] ====================================")
 			self.iterate()
 		}
 	}
