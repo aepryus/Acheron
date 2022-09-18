@@ -136,6 +136,10 @@ public class Screen {
 	public static var size: CGSize { CGSize(width: width, height: height) }
 	public static var s: CGFloat { current.s }
 	public static var scaler: CGFloat { current.scaler }
+    
+    public static var scale: CGFloat { UIScreen.main.scale}
+
+    public static func snapToPixel(_ x: CGFloat) -> CGFloat { ceil(x*scale)/scale }
 	
 	public static var iPhone: Bool {
 		return current.model == .iPhone
