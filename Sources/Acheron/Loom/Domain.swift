@@ -36,7 +36,7 @@ open class Domain: NSObject {
 	private var _status: DomainStatus = .loading
 	public var status: DomainStatus {
 		set {
-			guard _status != newValue else {return}
+			guard _status != newValue else { return }
 			
 			objc_sync_enter(self)
 			defer {objc_sync_exit(self)}
@@ -177,7 +177,7 @@ open class Domain: NSObject {
 	}
 	
 	private func handleTriggers(_ domain: Domain, action: DomainAction) {
-		guard let basket = domain.anchor?.basket else {return}
+		guard let basket = domain.anchor?.basket else { return }
 		basket.blocksFor(class: Swift.type(of: domain), action: action).forEach { $0(domain) }
 	}
 	

@@ -26,7 +26,7 @@ open class AETableView: UITableView {
 // UITableView =====================================================================================
 	override public var refreshControl: UIRefreshControl? {
 		didSet {
-			guard let refreshControl = refreshControl else {return}
+			guard let refreshControl = refreshControl else { return }
 			refreshControl.layer.zPosition = -1
 		}
 	}

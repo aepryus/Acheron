@@ -41,11 +41,11 @@ public extension UIImageView {
 		loadImage(url: url, placeholder: placeholder, complete: {})
 	}
 	@objc func loadImage(atURL: URL?) {
-		guard let atURL = atURL else {return}
+		guard let atURL = atURL else { return }
 		loadImage(url: atURL.absoluteString, placeholder: nil, complete: {})
 	}
 	@objc func loadImage(atURL: URL?, placeholder: UIImage?) {
-		guard let atURL = atURL else {return}
+		guard let atURL = atURL else { return }
 		loadImage(url: atURL.absoluteString, placeholder: placeholder, complete: {})
 	}
 	@objc func cancelLoadImage() {

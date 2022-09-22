@@ -81,7 +81,7 @@ open class AEViewController: UIViewController {
 	
 // UIViewController ================================================================================
 	override open func viewSafeAreaInsetsDidChange() {
-		guard #available(iOS 11.0, *) else {return}
+		guard #available(iOS 11.0, *) else { return }
 		super.viewSafeAreaInsetsDidChange()
 		layout()
 	}

@@ -69,8 +69,8 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 	public required init?(coder aDecoder: NSCoder) {fatalError()}
 	
 	func toggle(cell: ExpandableCell) {
-		guard let indexPath = self.indexPath(for: cell) else {return}
-		guard expandableTableViewDelegate.expandableTableView(self, expandableRowAt: indexPath) else {return}
+		guard let indexPath = self.indexPath(for: cell) else { return }
+		guard expandableTableViewDelegate.expandableTableView(self, expandableRowAt: indexPath) else { return }
 		
 		var nextExpandedView: UIView? = nil
 		
@@ -96,15 +96,15 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		beginUpdates()
 		CATransaction.setCompletionBlock {
 			if self.expandedPath != nil && self.exposeBottom {self.scrollRectToVisible(cell.frame, animated: true)}
-			guard let closingExpandedView = closingExpandedView else {return}
+			guard let closingExpandedView = closingExpandedView else { return }
 			closingExpandedView.removeFromSuperview()
 			self.expandedViews.append(closingExpandedView)
 		}
 		endUpdates()
 	}
 	public func collapse() {
-		guard let expandedPath = expandedPath else {return}
-		guard let cell = cellForRow(at: expandedPath) as? ExpandableCell else {return}
+		guard let expandedPath = expandedPath else { return }
+		guard let cell = cellForRow(at: expandedPath) as? ExpandableCell else { return }
 		toggle(cell: cell)
 	}
 	public func collapseSilent() {
