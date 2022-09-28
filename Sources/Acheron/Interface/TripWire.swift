@@ -17,7 +17,7 @@ public class TripWire: UIView {
 		self.onTrip = onTrip
 		super.init(frame: frame == CGRect.zero ? UIScreen.main.bounds : frame)
 	}
-	required init?(coder aDecoder: NSCoder) {fatalError()}
+	required init?(coder aDecoder: NSCoder) { fatalError() }
 	
 	override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
 		let view = super.hitTest(point, with: event)

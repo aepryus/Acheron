@@ -25,7 +25,7 @@ open class ExpandableCell: UITableViewCell {
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(onTap))
 		baseView.addGestureRecognizer(gesture)
 	}
-	public required init?(coder aDecoder: NSCoder) {fatalError()}
+	public required init?(coder aDecoder: NSCoder) { fatalError() }
 	
 	var indexPath: IndexPath? {
 		return expandableTableView.indexPathForRow(at: CGPoint(x: self.frame.origin.x, y: self.frame.origin.y))

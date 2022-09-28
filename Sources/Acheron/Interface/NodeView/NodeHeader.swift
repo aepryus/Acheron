@@ -33,7 +33,7 @@ class NodeHeader: UITableViewCell {
 		label.textColor = UIColor(rgb: 0x333333)
 		addSubview(label)
 	}
-	required init?(coder aDecoder: NSCoder) {fatalError()}
+	required init?(coder aDecoder: NSCoder) { fatalError() }
 	
 	func renderFields() {
 		labels.forEach {$0.removeFromSuperview()}

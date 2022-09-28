@@ -66,7 +66,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
 		showsVerticalScrollIndicator = false		
 		if #available(iOS 15.0, *) { sectionHeaderTopPadding = 0 }
 	}
-	public required init?(coder aDecoder: NSCoder) {fatalError()}
+	public required init?(coder aDecoder: NSCoder) { fatalError() }
 	
 	func toggle(cell: ExpandableCell) {
 		guard let indexPath = self.indexPath(for: cell) else { return }

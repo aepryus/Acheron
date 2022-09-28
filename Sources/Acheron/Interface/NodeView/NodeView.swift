@@ -40,7 +40,7 @@ public class NodeView: UIView, UITableViewDataSource {
 		tableView.dataSource = self
 		addSubview(tableView)
 	}
-	required init?(coder aDecoder: NSCoder) {fatalError()}
+	required init?(coder aDecoder: NSCoder) { fatalError() }
 	
 	public var rowHeight: CGFloat {
 		set {tableView.rowHeight = newValue}

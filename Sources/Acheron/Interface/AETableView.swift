@@ -21,7 +21,7 @@ open class AETableView: UITableView {
 		tableFooterView = nil
 		allowsSelection = false
 	}
-	required public init?(coder aDecoder: NSCoder) {fatalError()}
+	required public init?(coder aDecoder: NSCoder) { fatalError() }
 	
 // UITableView =====================================================================================
 	override public var refreshControl: UIRefreshControl? {

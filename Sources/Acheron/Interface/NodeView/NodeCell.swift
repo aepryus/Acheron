@@ -33,7 +33,7 @@ public class NodeCell: UITableViewCell {
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(onTap))
 		addGestureRecognizer(gesture)
 	}
-	required init?(coder aDecoder: NSCoder) {fatalError()}
+	required init?(coder aDecoder: NSCoder) { fatalError() }
 	
 	func renderFields() {
 		views.forEach {$0.removeFromSuperview()}
