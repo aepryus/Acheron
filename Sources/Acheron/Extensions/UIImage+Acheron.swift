@@ -40,6 +40,8 @@ extension UIImage {
 	public static func loadImage(url: String, _ complete: @escaping (UIImage)->()) {
 		UIImage.loadImage(url: url, alreadyLoaded: complete, willLoad: {}, finishedLoading: complete)
 	}
+    
+    public var ratio: CGFloat { size.height / size.width }
 }
 
 #endif

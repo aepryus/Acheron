@@ -26,7 +26,7 @@ public class Screen {
 			 dimOther
 	}
 	public enum Ratio: CaseIterable {
-		case rat067, rat056, rat046, rat133, rat143, rat152
+		case rat067, rat056, rat046, rat133, rat143, rat152, other
 		
 		var ratio: CGFloat {
 			switch self {
@@ -36,6 +36,7 @@ public class Screen {
 				case .rat133: return 1.33
 				case .rat143: return 1.43
 				case .rat152: return 1.52
+                case .other:  return 1.00
 			}
 		}
 	}

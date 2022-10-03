@@ -54,6 +54,7 @@ open class AEViewController: UIViewController {
 			case .rat133:	layoutRatio133()
 			case .rat143:	layoutRatio143()
 			case .rat152:	layoutRatio152()
+            case .other:    layoutRatio152()
 		}
 	}
 
