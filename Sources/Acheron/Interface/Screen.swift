@@ -17,12 +17,12 @@ public class Screen {
 		case iPhone, iPad, mac, other
 	}
 	public enum Dimensions {
-		case dim320x480,														// 0.67
-			 dim320x568, dim375x667, dim414x736,								// 0.56
-			 dim360x780, dim375x812, dim390x844, dim414x896, dim428x926,		// 0.46
-			 dim1024x768, dim1080x810, dim1112x834, dim1366x1024,				// 1.33
-			 dim1180x820, dim1194x834,											// 1.43
-			 dim1133x744,														// 1.52
+		case dim320x480,														                        // 0.67 - original
+			 dim320x568, dim375x667, dim414x736,								                        // 0.56 - iPhone 5
+			 dim360x780, dim375x812, dim390x844, dim393x852, dim414x896, dim428x926, dim430x932,	    // 0.46 - iPhone X
+			 dim1024x768, dim1080x810, dim1112x834, dim1366x1024,				                        // 1.33 - original iPad
+			 dim1180x820, dim1194x834,											                        // 1.43 - iPad 11"
+			 dim1133x744,														                        // 1.52 - iPad Mini 6th gen
 			 dimOther
 	}
 	public enum Ratio: CaseIterable {

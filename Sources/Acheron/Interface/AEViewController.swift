@@ -30,8 +30,10 @@ open class AEViewController: UIViewController {
 	open func layout360x780() { layoutRatio046() }
 	open func layout375x812() { layoutRatio046() }
 	open func layout390x844() { layoutRatio046() }
+    open func layout393x852() { layoutRatio046() }
 	open func layout414x896() { layoutRatio046() }
 	open func layout428x926() { layoutRatio046() }
+    open func layout430x932() { layoutRatio046() }
 	
 	// 1.33
 	open func layout1024x768() {}
@@ -67,8 +69,10 @@ open class AEViewController: UIViewController {
 			case .dim360x780:	layout360x780()
 			case .dim375x812:	layout375x812()
 			case .dim390x844:	layout390x844()
+            case .dim393x852:   layout393x852()
 			case .dim414x896:	layout414x896()
 			case .dim428x926:	layout428x926()
+            case .dim430x932:   layout430x932()
 			case .dim1024x768:	layout1024x768()
 			case .dim1080x810:	layout1080x810()
 			case .dim1112x834:	layout1112x834()
@@ -77,7 +81,7 @@ open class AEViewController: UIViewController {
 			case .dim1194x834:	layout1194x834()
 			case .dim1133x744:	layout1133x744()
 			case .dimOther:		layoutRatio()
-		}
+        }
 	}
 	
 // UIViewController ================================================================================
