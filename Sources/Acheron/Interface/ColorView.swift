@@ -9,12 +9,12 @@
 
 import UIKit
 
-public class ColorView: UIView {
+open class ColorView: UIView {
 	public init(_ color: UIColor) {
 		super.init(frame: .zero)
 		backgroundColor = color
 	}
-	required init?(coder: NSCoder) { fatalError() }
+    required public init?(coder: NSCoder) { fatalError() }
 }
 
 #endif
