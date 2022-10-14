@@ -44,4 +44,20 @@ public extension Collection {
 		}
 		return maximum
 	}
+    func max<T: BinaryFloatingPoint>(_ value: (Element)->(T)) -> T {
+        var max: T? = nil
+        forEach {
+            let v = value($0)
+            if max == nil || v > max! { max = v }
+        }
+        return max!
+    }
+    func min<T: BinaryFloatingPoint>(_ value: (Element)->(T)) -> T {
+        var min: T? = nil
+        forEach {
+            let v = value($0)
+            if min == nil || v < min! { min = v }
+        }
+        return min!
+    }
 }
