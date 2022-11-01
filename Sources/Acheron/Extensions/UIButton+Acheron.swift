@@ -11,10 +11,10 @@
 import UIKit
 
 public extension UIButton {
-	func setTitlePen(_ pen: Pen, for state: UIControl.State) {
-		setTitleColor(pen.color, for: state)
-		titleLabel?.pen = pen
-	}
+    func setTitlePen(_ pen: Pen, for state: UIControl.State) {
+        setTitleColor(pen.color, for: state)
+        titleLabel?.pen = pen
+    }
 }
 
 #endif

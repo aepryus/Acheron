@@ -10,10 +10,10 @@
 import UIKit
 
 open class ColorView: UIView {
-	public init(_ color: UIColor) {
-		super.init(frame: .zero)
-		backgroundColor = color
-	}
+    public init(_ color: UIColor) {
+        super.init(frame: .zero)
+        backgroundColor = color
+    }
     required public init?(coder: NSCoder) { fatalError() }
 }
 

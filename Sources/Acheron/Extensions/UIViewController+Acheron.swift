@@ -11,9 +11,9 @@
 import UIKit
 
 public extension UIViewController {
-	var s: CGFloat { Screen.s }
-	var safeTop: CGFloat { Screen.safeTop }
-	var safeBottom: CGFloat { Screen.safeBottom }
+    var s: CGFloat { Screen.s }
+    var safeTop: CGFloat { Screen.safeTop }
+    var safeBottom: CGFloat { Screen.safeBottom }
 }
 
 #endif

@@ -9,8 +9,8 @@
 import Foundation
 
 public extension CaseIterable {
-	static func from(string: String) -> Self? {
-		return Self.allCases.first { string == "\($0)" }
-	}
-	func toString() -> String { "\(self)" }
+    static func from(string: String) -> Self? {
+        return Self.allCases.first { string == "\($0)" }
+    }
+    func toString() -> String { "\(self)" }
 }

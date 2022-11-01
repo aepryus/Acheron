@@ -9,25 +9,25 @@
 import Foundation
 
 public extension String {
-    subscript(i: Int) -> Character {										// [a]
+    subscript(i: Int) -> Character {                                        // [a]
         self[index(startIndex, offsetBy: i)]
     }
-    subscript(r: CountableClosedRange<Int>) -> String {						// [a...b]
+    subscript(r: CountableClosedRange<Int>) -> String {                        // [a...b]
         let start = index(startIndex, offsetBy: r.lowerBound)
         let end = index(startIndex, offsetBy: r.upperBound)
         return String(self[start...end])
     }
-    subscript(r: CountablePartialRangeFrom<Int>) -> String {				// [a...]
+    subscript(r: CountablePartialRangeFrom<Int>) -> String {                // [a...]
         let start = index(startIndex, offsetBy: r.lowerBound)
         let end = endIndex
         return String(self[start..<end])
     }
-    subscript(r: PartialRangeThrough<Int>) -> String {						// [...b]
+    subscript(r: PartialRangeThrough<Int>) -> String {                        // [...b]
         let start = startIndex
         let end = index(startIndex, offsetBy: r.upperBound)
         return String(self[start...end])
     }
-    subscript(r: PartialRangeUpTo<Int>) -> String {							// [..<b]
+    subscript(r: PartialRangeUpTo<Int>) -> String {                            // [..<b]
         guard r.upperBound > 0 else {return ""}
         let start = startIndex
         let end = index(startIndex, offsetBy: r.upperBound-1)

@@ -11,14 +11,14 @@
 import UIKit
 
 public extension UILabel {
-	var pen: Pen {
-		set {
-			font = newValue.font
-			textColor = newValue.color
-			textAlignment = newValue.alignment
-		}
-		get { fatalError() }
-	}
+    var pen: Pen {
+        set {
+            font = newValue.font
+            textColor = newValue.color
+            textAlignment = newValue.alignment
+        }
+        get { fatalError() }
+    }
 }
 
 #endif
