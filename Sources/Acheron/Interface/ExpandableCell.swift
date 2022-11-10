@@ -27,15 +27,9 @@ open class ExpandableCell: UITableViewCell {
     }
     public required init?(coder aDecoder: NSCoder) { fatalError() }
     
-    var indexPath: IndexPath? {
-        return expandableTableView.indexPathForRow(at: CGPoint(x: self.frame.origin.x, y: self.frame.origin.y))
-    }
-    public var expanded: Bool {
-        return expandableTableView.expandedPath == indexPath
-    }
-    public var baseHeight: CGFloat {
-        return baseView.height
-    }
+    var indexPath: IndexPath? { expandableTableView.indexPathForRow(at: CGPoint(x: self.frame.origin.x, y: self.frame.origin.y)) }
+    public var expanded: Bool { expandableTableView.expandedPath == indexPath }
+    public var baseHeight: CGFloat { baseView.height }
     
     func superAddSubview(_ view: UIView) {
         super.addSubview(view)
@@ -58,9 +52,7 @@ open class ExpandableCell: UITableViewCell {
         }
         baseView.frame = CGRect(x: 0, y: 0, width: width, height: baseHeight)
     }
-    override open func addSubview(_ view: UIView) {
-        baseView.addSubview(view)
-    }
+    override open func addSubview(_ view: UIView) { baseView.addSubview(view) }
     override open func addGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
         baseView.addGestureRecognizer(gestureRecognizer)
     }

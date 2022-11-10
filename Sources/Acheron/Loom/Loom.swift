@@ -82,38 +82,18 @@ public class Loom {
         return nil
     }
     
-    public static func set(key: String, value: String) {
-        Loom.basket.set(key: key, value: value)
-    }
-    public static func get(key: String) -> String? {
-        return Loom.basket.get(key: key)
-    }
-    public static func unset(key: String) {
-        Loom.basket.unset(key: key)
-    }
-    public static func create<T: Anchor>(only: String? = nil) -> T {
-        return Loom.basket.createBy(cls: T.self, only: only) as! T
-    }
+    public static func set(key: String, value: String) { Loom.basket.set(key: key, value: value) }
+    public static func get(key: String) -> String? { Loom.basket.get(key: key) }
+    public static func unset(key: String) { Loom.basket.unset(key: key) }
+    public static func create<T: Anchor>(only: String? = nil) -> T { Loom.basket.createBy(cls: T.self, only: only) as! T }
     
-    public static func selectBy<T: Anchor>(iden: String) -> T? {
-        return Loom.basket.selectBy(iden: iden) as? T
-    }
-    public static func selectBy<T: Anchor>(only: String) -> T? {
-        return Loom.basket.selectBy(cls: T.self, only: only) as? T
-    }
-    public static func selectOne<T: Anchor>(where field: String, is value: String) -> T? {
-        return Loom.basket.selectOne(where: field, is: value, type: T.self) as? T
-    }
-    public static func select<T: Anchor>(where field: String, is value: String) -> [T] {
-        return Loom.basket.select(where: field, is: value, type: T.self) as! [T]
-    }
-    public static func selectAll<T: Anchor>() -> [T] {
-        return Loom.basket.selectAll(T.self) as! [T]
-    }
+    public static func selectBy<T: Anchor>(iden: String) -> T? { Loom.basket.selectBy(iden: iden) as? T }
+    public static func selectBy<T: Anchor>(only: String) -> T? { Loom.basket.selectBy(cls: T.self, only: only) as? T }
+    public static func selectOne<T: Anchor>(where field: String, is value: String) -> T? { Loom.basket.selectOne(where: field, is: value, type: T.self) as? T }
+    public static func select<T: Anchor>(where field: String, is value: String) -> [T] { Loom.basket.select(where: field, is: value, type: T.self) as! [T] }
+    public static func selectAll<T: Anchor>() -> [T] { Loom.basket.selectAll(T.self) as! [T] }
     
-    public static func transact(_ closure: ()->()) {
-        Loom.basket.transact(closure)
-    }
+    public static func transact(_ closure: ()->()) { Loom.basket.transact(closure) }
     
     public static func start(basket: Basket, namespaces: [String]) {
         Loom.basket = basket

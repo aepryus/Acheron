@@ -58,17 +58,13 @@ open class Anchor: Domain {
     }
     
 // Anchor ==========================================================================================
-    open var isUploaded: Bool {
-        return true
-    }
+    open var isUploaded: Bool { true }
     
 // Domain ==========================================================================================
     override public var anchor: Anchor {
         get { return self }
     }
-    override open var properties: [String] {
-        return super.properties + ["fork", "vers"]
-    }
+    override open var properties: [String] { super.properties + ["fork", "vers"] }
 }
 
 #endif

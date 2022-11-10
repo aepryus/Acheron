@@ -24,9 +24,7 @@ public class Basket: NSObject {
 
     let queue: DispatchQueue
     
-    let generateIden:(Domain.Type)->(String) = {(type: Domain.Type) -> (String) in
-        return UUID().uuidString
-    }
+    let generateIden:(Domain.Type)->(String) = {(type: Domain.Type) -> (String) in UUID().uuidString }
     
     public init(_ persist: Persist) {
         self.persist = persist
@@ -34,12 +32,8 @@ public class Basket: NSObject {
         fork = Int(persist.get(key: "fork") ?? "0")!
     }
     
-    public func associate(type: String, only: String) {
-        persist.associate(type: type, only: only)
-    }
-    public func only(type: String) -> String? {
-        return persist.only(type: type)
-    }
+    public func associate(type: String, only: String) { persist.associate(type: type, only: only) }
+    public func only(type: String) -> String? { persist.only(type: type) }
         
     private func load(_ attributes: [String:Any], cls: Anchor.Type) -> Anchor {
         let anchor = cls.init(attributes: attributes)
@@ -130,9 +124,7 @@ public class Basket: NSObject {
         let array = persist.selectForked()
         return convert(array: array)
     }
-    public func selectForkedMemories() -> [[String:Any]] {
-        return persist.selectForkedMemories()
-    }
+    public func selectForkedMemories() -> [[String:Any]] { persist.selectForkedMemories() }
     
     public func syncPacket() -> [String:Any] {
         var attributes: [String:Any] = [:]
@@ -154,9 +146,7 @@ public class Basket: NSObject {
         return attributes
     }
     
-    func dirtyAnchor(_ anchor: Anchor) {
-        dirty.insert(anchor)
-    }
+    func dirtyAnchor(_ anchor: Anchor) { dirty.insert(anchor) }
     func deleteAnchor(_ anchor: Anchor) {
         dirty.insert(anchor)
         cache.removeValue(forKey: anchor.iden)
@@ -249,30 +239,16 @@ public class Basket: NSObject {
     }
     
     public func clearCache() {
-        queue.sync {
-            cache.removeAll()
-        }
+        queue.sync { cache.removeAll() }
     }
     
-    public func set(key: String, value: String) {
-        persist.set(key: key, value: value)
-    }
-    public func setServer(key: String, value: String) {
-        persist.setServer(key: key, value: value)
-    }
-    public func get(key: String) -> String? {
-        return persist.get(key: key)
-    }
-    public func unset(key: String) {
-        persist.unset(key: key)
-    }
+    public func set(key: String, value: String) { persist.set(key: key, value: value) }
+    public func setServer(key: String, value: String) { persist.setServer(key: key, value: value) }
+    public func get(key: String) -> String? { persist.get(key: key) }
+    public func unset(key: String) { persist.unset(key: key) }
     
-    public func show() {
-        persist.show()
-    }
-    func showID(_ iden: String) {
-        persist.show(iden)
-    }
+    public func show() { persist.show() }
+    func showID(_ iden: String) { persist.show(iden) }
     
     public func wipe() {
         queue.sync {
@@ -293,12 +269,8 @@ public class Basket: NSObject {
         }
     }
 
-    public func printDocuments() {
-        persist.show()
-    }
-    public func printCensus() {
-        persist.census()
-    }
+    public func printDocuments() { persist.show() }
+    public func printCensus() { persist.census() }
 }
 
 #endif

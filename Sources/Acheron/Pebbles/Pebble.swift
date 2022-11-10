@@ -43,9 +43,7 @@ public class Pebble {
             }
         }
     }
-    func reset() {
-        state = .pending
-    }
+    func reset() { state = .pending }
 
 // Testing =========================================================================================
     public var testState: State? = nil {

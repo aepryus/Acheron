@@ -48,7 +48,6 @@ public class SplitterView: UIView {
             case .horizontal:
                 imageViews[0].image = UIImage(cgImage: (image.cgImage?.cropping(to: CGRect(x: 0, y: 0, width: radius*scale, height: height*scale)))!, scale: scale, orientation: .up)
                 imageViews[1].image = UIImage(cgImage: (image.cgImage?.cropping(to: CGRect(x: radius*scale, y: 0, width: (contentView.width-2*radius)*scale, height: height*scale)))!, scale: scale, orientation: .up)
-//                imageViews[1].backgroundColor = UIColor(patternImage: UIImage(cgImage: image.cgImage!.cropping(to: CGRect(x: radius, y: 0, width: contentView.width-2*radius, height: height))!))
                 imageViews[2].image = UIImage(cgImage: (image.cgImage?.cropping(to: CGRect(x: (contentView.width-radius)*scale, y: 0, width: radius*scale, height: height*scale)))!, scale: scale, orientation: .up)
                 imageViews[0].left(width: radius, height: height)
                 imageViews[1].left(dx: radius, width: width-2*radius, height: height)

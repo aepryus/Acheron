@@ -16,8 +16,8 @@ public protocol NodeData {
 }
 
 class EmptyNodeData: NodeData {
-    var availableNames: [String] { return [] }
-    func value(for name: String) -> Any? { return nil }
+    var availableNames: [String] { [] }
+    func value(for name: String) -> Any? { nil }
 }
 class GroupNodeData: NodeData {
     var value: String
@@ -26,28 +26,18 @@ class GroupNodeData: NodeData {
         self.value = value
     }
     
-    var availableNames: [String] { return ["name"] }
-    func value(for name: String) -> Any? {
-        return value
-    }
+    var availableNames: [String] { ["name"] }
+    func value(for name: String) -> Any? { value }
 }
 
 extension Domain: NodeData {
-    public var availableNames: [String] {
-        return properties
-    }
-    public func value(for name: String) -> Any? {
-        return super.value(forKey: name)
-    }
+    public var availableNames: [String] { properties }
+    public func value(for name: String) -> Any? { super.value(forKey: name) }
 }
 
 extension Dictionary: NodeData where Key == String {
-    public var availableNames: [String] {
-        return Array(keys)
-    }
-    public func value(for name: String) -> Any? {
-        return self[name]
-    }
+    public var availableNames: [String] { Array(keys) }
+    public func value(for name: String) -> Any? { self[name] }
 }
 
 #endif

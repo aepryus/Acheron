@@ -14,12 +14,8 @@ import FoundationXML
 fileprivate class AnyStack {
     var stack: [[String:Any]] = []
     
-    func push(_ attributes: [String:Any]) {
-        stack.append(attributes)
-    }
-    func pop() -> [String:Any] {
-        return stack.removeLast()
-    }
+    func push(_ attributes: [String:Any]) { stack.append(attributes) }
+    func pop() -> [String:Any] { stack.removeLast() }
     var top: [String:Any]? {
         set {
             stack.removeLast()

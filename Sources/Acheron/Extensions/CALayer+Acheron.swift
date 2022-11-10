@@ -11,24 +11,12 @@
 import UIKit
 
 extension CALayer {
-    public var top: CGFloat {
-        return frame.origin.y
-    }
-    public var bottom: CGFloat {
-        return frame.origin.y + frame.size.height
-    }
-    public var left: CGFloat {
-        return frame.origin.x
-    }
-    public var right: CGFloat {
-        return frame.origin.x + frame.size.width
-    }
-    public var width: CGFloat {
-        return bounds.size.width
-    }
-    public var height: CGFloat {
-        return bounds.size.height
-    }
+    public var top: CGFloat { frame.origin.y }
+    public var bottom: CGFloat { frame.origin.y + frame.size.height }
+    public var left: CGFloat { frame.origin.x }
+    public var right: CGFloat { frame.origin.x + frame.size.width }
+    public var width: CGFloat { bounds.size.width }
+    public var height: CGFloat { bounds.size.height }
 }
 
 #endif

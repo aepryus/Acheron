@@ -49,10 +49,6 @@ public extension Date {
         }
         return formatter
     }()
-    func toISOFormattedString() -> String {
-        return Date.isoFormatter.string(from: self)
-    }
-    static func fromISOFormatted(string: String) -> Date? {
-        return Date.iso8601Formatter.date(from: string) ?? Date.isoFormatter.date(from: string)
-    }
+    func toISOFormattedString() -> String { Date.isoFormatter.string(from: self) }
+    static func fromISOFormatted(string: String) -> Date? { Date.iso8601Formatter.date(from: string) ?? Date.isoFormatter.date(from: string) }
 }

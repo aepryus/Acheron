@@ -21,21 +21,13 @@ public class WeakSet<T: AnyObject>: Sequence, ExpressibleByArrayLiteral, CustomS
         self.init(elements)
     }
     
-    public var allObjects: [T] {
-        return objects.allObjects
-    }
+    public var allObjects: [T] { objects.allObjects }
     
-    public var count: Int {
-        return objects.count
-    }
+    public var count: Int { objects.count }
     
-    public func contains(_ object: T) -> Bool {
-        return objects.contains(object)
-    }
+    public func contains(_ object: T) -> Bool { objects.contains(object) }
     
-    public func insert(_ object: T) {
-        objects.add(object)
-    }
+    public func insert(_ object: T) { objects.add(object) }
     
     public func union(_ other: WeakSet<T>) -> WeakSet<T> {
         let result = WeakSet<T>()
@@ -43,12 +35,8 @@ public class WeakSet<T: AnyObject>: Sequence, ExpressibleByArrayLiteral, CustomS
         result.objects.union(other.objects)
         return result
     }
-    public func formUnion(_ other: WeakSet<T>) {
-        objects.union(other.objects)
-    }
-    public func formIntersection(_ other: WeakSet<T>) {
-        objects.intersect(other.objects)
-    }
+    public func formUnion(_ other: WeakSet<T>) { objects.union(other.objects) }
+    public func formIntersection(_ other: WeakSet<T>) { objects.intersect(other.objects) }
     public func subtracting(_ other: WeakSet<T>) -> WeakSet<T> {
         let result = WeakSet<T>()
         result.objects.union(self.objects)
@@ -58,12 +46,8 @@ public class WeakSet<T: AnyObject>: Sequence, ExpressibleByArrayLiteral, CustomS
         return result
     }
     
-    public func remove(_ object: T) {
-        objects.remove(object)
-    }
-    public func removeAll() {
-        objects.removeAllObjects()
-    }
+    public func remove(_ object: T) { objects.remove(object) }
+    public func removeAll() { objects.removeAllObjects() }
     
     public func makeIterator() -> AnyIterator<T> {
         let iterator = objects.objectEnumerator()
@@ -72,17 +56,11 @@ public class WeakSet<T: AnyObject>: Sequence, ExpressibleByArrayLiteral, CustomS
         }
     }
     
-    public var description: String {
-        return objects.description
-    }
+    public var description: String { objects.description }
     
-    public var debugDescription: String {
-        return objects.debugDescription
-    }
+    public var debugDescription: String { objects.debugDescription }
     
-    public static func != (lhs: WeakSet<T>, rhs: WeakSet<T>) -> Bool {
-        return !lhs.objects.isEqual(to: rhs.objects)
-    }
+    public static func != (lhs: WeakSet<T>, rhs: WeakSet<T>) -> Bool { !lhs.objects.isEqual(to: rhs.objects) }
 }
 
 #endif

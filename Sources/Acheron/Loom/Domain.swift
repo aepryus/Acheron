@@ -86,9 +86,7 @@ open class Domain: NSObject {
     }
     
     deinit {
-        if status == .clean {
-            unsubscribe()
-        }
+        if status == .clean { unsubscribe() }
     }
     
     // Methods
@@ -240,12 +238,8 @@ open class Domain: NSObject {
     open func onLoad() {}
     
 // Load and Unload =================================================================================
-    open func loader(keyPath: String) -> ((Any)->(Any?))? {
-        return nil
-    }
-    open func unloader(keyPath: String) -> ((Any)->(Any?))? {
-        return nil
-    }
+    open func loader(keyPath: String) -> ((Any)->(Any?))? { nil }
+    open func unloader(keyPath: String) -> ((Any)->(Any?))? { nil }
     
     public func unload() -> [String:Any] {
         var attributes: [String:Any] = [:]
@@ -435,15 +429,9 @@ open class Domain: NSObject {
     }
     
 // Domain ==========================================================================================
-    open var properties: [String] {
-        return ["iden", "type", "modified"]
-    }
-    open var children: [String] {
-        return []
-    }
-    var isStatic: Bool {
-        return false
-    }
+    open var properties: [String] { ["iden", "type", "modified"] }
+    open var children: [String] { []  }
+    var isStatic: Bool { false }
     public var anchor: Anchor? {
         get { return parent?.anchor }
     }

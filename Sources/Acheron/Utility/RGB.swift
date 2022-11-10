@@ -46,47 +46,25 @@ public struct RGB {
         self.init(r: c[0], g: c[1], b: c[2], a: c[3], uiColor: color)
     }
     
-    public static func + (p: RGB, q: RGB) -> RGB {
-        return RGB(r: p.r+q.r, g: p.g+q.g, b: p.b+q.b, a: p.a+q.a)
-    }
-    public static func - (p: RGB, q: RGB) -> RGB {
-        return RGB(r: p.r-q.r, g: p.g-q.g, b: p.b-q.b, a: p.a-q.a)
-    }
-    public static func * (p: RGB, q: CGFloat) -> RGB {
-        return RGB(r: p.r*q, g: p.g*q, b: p.b*q, a: p.a*q)
-    }
+    public static func + (p: RGB, q: RGB) -> RGB { RGB(r: p.r+q.r, g: p.g+q.g, b: p.b+q.b, a: p.a+q.a) }
+    public static func - (p: RGB, q: RGB) -> RGB { RGB(r: p.r-q.r, g: p.g-q.g, b: p.b-q.b, a: p.a-q.a) }
+    public static func * (p: RGB, q: CGFloat) -> RGB { RGB(r: p.r*q, g: p.g*q, b: p.b*q, a: p.a*q) }
     
-    public func blend (rgb: RGB, percent: CGFloat) -> RGB {
-        return self + (rgb - self) * percent
-    }
-    public func tint(_ percent: CGFloat) -> RGB {
-        return blend(rgb: RGB.white, percent: percent)
-    }
-    public func tone(_ percent: CGFloat) -> RGB {
-        return blend(rgb: RGB.grey, percent: percent)
-    }
-    public func shade(_ percent: CGFloat) -> RGB {
-        return blend(rgb: RGB.black, percent: percent)
-    }
+    public func blend (rgb: RGB, percent: CGFloat) -> RGB { self + (rgb - self) * percent }
+    public func tint(_ percent: CGFloat) -> RGB { blend(rgb: RGB.white, percent: percent) }
+    public func tone(_ percent: CGFloat) -> RGB { blend(rgb: RGB.grey, percent: percent) }
+    public func shade(_ percent: CGFloat) -> RGB { blend(rgb: RGB.black, percent: percent) }
     
-    public var cgColor: CGColor {
-        return uiColor.cgColor
-    }
+    public var cgColor: CGColor { uiColor.cgColor }
     
 // Static ==========================================================================================
     public static var black = RGB(r: 0, g: 0, b: 0, a: 1)
     public static var white = RGB(r: 1, g: 1, b: 1, a: 1)
     public static var grey = RGB(r: 0.5, g: 0.5, b: 0.5, a: 1)
     
-    public static func tint(color: UIColor, percent: CGFloat) -> UIColor {
-        return RGB(uiColor: color).blend(rgb: white, percent: percent).uiColor
-    }
-    public static func tone(color: UIColor, percent: CGFloat) -> UIColor {
-        return RGB(uiColor: color).blend(rgb: grey, percent: percent).uiColor
-    }
-    public static func shade(color: UIColor, percent: CGFloat) -> UIColor {
-        return RGB(uiColor: color).blend(rgb: black, percent: percent).uiColor
-    }
+    public static func tint(color: UIColor, percent: CGFloat) -> UIColor { RGB(uiColor: color).blend(rgb: white, percent: percent).uiColor }
+    public static func tone(color: UIColor, percent: CGFloat) -> UIColor { RGB(uiColor: color).blend(rgb: grey, percent: percent).uiColor }
+    public static func shade(color: UIColor, percent: CGFloat) -> UIColor { RGB(uiColor: color).blend(rgb: black, percent: percent).uiColor }
 }
 
 #endif

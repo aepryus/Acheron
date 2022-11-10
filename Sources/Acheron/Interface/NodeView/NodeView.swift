@@ -53,9 +53,7 @@ public class NodeView: UIView, UITableViewDataSource {
     }
     
 // UITableViewDataSource ===========================================================================
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return node.deepChildCount()
-    }
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { node.deepChildCount() }
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let current: Node = node.deepChild(at: indexPath.row)
         if current.children.count != 0 {

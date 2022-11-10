@@ -142,19 +142,11 @@ public class Screen {
 
     public static func snapToPixel(_ x: CGFloat) -> CGFloat { ceil(x*scale)/scale }
     
-    public static var iPhone: Bool {
-        return current.model == .iPhone
-    }
-    public static var iPad: Bool {
-        return current.model == .iPad
-    }
-    public static var mac: Bool {
-        return current.model == .mac
-    }
+    public static var iPhone: Bool { current.model == .iPhone }
+    public static var iPad: Bool { current.model == .iPad }
+    public static var mac: Bool { current.model == .mac }
     
-    public static var bounds: CGRect {
-        return CGRect(x: 0, y: 0, width: width, height: height)
-    }
+    public static var bounds: CGRect { CGRect(x: 0, y: 0, width: width, height: height) }
     public static var safeTop: CGFloat {
         guard let window = Screen.keyWindow else { fatalError() }
         return window.safeAreaInsets.top
@@ -172,9 +164,7 @@ public class Screen {
         return window.safeAreaInsets.right
     }
     
-    public static var navBottom: CGFloat {
-        return Screen.safeTop + 44
-    }
+    public static var navBottom: CGFloat { Screen.safeTop + 44 }
 
     public static var keyWindow: UIWindow? {
         if #available(iOS 13.0, *) {

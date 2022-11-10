@@ -18,42 +18,24 @@ open class Persist: NSObject {
         self.name = name
     }
     
-    public func associate(type: String, only: String) {
-        typeToOnly[type] = only
-    }
-    public func only(type: String) -> String? {
-        return typeToOnly[type]
-    }
+    public func associate(type: String, only: String) { typeToOnly[type] = only }
+    public func only(type: String) -> String? { typeToOnly[type] }
 
-    open func selectAll() -> [[String:Any]] {
-        return []
-    }
-    open func selectAll(type: String) -> [[String:Any]] {
-        return []
-    }
-    open func select(where: String, is value: String?, type: String) -> [[String:Any]] {
-        return []
-    }
-    open func selectOne(where: String, is value: String, type: String) -> [String:Any]? {
-        return nil
-    }
+    open func selectAll() -> [[String:Any]] { [] }
+    open func selectAll(type: String) -> [[String:Any]] { [] }
+    open func select(where: String, is value: String?, type: String) -> [[String:Any]] { [] }
+    open func selectOne(where: String, is value: String, type: String) -> [String:Any]? { nil }
     
-    open func selectForked() -> [[String:Any]] {
-        return []
-    }
-    open func selectForkedMemories() -> [[String:Any]] {
-        return []
-    }
+    open func selectForked() -> [[String:Any]] { [] }
+    open func selectForkedMemories() -> [[String:Any]] { [] }
     
-    open func attributes(iden: String) -> [String:Any]? {return nil}
-    open func attributes(type: String, only: String) -> [String:Any]? {return nil}
+    open func attributes(iden: String) -> [String:Any]? { nil }
+    open func attributes(type: String, only: String) -> [String:Any]? { nil }
     
     open func delete(iden: String) {}
     open func store(iden: String, attributes: [String:Any]) {}
     
-    open func transact(_ closure: ()->(Bool)) {
-        _ = closure()
-    }
+    open func transact(_ closure: ()->(Bool)) { _ = closure() }
     
     open func wipe() {}
     open func wipeDocuments() {}
@@ -64,9 +46,7 @@ open class Persist: NSObject {
 
     open func set(key: String, value: String) {}
     open func setServer(key: String, value: String) {}
-    open func get(key: String) -> String? {
-        return nil
-    }
+    open func get(key: String) -> String? { nil }
     open func unset(key: String) {}
     
     open func logError(_ error: Error) {}

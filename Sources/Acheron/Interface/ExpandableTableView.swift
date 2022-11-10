@@ -23,27 +23,13 @@ public protocol ExpandableTableViewDelegate: AnyObject {
     func expandableTableView(_ tableView: ExpandableTableView, reload expansion: UIView, at indexPath: IndexPath)
 }
 public extension ExpandableTableViewDelegate {
-    func numberOfSections(in tableView: ExpandableTableView) -> Int {
-        return 1
-    }
-    func expandableTableView(_ tableView: ExpandableTableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0
-    }
-    func expandableTableView(_ tableView: ExpandableTableView, viewForHeaderInSection section: Int) -> UIView? {
-        return nil
-    }
-    func expandableTableView(_ tableView: ExpandableTableView, expansionForRowAt indexPath: IndexPath) -> UIView {
-        return ColorView(.blue.tint(0.5))
-    }
-    func expandableTableView(_ tableView: ExpandableTableView, baseHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.baseHeight
-    }
-    func expandableTableView(_ tableView: ExpandableTableView, expansionHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.expansionHeight
-    }
-    func expandableTableView(_ tableView: ExpandableTableView, expandableRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
+    func numberOfSections(in tableView: ExpandableTableView) -> Int { 1 }
+    func expandableTableView(_ tableView: ExpandableTableView, heightForHeaderInSection section: Int) -> CGFloat { 0 }
+    func expandableTableView(_ tableView: ExpandableTableView, viewForHeaderInSection section: Int) -> UIView? { nil }
+    func expandableTableView(_ tableView: ExpandableTableView, expansionForRowAt indexPath: IndexPath) -> UIView { ColorView(.blue.tint(0.5)) }
+    func expandableTableView(_ tableView: ExpandableTableView, baseHeightForRowAt indexPath: IndexPath) -> CGFloat { tableView.baseHeight }
+    func expandableTableView(_ tableView: ExpandableTableView, expansionHeightForRowAt indexPath: IndexPath) -> CGFloat { tableView.expansionHeight }
+    func expandableTableView(_ tableView: ExpandableTableView, expandableRowAt indexPath: IndexPath) -> Bool { true }
     func expandableTableView(_ tableView: ExpandableTableView, reload expansion: UIView, at indexPath: IndexPath) {}
 }
 
@@ -135,13 +121,13 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
     
 // UITableViewDataSource ===========================================================================
     public func numberOfSections(in tableView: UITableView) -> Int {
-        return expandableTableViewDelegate.numberOfSections(in: tableView as! ExpandableTableView)
+        expandableTableViewDelegate.numberOfSections(in: tableView as! ExpandableTableView)
     }
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, viewForHeaderInSection: section)
+        expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, viewForHeaderInSection: section)
     }
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, numberOfRowsInSection: section)
+        expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, numberOfRowsInSection: section)
     }
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, cellForRowAt: indexPath)
