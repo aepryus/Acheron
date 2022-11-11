@@ -11,7 +11,7 @@ cloc Loom/Anchor.swift\
      Loom/Domain.swift\
      Loom/Persist.swift\
      Loom/Loom.swift\
-     Loom/SQLite/SQLitePersist.swift
+     Loom/Persists/SQLitePersist.swift
 
 echo -e "\nAepLayout ======================"
 cloc Interface/AEViewController.swift\
@@ -23,7 +23,6 @@ cloc Interface/AEViewController.swift\
 echo -e "\nPen ============================"
 cloc Utility/Pen.swift\
      Extensions/NSMutableAttributedString+Acheron.swift\
-     Extensions/NSString+Acheron.swift\
      Extensions/UIButton+Acheron.swift\
      Extensions/UILabel+Acheron.swift
 
@@ -32,7 +31,9 @@ cloc Utility/RGB.swift\
      Extensions/UIColor+Acheron.swift
 
 echo -e "\nExpandable Table View =========="
-cloc Interface/ExpandableCell.swift\
+cloc Interface/CellsView.swift\
+     Interface/CellsViewCell.swift\
+     Interface/ExpandableCell.swift\
      Interface/ExpandableTableView.swift
 
 echo -e "\nNode View ======================"
@@ -56,10 +57,13 @@ cloc Pebbles/Pebble.swift\
 echo -e "\nOdds and Ends =================="
 cloc Utility/AESync.swift\
      Utility/AETimer.swift\
+     Utility/Log.swift\
+     Utility/Profiler.swift\
      Utility/SafeMap.swift\
      Utility/SafeSet.swift\
      Utility/WeakSet.swift\
      Utility/XMLtoAttributes.swift\
+     Interface/ColorView.swift\
      Interface/SplitterView.swift\
      Interface/TripWire.swift\
      Extensions/Array+Acheron.swift\
