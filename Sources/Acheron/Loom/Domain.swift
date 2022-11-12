@@ -102,8 +102,8 @@ open class Domain: NSObject {
     }
     public func remove(_ domain: Domain) {
         domain.onRemoved()
-        domain.parent = nil
         domain.delete()
+        domain.parent = nil
         edit()
         domain.handleTriggers(domain, action: .removed)
     }
