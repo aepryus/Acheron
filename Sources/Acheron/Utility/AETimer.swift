@@ -9,7 +9,7 @@
 import Foundation
 
 public class AETimer {
-    private let timer: DispatchSourceTimer = DispatchSource.makeTimerSource()
+    private let timer: DispatchSourceTimer = DispatchSource.makeTimerSource(queue: .main)
     
     public init() {}
     deinit {
