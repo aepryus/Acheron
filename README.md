@@ -9,7 +9,7 @@ Acheron is a collection of utilties for developing iOS apps.
 You can use SPM, to integrate Acheron into your project.  You can add the following to your dependencies:
 
 ```swift
-.package(url: "https://github.com/aepryus/Acheron.git", from: "1.0.0"),
+.package(url: "https://github.com/aepryus/Acheron.git", from: "1.1.0"),
 ```
 
 Or from Xcode go to `File/Add Packages` and enter the URL: `https://github.com/aepryus/Acheron.git`.
