@@ -32,6 +32,12 @@ public class Pen: NSObject {
     public func clone(font: UIFont? = nil, color: UIColor? = nil, alignment: NSTextAlignment? = nil, style: NSParagraphStyle? = nil, kern: CGFloat? = nil, baselineOffset: CGFloat? = nil) -> Pen {
         return Pen(font: font ?? self.font, color: color ?? self.color, alignment: alignment ?? self.alignment, style: style ?? self.style, kern: kern ?? self.kern, baselineOffset: baselineOffset ?? self.baselineOffset)
     }
+    
+    public func format(_ string: String) -> NSMutableAttributedString {
+        let sb: NSMutableAttributedString = NSMutableAttributedString()
+        sb.append(string, pen: self)
+        return sb
+    }
 }
 
 #endif
