@@ -332,7 +332,7 @@ open class Domain: NSObject {
                     } else if cls?.superclass() == Domain.self {
                         let valueAtts = value as! [String:Any]
                         let cls = Loom.classFromName(valueAtts["type"] as! String) as! Domain.Type
-                        let domain = cls.init(attributes: valueAtts, parent: nil)
+                        let domain = cls.init(attributes: valueAtts, parent: self)
                         domain.load(attributes:valueAtts)
                         load(domain)
                         value = domain;
