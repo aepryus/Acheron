@@ -34,7 +34,7 @@ public struct RGB {
     public init(r: Int, g: Int, b: Int) {
         self.init(r: CGFloat(r)/255, g: CGFloat(g)/255, b: CGFloat(b)/255)
     }
-    public init(uiColor: UIColor) {
+    public init(UIColor: UIColor) {
         var color = uiColor
         if color == UIColor.white            { color = UIColor(red: 6/6, green: 6/6, blue: 6/6, alpha: 1) }
         else if color == UIColor.lightGray    { color = UIColor(red: 4/6, green: 4/6, blue: 4/6, alpha: 1) }
