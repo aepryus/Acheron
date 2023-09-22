@@ -17,7 +17,7 @@ public extension CGRect {
     var width: CGFloat { size.width }
     var height: CGFloat { size.height }
     
-    public static func * (p: CGRect, q: CGFloat) -> CGRect { CGRect(x: p.left*q, y: p.top*q, width: p.width*q, height: p.height*q) }
+    static func * (p: CGRect, q: CGFloat) -> CGRect { CGRect(x: p.left*q, y: p.top*q, width: p.width*q, height: p.height*q) }
 }
 
 #endif
