@@ -9,7 +9,7 @@
 
 import UIKit
 
-extension CGRect {
+public extension CGRect {
     var top: CGFloat { origin.y }
     var bottom: CGFloat { origin.y + size.height }
     var left: CGFloat { origin.x }
