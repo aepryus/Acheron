@@ -8,7 +8,7 @@
 
 import Foundation
 
-class AsyncMap<T:Hashable, U> {
+public class AsyncMap<T:Hashable, U> {
     let label: String
     let report: Bool
     let worker: (T)->(U?)

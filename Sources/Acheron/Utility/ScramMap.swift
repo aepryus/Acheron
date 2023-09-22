@@ -8,14 +8,14 @@
 
 import Foundation
 
-protocol Scramble<Key> {
+public protocol Scramble<Key> {
     associatedtype Key
     var complete: Bool { get }
     var progress: Bool { get }
     init(_: Key)
 }
 
-class ScramMap<T:Hashable, U:Scramble<T>> {
+public class ScramMap<T:Hashable, U:Scramble<T>> {
     let label: String
     let report: Bool
 
