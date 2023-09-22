@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SafeMap<T> {
+public class SafeMap<T> {
     private var map: [String:T] = [:]
     private let queue: DispatchQueue = DispatchQueue(label: "SafeMap")
     
