@@ -139,7 +139,7 @@ public class Basket: NSObject {
             
             attributes["fork"] = persist.get(key: "fork")
             attributes["documents"] = documents
-            attributes["deleted"] = []
+            attributes["deleted"] = [] as [Anchor]
             attributes["memories"] = selectForkedMemories()
         }
         

@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "Acheron",
     platforms: [
-        .iOS(.v13), .macOS(.v10_15)
+        .iOS(.v13), .macOS(.v10_15), .macCatalyst(.v13)
     ],
     products: [
         .library(name: "Acheron", targets: ["Acheron"]),
