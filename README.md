@@ -1,7 +1,6 @@
 [![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 [![Platform](https://img.shields.io/badge/Platforms-macOS%20|%20iOS%20|%20Linux-lightgrey.svg)](https://github.com/aepryus/Acheron)
 [![Twitter](https://img.shields.io/badge/twitter-@JoeCharlier-blue.svg?style=flat)](http://twitter.com/JoeCharlier)
-
 # Acheron
 
 Acheron is a collection of utilties for developing iOS apps.
