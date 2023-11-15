@@ -12,7 +12,7 @@ import UIKit
 
 extension CALayer {
     private var parent: CGSize {
-        if let parent = superview {
+        if let parent = superlayer {
             return parent.bounds.size
         } else {
             return Screen.size
