@@ -10,7 +10,7 @@
 
 import UIKit
 
-extension CALayer {
+public extension CALayer {
     private var parent: CGSize {
         if let parent = superlayer {
             return parent.bounds.size
@@ -83,12 +83,12 @@ extension CALayer {
         bottomRight(dx: dx, dy: dy, width: size.width, height: size.height)
     }
 
-    public var top: CGFloat { frame.origin.y }
-    public var bottom: CGFloat { frame.origin.y + frame.size.height }
-    public var left: CGFloat { frame.origin.x }
-    public var right: CGFloat { frame.origin.x + frame.size.width }
-    public var width: CGFloat { bounds.size.width }
-    public var height: CGFloat { bounds.size.height }
+    var top: CGFloat { frame.origin.y }
+    var bottom: CGFloat { frame.origin.y + frame.size.height }
+    var left: CGFloat { frame.origin.x }
+    var right: CGFloat { frame.origin.x + frame.size.width }
+    var width: CGFloat { bounds.size.width }
+    var height: CGFloat { bounds.size.height }
 }
 
 #endif
