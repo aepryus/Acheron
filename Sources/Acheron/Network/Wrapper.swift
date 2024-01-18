@@ -1,5 +1,5 @@
 //
-//  API.swift
+//  Wrapper.swift
 //  Acheron
 //
 //  Created by Joe Charlier on 1/18/24.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class API {
+public class Wrapper {
     enum Method: CaseIterable {
         case get, post
         var token: String { "\(self)".uppercased() }
