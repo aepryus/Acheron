@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Wrapper {
+open class Wrapper {
     enum Method: CaseIterable {
         case get, post
         var token: String { "\(self)".uppercased() }
