@@ -15,7 +15,7 @@ open class Wrapper {
     }
     let baseURL: String
     
-    init(baseURL: String) {
+    public init(baseURL: String) {
         self.baseURL = baseURL
     }
 
