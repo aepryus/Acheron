@@ -9,7 +9,7 @@
 import Foundation
 
 open class Wrapper {
-    enum Method: CaseIterable {
+    public enum Method: CaseIterable {
         case get, post
         var token: String { "\(self)".uppercased() }
     }
@@ -19,7 +19,7 @@ open class Wrapper {
         self.baseURL = baseURL
     }
 
-    func request(path: String, method: Method, params: [String:String]? = nil, success: @escaping ([String:Any])->(), failure: @escaping ()->()) {
+    public func request(path: String, method: Method, params: [String:String]? = nil, success: @escaping ([String:Any])->(), failure: @escaping ()->()) {
         var urlString: String = "\(baseURL)\(path)"
         
         if method == .get, let params { params.enumerated().forEach { urlString += "\($0.offset == 0 ? "?":"&")\($0.element.key)=\($0.element.value)" } }
