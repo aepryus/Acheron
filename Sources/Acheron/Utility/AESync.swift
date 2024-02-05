@@ -12,7 +12,7 @@ import Foundation
 import QuartzCore
 
 public class AESync {
-    public var onFire: (CADisplayLink,@escaping ()->())->() = {(link: CADisplayLink,complete: ()->()) in}
+    public var onFire: (CADisplayLink,@escaping ()->())->() = {(link: CADisplayLink,complete: ()->()) in complete() }
     
     public lazy var link: CADisplayLink = {
         let link = CADisplayLink(target: self, selector: #selector(fire))
