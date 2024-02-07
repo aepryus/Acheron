@@ -65,7 +65,7 @@ open class AEViewController: UIViewController {
         }
     }
 
-    func layout() {
+    public func layout() {
         switch Screen.dimensions {
             case .dim320x480:   layout320x480()
             case .dim320x568:   layout320x568()
