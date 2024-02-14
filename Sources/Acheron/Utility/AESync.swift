@@ -28,6 +28,7 @@ public class AESync {
     public var running: Bool = false
     private var semaphore = DispatchSemaphore(value: 1)
     
+    
     public func start() {
         guard !running else { return }
         running = true

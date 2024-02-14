@@ -10,18 +10,18 @@
 
 import UIKit
 
-public class TripWire: UIView {
-    public var onTrip: ()->()
+public class TripWire: AEView {
+    public let onTrip: ()->()
     
-    public init(frame: CGRect = CGRect.zero, onTrip: @escaping ()->()) {
+    public init(onTrip: @escaping ()->()) {
         self.onTrip = onTrip
-        super.init(frame: frame == CGRect.zero ? UIScreen.main.bounds : frame)
+        super.init()
     }
-    required init?(coder aDecoder: NSCoder) { fatalError() }
     
     override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard let event, event.type == .touches else { return nil }
         let view = super.hitTest(point, with: event)
-        if view !== self {return view}
+        if view !== self { return view }
         onTrip()
         return nil
     }
