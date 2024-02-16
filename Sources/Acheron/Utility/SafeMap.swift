@@ -12,24 +12,21 @@ public class SafeMap<T> {
     private var map: [String:T] = [:]
     private let queue: DispatchQueue = DispatchQueue(label: "SafeMap")
     
-    subscript(key: String) -> T? {
-        set {
-            queue.sync { map[key] = newValue }
-        }
-        get {
-            var result: T? = nil
-            queue.sync { result = map[key] }
-            return result
-        }
-    }
+    public init() {}
     
+    public subscript(key: String) -> T? {
+        set { queue.sync { map[key] = newValue } }
+        get { queue.sync { map[key] } }
+    }
+
+    public var values: [T] { queue.sync { Array(map.values) } }
+    public var count: Int { queue.sync { map.count } }
+
     @discardableResult
-    func removeValue(forKey key: String) -> T? {
+    public func removeValue(forKey key: String) -> T? {
         var result: T? = nil
         queue.sync { result = map.removeValue(forKey: key) }
         return result
     }
-    func removeAll() {
-        queue.sync { map.removeAll() }
-    }
+    public func removeAll() { queue.sync { map.removeAll() } }
 }

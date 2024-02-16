@@ -21,13 +21,10 @@ public class AESync {
     }()
     
     public init() {}
-    deinit {
-        link.invalidate()
-    }
+    deinit { link.invalidate() }
     
     public var running: Bool = false
     private var semaphore = DispatchSemaphore(value: 1)
-    
     
     public func start() {
         guard !running else { return }
@@ -43,10 +40,8 @@ public class AESync {
     }
     
     @objc private func fire(link: CADisplayLink) {
-        self.semaphore.wait()
-        onFire(link) {
-            self.semaphore.signal()
-        }
+        semaphore.wait()
+        onFire(link) { self.semaphore.signal() }
     }
 }
 
