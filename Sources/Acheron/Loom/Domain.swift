@@ -302,10 +302,11 @@ open class Domain: NSObject {
         let style = mirror.displayStyle
         return style == .optional
     }
-    public func load(attributes: [String:Any]) {
+    public func load(attributes: [String:Any], replicate: Bool = false) {
         // Properties
         for keyPath in properties {
-            var value = attributes[keyPath];
+            guard !(replicate && keyPath == "iden") else { iden = UUID().uuidString; continue }
+            var value = attributes[keyPath]
             if value != nil {
                 let loader = self.loader(keyPath:keyPath)
                 if let loader = loader {
@@ -333,7 +334,7 @@ open class Domain: NSObject {
                         let valueAtts = value as! [String:Any]
                         let cls = Loom.classFromName(valueAtts["type"] as! String) as! Domain.Type
                         let domain = cls.init(attributes: valueAtts, parent: self)
-                        domain.load(attributes:valueAtts)
+                        domain.load(attributes:valueAtts, replicate: replicate)
                         load(domain)
                         value = domain;
                     } else if let cls = arrayClassForKeyPath(keyPath) as? Domain.Type {
@@ -344,7 +345,7 @@ open class Domain: NSObject {
                             if domain == nil {
                                 domain = cls.init(attributes: child, parent: self)
                             }
-                            domain!.load(attributes:child)
+                            domain!.load(attributes:child, replicate: replicate)
                             load(domain!)
                             array.append(domain!)
                         }
@@ -392,7 +393,7 @@ open class Domain: NSObject {
                             let cls = Loom.classFromName(child["type"] as! String) as! Domain.Type
                             domain = cls.init(attributes: child, parent: self)
                         }
-                        domain!.load(attributes:child)
+                        domain!.load(attributes:child, replicate: replicate)
                         load(domain!)
                         array.append(domain!)
                     }

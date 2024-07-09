@@ -82,6 +82,13 @@ public class Loom {
         return nil
     }
     
+    public static func domain(attributes: [String:Any], parent: Domain? = nil, replicate: Bool = false) -> Domain {
+        let cls = Loom.classFromName(attributes["type"] as! String) as! Domain.Type
+        let domain: Domain = cls.init(attributes: attributes, parent: parent)
+        domain.load(attributes:attributes, replicate: replicate)
+        return domain
+    }
+    
     public static func set(key: String, value: String) { Loom.basket.set(key: key, value: value) }
     public static func get(key: String) -> String? { Loom.basket.get(key: key) }
     public static func unset(key: String) { Loom.basket.unset(key: key) }
