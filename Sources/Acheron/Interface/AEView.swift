@@ -6,6 +6,8 @@
 //  Copyright © 2024 Aepryus Software. All rights reserved.
 //
 
+#if canImport(UIKit)
+
 import UIKit
 
 open class AEView: UIView {
@@ -13,3 +15,5 @@ open class AEView: UIView {
     @available(*, unavailable)
     required public init?(coder aDecoder: NSCoder) { fatalError() }
 }
+
+#endif
