@@ -51,7 +51,7 @@ public class NodeCell: UITableViewCell {
     }
     
 // UIView ==========================================================================================
-    override public func layoutSubviews() {
+    public override func layoutSubviews() {
         var dx: CGFloat = 6*s
         var i: Int = 0
         views.forEach {
