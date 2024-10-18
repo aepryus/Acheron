@@ -159,7 +159,7 @@ public class SQLitePersist: Persist {
     }
     
 // Persist =========================================================================================
-    override public func selectAll() -> [[String:Any]] {
+    public override func selectAll() -> [[String:Any]] {
         var result: [[String:Any]] = []
         let rows = query("SELECT * FROM Document")
         for row in rows {
@@ -168,7 +168,7 @@ public class SQLitePersist: Persist {
         }
         return result
     }
-    override public func selectAll(type: String) -> [[String:Any]] {
+    public override func selectAll(type: String) -> [[String:Any]] {
         var result: [[String:Any]] = []
         let rows = query("SELECT * FROM Document WHERE Type='\(type)'")
         for row in rows {
@@ -177,7 +177,7 @@ public class SQLitePersist: Persist {
         }
         return result;
     }
-    override public func select(where field: String, is value: String?, type: String) -> [[String:Any]] {
+    public override func select(where field: String, is value: String?, type: String) -> [[String:Any]] {
         var result: [[String:Any]] = []
         let rows = query("SELECT * FROM Document WHERE Type='\(type)'")
         for row in rows {
@@ -192,7 +192,7 @@ public class SQLitePersist: Persist {
         }
         return result
     }
-    override public func selectOne(where field: String, is value: String, type: String) -> [String:Any]? {
+    public override func selectOne(where field: String, is value: String, type: String) -> [String:Any]? {
         let rows = query("SELECT * FROM Document WHERE Type='\(type)'")
         for row in rows {
             let attributes = (row["JSON"] as! String).toAttributes()
@@ -205,7 +205,7 @@ public class SQLitePersist: Persist {
         return nil
     }
     
-    override public func selectForked() -> [[String:Any]] {
+    public override func selectForked() -> [[String:Any]] {
         let fork: Int = Int(get(key: "fork") ?? "0")!
         
         var result: [[String:Any]] = []
@@ -216,7 +216,7 @@ public class SQLitePersist: Persist {
         }
         return result;
     }
-    override public func selectForkedMemories() -> [[String:Any]] {
+    public override func selectForkedMemories() -> [[String:Any]] {
         let fork: Int = Int(get(key: "fork") ?? "0")!
         
         var result: [[String:Any]] = []
@@ -231,7 +231,7 @@ public class SQLitePersist: Persist {
         return result
     }
     
-    override public func attributes(iden: String) -> [String:Any]? {
+    public override func attributes(iden: String) -> [String:Any]? {
         let rows = query("SELECT * FROM Document WHERE Iden='\(iden)'")
         if rows.count != 1 {return nil}
         do {
@@ -243,7 +243,7 @@ public class SQLitePersist: Persist {
             return nil
         }
     }
-    override public func attributes(type: String, only: String) -> [String : Any]? {
+    public override func attributes(type: String, only: String) -> [String : Any]? {
         let rows = query("SELECT * FROM Document WHERE Type='\(type)' AND Only='\(only)'")
         guard rows.count < 2 else { fatalError() }
         if rows.count == 0 {return nil}
@@ -257,7 +257,7 @@ public class SQLitePersist: Persist {
         }
     }
     
-    override public func delete(iden: String) {
+    public override func delete(iden: String) {
         dispatchPrecondition(condition: .onQueue(queue))
         var s: OpaquePointer? = nil
         _ = executeSQLite(sqlite: { () -> (Int32) in
@@ -268,7 +268,7 @@ public class SQLitePersist: Persist {
         })
         sqlite3_finalize(s)
     }
-    override public func store(iden: String, attributes: [String : Any]) {
+    public override func store(iden: String, attributes: [String : Any]) {
         dispatchPrecondition(condition: .onQueue(queue))
         let type = attributes["type"] as! String
         
@@ -323,7 +323,7 @@ public class SQLitePersist: Persist {
         }
     }
     
-    override public func transact(_ transact: ()->(Bool)) {
+    public override func transact(_ transact: ()->(Bool)) {
         queue.sync {
             var error: UnsafeMutablePointer<Int8>?
             let result: Int32 = executeSQLite { () -> (Int32) in
@@ -354,20 +354,20 @@ public class SQLitePersist: Persist {
         }
     }
     
-    override public func wipe() {
+    public override func wipe() {
         queue.sync {
             dropTables()
             createTables()
         }
     }
-    override public func wipeDocuments() {
+    public override func wipeDocuments() {
         queue.sync {
             dropDocument()
             createDocument()
         }
     }
     
-    override public func show() {
+    public override func show() {
         print("\nprinting database [\(self.name)]")
         print("===========================================================================")
         
@@ -379,11 +379,11 @@ public class SQLitePersist: Persist {
         
         print("\n")
     }
-    override public func show(_ iden: String) {
+    public override func show(_ iden: String) {
         print("===========================================================================")
         print("\(attributes(iden: iden)!)")
     }
-    override public func census() {
+    public override func census() {
         print("\nprinting census [\(self.name)]")
         print("===========================================================================")
         

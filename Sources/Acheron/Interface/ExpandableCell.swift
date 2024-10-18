@@ -14,7 +14,7 @@ open class ExpandableCell: UITableViewCell {
     weak var expandableTableView: ExpandableTableView!
     private let baseView: UIView = UIView()
     
-    override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         clipsToBounds = true

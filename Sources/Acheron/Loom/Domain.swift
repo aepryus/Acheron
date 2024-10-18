@@ -85,9 +85,7 @@ open class Domain: NSObject {
         super.init()
     }
     
-    deinit {
-        if status == .clean { unsubscribe() }
-    }
+    deinit { if status == .clean { unsubscribe() } }
     
     // Methods
     func load(_ domain: Domain) {

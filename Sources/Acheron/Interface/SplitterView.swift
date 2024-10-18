@@ -63,7 +63,7 @@ public class SplitterView: UIView {
     }
 
 // UIView ==========================================================================================
-    override public var frame: CGRect {
+    public override var frame: CGRect {
         didSet {
             guard width > radius*2 else { return }
             switch split {
@@ -80,7 +80,7 @@ public class SplitterView: UIView {
             }
         }
     }
-    override public func layoutSubviews() {
+    public override func layoutSubviews() {
         if !rendered {
             contentView.frame = CGRect(x: 0, y: 0, width: 100, height: height)
             render()

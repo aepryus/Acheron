@@ -13,7 +13,7 @@ import UIKit
 open class AEView: UIView {
     public init() { super.init(frame: .zero) }
     @available(*, unavailable)
-    required public init?(coder aDecoder: NSCoder) { fatalError() }
+    public required init?(coder aDecoder: NSCoder) { fatalError() }
 }
 
 #endif
