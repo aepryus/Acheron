@@ -288,6 +288,7 @@ open class Domain: NSObject {
         
         return attributes
     }
+    public func toJSON() -> String { unload().toJSON() }
     
     private func indexOfChildren(_ keyPath: String) -> [String:Domain] {
         var index: [String:Domain] = [:]
