@@ -14,7 +14,7 @@ open class AEViewController: UIViewController {
     
     public init() { super.init(nibName: nil, bundle: nil) }
     @available(*, unavailable)
-    required public init?(coder aDecoder: NSCoder) { fatalError() }
+    public required init?(coder aDecoder: NSCoder) { fatalError() }
     
     open func layoutRatio067() { layoutRatio056() }
     open func layoutRatio056() { layout375x667() }

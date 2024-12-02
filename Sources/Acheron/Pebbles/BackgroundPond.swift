@@ -20,7 +20,7 @@ open class BackgroundPond: Pond {
     }
 
 // Pond ============================================================================================
-    override public func start() {
+    public override func start() {
         backgroundTaskID = UIApplication.shared.beginBackgroundTask {
             self.timedOut()
             UIApplication.shared.endBackgroundTask(self.backgroundTaskID)

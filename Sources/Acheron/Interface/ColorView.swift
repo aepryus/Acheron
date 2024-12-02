@@ -14,7 +14,7 @@ open class ColorView: UIView {
         super.init(frame: .zero)
         backgroundColor = color
     }
-    required public init?(coder: NSCoder) { fatalError() }
+    public required init?(coder: NSCoder) { fatalError() }
 }
 
 #endif

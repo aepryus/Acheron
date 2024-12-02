@@ -38,6 +38,14 @@ public class Pen: NSObject {
         sb.append(string, pen: self)
         return sb
     }
+    public func size(text: String, width: CGFloat) -> CGSize {
+        (text as NSString).boundingRect(
+            with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin , .usesFontLeading],
+            attributes: [.font : font],
+            context: nil
+        ).size
+    }
 }
 
 #endif
