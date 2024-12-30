@@ -48,7 +48,7 @@ open class Anchor: Domain {
         if let basket = basket { fork = basket.fork + 1 }
         basket?.dirtyAnchor(self)
     }
-    override public func delete()  {
+    public override func delete()  {
         super.delete()
         basket?.deleteAnchor(self)
     }
@@ -61,7 +61,7 @@ open class Anchor: Domain {
     open var isUploaded: Bool { true }
     
 // Domain ==========================================================================================
-    override public var anchor: Anchor {
+    public override var anchor: Anchor {
         get { return self }
     }
     override open var properties: [String] { super.properties + ["fork", "vers"] }

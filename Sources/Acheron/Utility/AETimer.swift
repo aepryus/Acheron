@@ -12,9 +12,7 @@ public class AETimer {
     private let timer: DispatchSourceTimer = DispatchSource.makeTimerSource(queue: .main)
     
     public init() {}
-    deinit {
-        if !running { timer.resume() }
-    }
+    deinit { if !running { timer.resume() } }
     
     public var interval: Double = 1.0/60 {
         didSet { timer.schedule(deadline: .now(), repeating: interval) }

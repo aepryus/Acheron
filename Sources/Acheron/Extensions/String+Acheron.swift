@@ -49,6 +49,13 @@ public extension String {
 
     var localized: String { NSLocalizedString(self, comment: "") }
     func toInt8() -> UnsafeMutablePointer<Int8> { UnsafeMutablePointer<Int8>(mutating: (self as NSString).utf8String!) }
+    func createInt8() -> UnsafeMutablePointer<Int8> {
+        let cString: UnsafePointer<Int8> = (self as NSString).utf8String!
+        let n: Int = strlen(cString) + 1
+        let buffer: UnsafeMutablePointer<Int8> = UnsafeMutablePointer<Int8>.allocate(capacity: n)
+        buffer.initialize(from: cString, count: n)
+        return buffer
+    }
     func toCString() -> [CChar]? { cString(using: .utf8) }
     
     func toAttributes() -> [String:Any] {
