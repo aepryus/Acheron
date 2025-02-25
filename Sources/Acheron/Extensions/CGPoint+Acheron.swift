@@ -24,6 +24,7 @@ public extension CGPoint {
     func lengthSquared() -> CGFloat { x*x+y*y }
     func length() -> CGFloat { sqrt(lengthSquared()) }
     func ofLength(_ a: CGFloat) -> CGPoint { a*unit() }
+    func dot(_ a: CGPoint) -> CGFloat { x*a.x + y*a.y }
 
     func unit() -> CGPoint {
         let l = length()

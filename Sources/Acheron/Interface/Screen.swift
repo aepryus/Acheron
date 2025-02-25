@@ -19,10 +19,11 @@ public class Screen {
     public enum Dimensions {
         case dim320x480,                                                                                // 0.67 - original
              dim320x568, dim375x667, dim414x736,                                                        // 0.56 - iPhone 5
-             dim360x780, dim375x812, dim390x844, dim393x852, dim414x896, dim428x926, dim430x932,        // 0.46 - iPhone X
-             dim1024x768, dim1080x810, dim1112x834, dim1366x1024,                                        // 1.33 - original iPad
-             dim1180x820, dim1194x834,                                                                    // 1.43 - iPad 11"
-             dim1133x744,                                                                                // 1.52 - iPad Mini 6th gen
+             dim360x780, dim375x812, dim390x844, dim393x852, dim402x874,dim414x896, dim428x926,
+             dim430x932, dim440x956,                                                                    // 0.46 - iPhone X
+             dim1024x768, dim1080x810, dim1112x834, dim1366x1024,                                       // 1.33 - original iPad
+             dim1180x820, dim1194x834,                                                                  // 1.43 - iPad 11"
+             dim1133x744,                                                                               // 1.52 - iPad Mini 6th gen
              dimOther
     }
     public enum Ratio: CaseIterable {
@@ -52,78 +53,80 @@ public class Screen {
     init() {
         #if targetEnvironment(macCatalyst)
         
-            if UIScreen.main.bounds.width <= 1800 {
-                scaler = 1
-            } else {
-                scaler = 0.77
-            }
-        
-            model = .mac
-            dimensions = .dim1194x834
-            ratio = .rat143
-            width = UIApplication.shared.windows.first?.width ?? 1194 / scaler
-            height = UIApplication.shared.windows.first?.height ?? 834 / scaler
-            s = 790 / 748 / scaler
+        if UIScreen.main.bounds.width <= 1800 {
+            scaler = 1
+        } else {
+            scaler = 0.77
+        }
+    
+        model = .mac
+        dimensions = .dim1194x834
+        ratio = .rat143
+        width = UIApplication.shared.windows.first?.width ?? 1194 / scaler
+        height = UIApplication.shared.windows.first?.height ?? 834 / scaler
+        s = 790 / 748 / scaler
         
         #else
 
-            scaler = 1
-        
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                model = .iPhone
-            } else if UIDevice.current.userInterfaceIdiom == .pad {
-                model = .iPad
-            } else {
-                model = .other
-            }
-        
-            let dw: CGFloat = UIScreen.main.bounds.size.width
-            let dh: CGFloat = UIScreen.main.bounds.size.height
-        
-            let w: CGFloat = model == .iPhone ? min(dw, dh) : max(dw, dh)
-            let h: CGFloat = model == .iPhone ? max(dw, dh) : min(dw, dh)
-        
-            if w == 320 && h == 480 { dimensions = .dim320x480; ratio = .rat067 }
-        
-            else if w == 320 && h == 568 { dimensions = .dim320x568; ratio = .rat056 }
-            else if w == 375 && h == 667 { dimensions = .dim375x667; ratio = .rat056 }
-            else if w == 414 && h == 736 { dimensions = .dim414x736; ratio = .rat056 }
-        
-            else if w == 360 && h == 780 { dimensions = .dim360x780; ratio = .rat046 }
-            else if w == 375 && h == 812 { dimensions = .dim375x812; ratio = .rat046 }
-            else if w == 390 && h == 844 { dimensions = .dim390x844; ratio = .rat046 }
-            else if w == 414 && h == 896 { dimensions = .dim414x896; ratio = .rat046 }
-            else if w == 428 && h == 926 { dimensions = .dim428x926; ratio = .rat046 }
+        scaler = 1
+    
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            model = .iPhone
+        } else if UIDevice.current.userInterfaceIdiom == .pad {
+            model = .iPad
+        } else {
+            model = .other
+        }
+    
+        let dw: CGFloat = UIScreen.main.bounds.size.width
+        let dh: CGFloat = UIScreen.main.bounds.size.height
+    
+        let w: CGFloat = model == .iPhone ? min(dw, dh) : max(dw, dh)
+        let h: CGFloat = model == .iPhone ? max(dw, dh) : min(dw, dh)
+    
+        if w == 320 && h == 480 { dimensions = .dim320x480; ratio = .rat067 }
+    
+        else if w == 320 && h == 568 { dimensions = .dim320x568; ratio = .rat056 }
+        else if w == 375 && h == 667 { dimensions = .dim375x667; ratio = .rat056 }
+        else if w == 414 && h == 736 { dimensions = .dim414x736; ratio = .rat056 }
+    
+        else if w == 360 && h == 780 { dimensions = .dim360x780; ratio = .rat046 }
+        else if w == 375 && h == 812 { dimensions = .dim375x812; ratio = .rat046 }
+        else if w == 390 && h == 844 { dimensions = .dim390x844; ratio = .rat046 }
+        else if w == 402 && h == 874 { dimensions = .dim402x874; ratio = .rat046 }
+        else if w == 414 && h == 896 { dimensions = .dim414x896; ratio = .rat046 }
+        else if w == 428 && h == 926 { dimensions = .dim428x926; ratio = .rat046 }
+        else if w == 440 && h == 956 { dimensions = .dim440x956; ratio = .rat046 }
 
-            else if w == 1024 && h == 768 { dimensions = .dim1024x768; ratio = .rat133 }
-            else if w == 1080 && h == 810 { dimensions = .dim1080x810; ratio = .rat133 }
-            else if w == 1112 && h == 834 { dimensions = .dim1112x834; ratio = .rat133 }
-            else if w == 1366 && h == 1024 { dimensions = .dim1366x1024; ratio = .rat133 }
+        else if w == 1024 && h == 768 { dimensions = .dim1024x768; ratio = .rat133 }
+        else if w == 1080 && h == 810 { dimensions = .dim1080x810; ratio = .rat133 }
+        else if w == 1112 && h == 834 { dimensions = .dim1112x834; ratio = .rat133 }
+        else if w == 1366 && h == 1024 { dimensions = .dim1366x1024; ratio = .rat133 }
 
-            else if w == 1180 && h == 820 { dimensions = .dim1180x820; ratio = .rat143 }
-            else if w == 1194 && h == 834 { dimensions = .dim1194x834; ratio = .rat143 }
-        
-            else if w == 1133 && h == 744 { dimensions = .dim1133x744; ratio = .rat152 }
-        
-            else {
-                dimensions = .dimOther
-                let r: CGFloat = w/h
-                var minDelta: CGFloat = 9
-                var closest: Ratio = .rat067
-                Ratio.allCases.forEach {
-                    let delta: CGFloat = abs(1 - r/$0.ratio)
-                    if delta < minDelta {
-                        minDelta = delta
-                        closest = $0
-                    }
+        else if w == 1180 && h == 820 { dimensions = .dim1180x820; ratio = .rat143 }
+        else if w == 1194 && h == 834 { dimensions = .dim1194x834; ratio = .rat143 }
+    
+        else if w == 1133 && h == 744 { dimensions = .dim1133x744; ratio = .rat152 }
+    
+        else {
+            dimensions = .dimOther
+            let r: CGFloat = w/h
+            var minDelta: CGFloat = 9
+            var closest: Ratio = .rat067
+            Ratio.allCases.forEach {
+                let delta: CGFloat = abs(1 - r/$0.ratio)
+                if delta < minDelta {
+                    minDelta = delta
+                    closest = $0
                 }
-                ratio = closest
             }
-        
-            width = w
-            height = h
-        
-            s = model == .iPhone ? width / 375 : height / 768
+            ratio = closest
+        }
+    
+        width = w
+        height = h
+    
+        s = (model == .iPhone) ? width / 375 : height / 768
 
         #endif
     }

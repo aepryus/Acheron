@@ -17,31 +17,33 @@ open class AEViewController: UIViewController {
     public required init?(coder aDecoder: NSCoder) { fatalError() }
     
     open func layoutRatio067() { layoutRatio056() }
-    open func layoutRatio056() { layout375x667() }
-    open func layoutRatio046() { layoutRatio056() }
-    open func layoutRatio133() { layout1024x768() }
-    open func layoutRatio143() { layoutRatio133() }
+    open func layoutRatio056() { layoutRatio046() }
+    open func layoutRatio046() {}
+    open func layoutRatio133() { layoutRatio143() }
+    open func layoutRatio143() {}
     open func layoutRatio152() { layoutRatio143() }
     
     // 0.67
     open func layout320x480() { layoutRatio067() }
-
+    
     // 0.56
     open func layout320x568() { layoutRatio056() }
-    open func layout375x667() {}
+    open func layout375x667() { layoutRatio056() }
     open func layout414x736() { layoutRatio056() }
-
+    
     // 0.46
     open func layout360x780() { layoutRatio046() }
     open func layout375x812() { layoutRatio046() }
     open func layout390x844() { layoutRatio046() }
     open func layout393x852() { layoutRatio046() }
+    open func layout402x874() { layoutRatio046() }
     open func layout414x896() { layoutRatio046() }
     open func layout428x926() { layoutRatio046() }
     open func layout430x932() { layoutRatio046() }
+    open func layout440x956() { layoutRatio046() }
     
     // 1.33
-    open func layout1024x768() {}
+    open func layout1024x768() { layoutRatio133() }
     open func layout1080x810() { layoutRatio133() }
     open func layout1112x834() { layoutRatio133() }
     open func layout1366x1024() { layoutRatio133() }
@@ -75,9 +77,11 @@ open class AEViewController: UIViewController {
             case .dim375x812:   layout375x812()
             case .dim390x844:   layout390x844()
             case .dim393x852:   layout393x852()
+            case .dim402x874:   layout402x874()
             case .dim414x896:   layout414x896()
             case .dim428x926:   layout428x926()
             case .dim430x932:   layout430x932()
+            case .dim440x956:   layout440x956()
             case .dim1024x768:  layout1024x768()
             case .dim1080x810:  layout1080x810()
             case .dim1112x834:  layout1112x834()

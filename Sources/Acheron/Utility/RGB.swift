@@ -65,6 +65,7 @@ public struct RGB {
     public static func tint(color: UIColor, percent: CGFloat) -> UIColor { RGB(uiColor: color).blend(rgb: white, percent: percent).uiColor }
     public static func tone(color: UIColor, percent: CGFloat) -> UIColor { RGB(uiColor: color).blend(rgb: grey, percent: percent).uiColor }
     public static func shade(color: UIColor, percent: CGFloat) -> UIColor { RGB(uiColor: color).blend(rgb: black, percent: percent).uiColor }
+    public static func blend(color: UIColor, with: UIColor, percent: CGFloat) -> UIColor { RGB(uiColor: color).blend(rgb: RGB(uiColor: with), percent: percent).uiColor }
 }
 
 #endif
