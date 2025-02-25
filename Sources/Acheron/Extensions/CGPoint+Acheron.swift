@@ -17,7 +17,9 @@ public extension CGPoint {
     static func * (a: CGFloat, b: CGPoint) -> CGPoint { CGPoint(x: a*b.x, y: a*b.y) }
     static func / (a: CGPoint, b: CGFloat) -> CGPoint { CGPoint(x: a.x/b, y: a.y/b) }
     static prefix func - (a: CGPoint) -> CGPoint { CGPoint(x: -a.x, y: -a.y) }
-    
+
+    static func + (a: CGPoint, b: CGSize) -> CGPoint { CGPoint(x: a.x+b.width, y: a.y+b.height) }
+
     func perpendicular() -> CGPoint { CGPoint(x: y, y: -x) }
     func lengthSquared() -> CGFloat { x*x+y*y }
     func length() -> CGFloat { sqrt(lengthSquared()) }

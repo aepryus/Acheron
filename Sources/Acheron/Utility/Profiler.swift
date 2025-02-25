@@ -51,16 +51,37 @@ public class Profiler {
         timekeeper.getTally(key)
     }
     
+//    private func print() -> String {
+//        var sb: String = ""
+//        sb += "\nKey\t\tCalls\tPer\n"
+//        timekeeper.map.keys.sorted().forEach { (key: String) in
+//            let per: Double = timekeeper.getTally(key) / calls.getTally(key)
+//            sb += "\(key)\t\(calls.getTally(key))\t\(per)\n"
+//        }
+//        return sb
+//    }
     private func print() -> String {
-        var sb: String = ""
-        sb += "\nKey\t\tCalls\tPer\n"
-        timekeeper.map.keys.sorted().forEach { (key: String) in
-            let per: Double = timekeeper.getTally(key) / calls.getTally(key)
-            sb += "\(key)\t\(calls.getTally(key))\t\(per)\n"
-        }
-        return sb
+       let headers = ["Key", "Calls", "Per"]
+       
+       let keyWidth = max(headers[0].count, timekeeper.map.keys.map { $0.count }.max() ?? 0)
+       let callsWidth = max(headers[1].count, timekeeper.map.keys.map { String(format: "%.0f", calls.getTally($0)).count }.max() ?? 0)
+       
+       var sb = "\n"
+       sb += "\(headers[0].padding(toLength: keyWidth, withPad: " ", startingAt: 0))  " +
+             "\(headers[1].padding(toLength: callsWidth, withPad: " ", startingAt: 0))  " +
+             "\(headers[2])\n"
+       
+       timekeeper.map.keys.sorted().forEach { key in
+           let callCount = calls.getTally(key)
+           let per = timekeeper.getTally(key) / callCount
+           sb += "\(key.padding(toLength: keyWidth, withPad: " ", startingAt: 0))  " +
+                 "\(String(format: "%\(callsWidth).0f", callCount))  " +
+                 "\(String(format: "%.3f", per))\n"
+       }
+       
+       return sb
     }
-
+    
     public static func reset() { Profiler.profiler = Profiler() }
     public static func start(_ key: String) { profiler.start(key) }
     public static func stop(_ key: String) { profiler.stop(key) }

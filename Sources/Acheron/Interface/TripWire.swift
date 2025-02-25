@@ -18,7 +18,7 @@ public class TripWire: AEView {
         super.init()
     }
     
-    override public func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let event, event.type == .touches else { return nil }
         let view = super.hitTest(point, with: event)
         if view !== self { return view }

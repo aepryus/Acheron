@@ -21,16 +21,16 @@ open class AETableView: UITableView {
         tableFooterView = nil
         allowsSelection = false
     }
-    required public init?(coder aDecoder: NSCoder) { fatalError() }
+    public required init?(coder aDecoder: NSCoder) { fatalError() }
     
 // UITableView =====================================================================================
-    override public var refreshControl: UIRefreshControl? {
+    public override var refreshControl: UIRefreshControl? {
         didSet {
             guard let refreshControl = refreshControl else { return }
             refreshControl.layer.zPosition = -1
         }
     }
-    override public var contentSize: CGSize {
+    public override var contentSize: CGSize {
         set {
             requestedSize = newValue
             if let minimumContentHeight = minimumContentHeight {

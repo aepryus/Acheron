@@ -85,9 +85,7 @@ open class Domain: NSObject {
         super.init()
     }
     
-    deinit {
-        if status == .clean { unsubscribe() }
-    }
+    deinit { if status == .clean { unsubscribe() } }
     
     // Methods
     func load(_ domain: Domain) {
@@ -290,6 +288,7 @@ open class Domain: NSObject {
         
         return attributes
     }
+    public func toJSON() -> String { unload().toJSON() }
     
     private func indexOfChildren(_ keyPath: String) -> [String:Domain] {
         var index: [String:Domain] = [:]
