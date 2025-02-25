@@ -18,5 +18,4 @@ public extension CGSize {
     static prefix func - (a: CGSize) -> CGSize { CGSize(width: -a.width, height: -a.height) }
 }
 
-
 #endif
