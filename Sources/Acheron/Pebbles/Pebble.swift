@@ -8,55 +8,42 @@
 
 import Foundation
 
-public class Pebble {
-    public enum State {
-        case pending, running, succeeded, failed
-    }
-
-    let name: String
-    private let payload: (_ complete: @escaping (Bool)->())->()
-    public var ready: (()->(Bool)) = { false }
-    private(set) var state: State = .pending
+public class Pebble: Identifiable, Comparable {
+    public let id: UUID = UUID()
+    public private(set) var name: String
     
-    public var succeeded: Bool { state == .succeeded }
-    public var failed: Bool { state == .failed }
-    public var completed: Bool { state == .succeeded || state == .failed }
-    public var skipped: Bool { state == .pending }
-
-    init(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
+    public private(set) var complete: Bool = false
+    public private(set) var failed: Bool = false
+    
+    private var action: ((@escaping (Bool) -> ()) -> ())?
+    public var ready: () -> Bool = { true }
+    
+    weak var pond: Pond?
+    
+    public init(name: String, action: ((@escaping (Bool) -> ()) -> ())? = nil) {
         self.name = name
-        self.payload = payload
+        self.action = action
     }
     
-    func attemptToStart(_ pond: Pond) {
-        guard state == .pending, ready() else { return }
-        
-        state = .running
-        DispatchQueue.main.async {
-            let dashes: String = String(repeating: "-", count: (32-self.name.count)/2)
-            Log.print("\n        \(dashes)\(self.name.count % 2 == 1 ? "-" : "") [ \(self.name) ] \(dashes)")
-            self.payload { (success: Bool) in
-                pond.queue.async {
-                    self.state = success ? .succeeded : .failed
-                    pond.iterate()
-                }
+    func execute() {
+        guard !complete else { return }
+        guard ready() else { return }
+        if let action = action {
+            action { success in
+                self.complete = true
+                self.failed = !success
+                self.pond?.start()
             }
+        } else {
+            complete = true
+            pond?.start()
         }
     }
-    func reset() { state = .pending }
+    
+    public static func ==(lhs: Pebble, rhs: Pebble) -> Bool { lhs.id == rhs.id }
+    public static func <(lhs: Pebble, rhs: Pebble) -> Bool { lhs.name < rhs.name }
+}
 
-// Testing =========================================================================================
-    public var testState: State? = nil {
-        didSet { guard testState != .pending && testState != .running else { fatalError() } }
-    }
-    func attemptToTest(_ pond: Pond) {
-        guard state == .pending, ready() else { return }
-
-        guard let testState = testState else {
-            print("ERROR: Pebble [\(name)] not provided a testState")
-            fatalError()
-        }
-
-        state = testState
-    }
+public func pebble(name: String, action: @escaping (@escaping (Bool) -> ()) -> ()) -> Pebble {
+    return Pebble(name: name, action: action)
 }
