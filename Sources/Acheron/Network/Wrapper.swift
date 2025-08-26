@@ -19,7 +19,7 @@ open class Wrapper {
         self.baseURL = baseURL
     }
 
-    public func request(path: String, method: Method, params: [String:String]? = nil, success: @escaping ([String:Any])->(), failure: @escaping ()->()) {
+    public func request(path: String, method: Method, params: [String:Any]? = nil, success: @escaping ([String:Any])->(), failure: @escaping ()->()) {
         var urlString: String = "\(baseURL)\(path)"
         
         if method == .get, let params { params.enumerated().forEach { urlString += "\($0.offset == 0 ? "?":"&")\($0.element.key)=\($0.element.value)" } }
@@ -27,6 +27,7 @@ open class Wrapper {
         let url: URL = URL(string: urlString)!
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = method.token
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         if method == .post, let params { request.httpBody = params.toJSON().data(using: .utf8) }
         
