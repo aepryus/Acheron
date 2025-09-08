@@ -27,6 +27,7 @@ open class Wrapper {
         let url: URL = URL(string: urlString)!
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = method.token
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         if method == .post, let params { request.httpBody = params.toJSON().data(using: .utf8) }
         
