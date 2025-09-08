@@ -13,6 +13,7 @@ open class Pond {
     let queue: DispatchQueue = DispatchQueue(label: "pond")
     private var tasks: [()->()] = []
     private var completed: Bool = false
+    private var onComplete: (()->())? = nil
 
     public init() {}
 
@@ -46,6 +47,7 @@ open class Pond {
     func onCompleted() {
         completed = true
         tasks.forEach { $0() }
+        onComplete?()
     }
     
     public func pebble(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
@@ -58,10 +60,11 @@ open class Pond {
         else { tasks.append(task) }
     }
 
-    public func start() {
+    public func start(_ onComplete: @escaping ()->() = {}) {
         guard !started || completed else { return }
         reset()
         queue.async {
+            self.onComplete = onComplete
             print("\n[ Pond Starting ] ====================================")
             self.iterate()
         }
@@ -71,8 +74,7 @@ open class Pond {
     }
     public func start() async {
         return await withCheckedContinuation { continuation in
-            addCompletionTask { continuation.resume() }
-            start()
+            start({ continuation.resume() })
         }
     }
 
