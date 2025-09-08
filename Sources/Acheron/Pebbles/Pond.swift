@@ -70,6 +70,12 @@ open class Pond {
     public func reset() {
         queue.sync { pebbles.forEach { $0.reset() } }
     }
+    public func start() async {
+        return await withCheckedContinuation { continuation in
+            addCompletionTask { continuation.resume() }
+            start()
+        }
+    }
 
 // Testing =========================================================================================
     public func resetTest() {
