@@ -54,8 +54,7 @@ open class Pond {
         return pebble
     }
     public func addCompletionTask(_ task: @escaping ()->()) {
-        dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
-        if completed { task() }
+        if completed { DispatchQueue.main.sync { task() } }
         else { tasks.append(task) }
     }
 
