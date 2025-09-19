@@ -21,6 +21,7 @@ open class AETableView: UITableView {
         tableFooterView = nil
         allowsSelection = false
     }
+    @available(*, unavailable)
     public required init?(coder aDecoder: NSCoder) { fatalError() }
     
 // UITableView =====================================================================================
