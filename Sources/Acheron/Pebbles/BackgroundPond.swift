@@ -20,13 +20,13 @@ open class BackgroundPond: Pond {
     }
 
 // Pond ============================================================================================
-    public override func start() {
+    public override func start(_ onComplete: @escaping ()->() = {}) {
         backgroundTaskID = UIApplication.shared.beginBackgroundTask {
             self.timedOut()
             UIApplication.shared.endBackgroundTask(self.backgroundTaskID)
             self.backgroundTaskID = .invalid
         }
-        super.start()
+        super.start(onComplete)
     }
     override func onCompleted() {
         super.onCompleted()

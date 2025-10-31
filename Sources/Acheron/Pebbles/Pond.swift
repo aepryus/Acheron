@@ -13,6 +13,7 @@ open class Pond {
     let queue: DispatchQueue = DispatchQueue(label: "pond")
     private var tasks: [()->()] = []
     private var completed: Bool = false
+    private var onComplete: (()->())? = nil
 
     public init() {}
 
@@ -46,6 +47,7 @@ open class Pond {
     func onCompleted() {
         completed = true
         tasks.forEach { $0() }
+        onComplete?()
     }
     
     public func pebble(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
@@ -53,22 +55,35 @@ open class Pond {
         pebbles.append(pebble)
         return pebble
     }
+    public func pebble(name: String, _ payload: @escaping () async -> Bool) -> Pebble {
+        pebble(name: name) { (complete: @escaping (Bool)->()) in
+            Task {
+                let result: Bool = await payload()
+                complete(result)
+            }
+        }
+    }
     public func addCompletionTask(_ task: @escaping ()->()) {
-        dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
-        if completed { task() }
+        if completed { DispatchQueue.main.sync { task() } }
         else { tasks.append(task) }
     }
 
-    public func start() {
+    public func start(_ onComplete: @escaping ()->() = {}) {
         guard !started || completed else { return }
         reset()
         queue.async {
+            self.onComplete = onComplete
             print("\n[ Pond Starting ] ====================================")
             self.iterate()
         }
     }
     public func reset() {
         queue.sync { pebbles.forEach { $0.reset() } }
+    }
+    public func start() async {
+        return await withCheckedContinuation { continuation in
+            start({ continuation.resume() })
+        }
     }
 
 // Testing =========================================================================================
