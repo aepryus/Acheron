@@ -47,7 +47,7 @@ public class Screen {
     let ratio: Ratio
     let width: CGFloat
     let height: CGFloat
-    let s: CGFloat
+    var s: CGFloat = 1
     let scaler: CGFloat
     
     init() {
@@ -93,6 +93,7 @@ public class Screen {
         else if w == 360 && h == 780 { dimensions = .dim360x780; ratio = .rat046 }
         else if w == 375 && h == 812 { dimensions = .dim375x812; ratio = .rat046 }
         else if w == 390 && h == 844 { dimensions = .dim390x844; ratio = .rat046 }
+        else if w == 393 && h == 852 { dimensions = .dim393x852; ratio = .rat046 }
         else if w == 402 && h == 874 { dimensions = .dim402x874; ratio = .rat046 }
         else if w == 414 && h == 896 { dimensions = .dim414x896; ratio = .rat046 }
         else if w == 428 && h == 926 { dimensions = .dim428x926; ratio = .rat046 }
@@ -125,10 +126,15 @@ public class Screen {
     
         width = w
         height = h
-    
-        s = (model == .iPhone) ? width / 375 : height / 768
+        
+        setReferenceWidth(iPhone: 375, iPad: 768)
 
         #endif
+    }
+    
+    func setReferenceWidth(iPhone: CGFloat, iPad: CGFloat) {
+        if model == .iPhone { s = width / iPhone }
+        else { s = height / iPad }
     }
     
 // Static ==========================================================================================
@@ -142,6 +148,8 @@ public class Screen {
     public static var scaler: CGFloat { current.scaler }
     
     public static var scale: CGFloat { UIScreen.main.scale}
+    
+    public static func setReferenceWidth(iPhone: CGFloat, iPad: CGFloat) { current.setReferenceWidth(iPhone: iPhone, iPad: iPad) }
 
     public static func snapToPixel(_ x: CGFloat) -> CGFloat { ceil(x*scale)/scale }
     
