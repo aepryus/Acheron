@@ -178,12 +178,16 @@ public class Screen {
     public static var navBottom: CGFloat { Screen.safeTop + 44 }
 
     public static var keyWindow: UIWindow? {
-        if #available(iOS 13.0, *) {
-            return UIApplication.shared.windows.first { $0.isKeyWindow }
+        if #available(iOS 15.0, *) {
+            return UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .flatMap { $0.windows }
+                .first(where: { $0.isKeyWindow })
         } else {
-            return UIApplication.shared.keyWindow
+            return UIApplication.shared.windows.first { $0.isKeyWindow }
         }
     }
+    public static var lightOrDark: UIUserInterfaceStyle { UITraitCollection.current.userInterfaceStyle }
 }
 
 #endif
