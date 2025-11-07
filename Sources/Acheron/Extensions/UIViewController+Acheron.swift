@@ -12,6 +12,7 @@ import UIKit
 
 public extension UIViewController {
     var s: CGFloat { Screen.s }
+    func s(_ x: CGFloat) -> CGFloat { round(x*s)/s }
     var safeTop: CGFloat { Screen.safeTop }
     var safeBottom: CGFloat { Screen.safeBottom }
 }
