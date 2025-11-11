@@ -1,16 +1,13 @@
 //
-//  UILabel+Acheron.swift
+//  UITextField+Acheron.swift
 //  Acheron
 //
-//  Created by Joe Charlier on 4/16/19.
-//  Copyright © 2019 Aepryus Software. All rights reserved.
+//  Created by Joe Charlier on 11/11/25.
 //
-
-#if canImport(UIKit)
 
 import UIKit
 
-public extension UILabel {
+extension UITextField {
     var pen: Pen {
         set {
             font = newValue.font
@@ -20,5 +17,3 @@ public extension UILabel {
         get { Pen(font: font, color: textColor, alignment: textAlignment) }
     }
 }
-
-#endif
