@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UITextField {
+public extension UITextField {
     var pen: Pen {
         set {
             font = newValue.font
