@@ -59,31 +59,32 @@ public extension UIView {
         let width = width == -1 ? self.width : width; let height = height == -1 ? self.height : height
         self.frame = CGRect(x: parent.width-width+dx, y: parent.height-height+dy, width: width, height: height)
     }
-    func center(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
+    
+    @_disfavoredOverload func center(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         center(dx: dx, dy: dy, width: size.width, height: size.height)
     }
-    func right(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
+    @_disfavoredOverload func right(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         right(dx: dx, dy: dy, width: size.width, height: size.height)
     }
-    func left(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
+    @_disfavoredOverload func left(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         left(dx: dx, dy: dy, width: size.width, height: size.height)
     }
-    func top(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
+    @_disfavoredOverload func top(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         top(dx: dx, dy: dy, width: size.width, height: size.height)
     }
-    func bottom(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
+    @_disfavoredOverload func bottom(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         bottom(dx: dx, dy: dy, width: size.width, height: size.height)
     }
-    func topLeft(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
+    @_disfavoredOverload func topLeft(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         topLeft(dx: dx, dy: dy, width: size.width, height: size.height)
     }
-    func topRight(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
+    @_disfavoredOverload func topRight(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         topRight(dx: dx, dy: dy, width: size.width, height: size.height)
     }
-    func bottomLeft(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
+    @_disfavoredOverload func bottomLeft(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         bottomLeft(dx: dx, dy: dy, width: size.width, height: size.height)
     }
-    func bottomRight(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
+    @_disfavoredOverload func bottomRight(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         bottomRight(dx: dx, dy: dy, width: size.width, height: size.height)
     }
 
