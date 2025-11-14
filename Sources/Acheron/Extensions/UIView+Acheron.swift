@@ -13,7 +13,7 @@ import UIKit
 public extension UIView {
     
     var s: CGFloat { Screen.s }
-    func s(_ x: CGFloat) -> CGFloat { round(x*s)/s }
+    func s(_ x: CGFloat) -> CGFloat { round(x*s*Screen.scale)/Screen.scale }
     
     private var parent: CGSize {
         if let parent = superview {
