@@ -145,7 +145,7 @@ public class Screen {
     public static var height: CGFloat { current.height }
     public static var size: CGSize { CGSize(width: width, height: height) }
     public static var s: CGFloat { current.s }
-    public static func s(_ x: CGFloat) -> CGFloat { round(x*s)/s }
+    public static func s(_ x: CGFloat) -> CGFloat { round(x*s*scale)/scale }
     public static var scaler: CGFloat { current.scaler }
     
     public static var scale: CGFloat { UIScreen.main.scale}
