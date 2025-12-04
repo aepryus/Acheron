@@ -13,6 +13,7 @@ import UIKit
 public extension UIView {
     
     var s: CGFloat { Screen.s }
+    func s(_ x: CGFloat) -> CGFloat { round(x*s*Screen.scale)/Screen.scale }
     
     private var parent: CGSize {
         if let parent = superview {
@@ -58,6 +59,7 @@ public extension UIView {
         let width = width == -1 ? self.width : width; let height = height == -1 ? self.height : height
         self.frame = CGRect(x: parent.width-width+dx, y: parent.height-height+dy, width: width, height: height)
     }
+    
     func center(dx: CGFloat = 0, dy: CGFloat = 0, size: CGSize) {
         center(dx: dx, dy: dy, width: size.width, height: size.height)
     }

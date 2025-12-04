@@ -20,10 +20,14 @@ public class Pen: NSObject {
     public var kern: CGFloat? { attributes[.kern] as? CGFloat }
     public var baselineOffset: CGFloat? { attributes[.baselineOffset] as? CGFloat }
     
-    public init(font: UIFont = UIFont.systemFont(ofSize: 16), color: UIColor = UIColor.black, alignment: NSTextAlignment = .left, style: NSParagraphStyle = NSParagraphStyle.default, kern: CGFloat? = nil, baselineOffset: CGFloat? = nil) {
+    public init(font: UIFont? = nil, color: UIColor? = nil, alignment: NSTextAlignment = .left, style: NSParagraphStyle = NSParagraphStyle.default, kern: CGFloat? = nil, baselineOffset: CGFloat? = nil) {
         let mutableStyle: NSMutableParagraphStyle = style.mutableCopy() as! NSMutableParagraphStyle
         mutableStyle.alignment = alignment
-        var attributes: [NSAttributedString.Key:Any] = [.font:font, .foregroundColor:color, .paragraphStyle:mutableStyle]
+        var attributes: [NSAttributedString.Key:Any] = [
+            .font: font ?? UIFont.systemFont(ofSize: 16 * Screen.s),
+            .foregroundColor: color ?? UIColor.black,
+            .paragraphStyle:mutableStyle
+        ]
         if let kern = kern { attributes[.kern] = kern }
         if let baselineOffset = baselineOffset { attributes[.baselineOffset] = baselineOffset }
         self.attributes = attributes
