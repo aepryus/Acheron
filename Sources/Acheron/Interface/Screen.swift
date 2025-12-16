@@ -177,6 +177,7 @@ public class Screen {
     }
     
     public static var navBottom: CGFloat { Screen.safeTop + 44 }
+    public static var tabsTop: CGFloat { Screen.safeBottom + 49 }
 
     public static var keyWindow: UIWindow? {
         if #available(iOS 15.0, *) {
