@@ -22,7 +22,11 @@ open class Wrapper {
     public func request(path: String, method: Method, params: [String:Any]? = nil, success: @escaping ([String:Any])->(), failure: @escaping ()->()) {
         var urlString: String = "\(baseURL)\(path)"
         
-        if method == .get, let params { params.enumerated().forEach { urlString += "\($0.offset == 0 ? "?":"&")\($0.element.key)=\($0.element.value)" } }
+        if method == .get, let params {
+            var components: URLComponents = URLComponents(string: urlString)!
+            components.queryItems = params.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
+            urlString = components.url!.absoluteString
+        }
         
         let url: URL = URL(string: urlString)!
         var request: URLRequest = URLRequest(url: url)
