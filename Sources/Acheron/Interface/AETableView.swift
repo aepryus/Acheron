@@ -20,6 +20,7 @@ open class AETableView: UITableView {
         separatorStyle = .none
         tableFooterView = nil
         allowsSelection = false
+        contentInsetAdjustmentBehavior = .never
     }
     @available(*, unavailable)
     public required init?(coder aDecoder: NSCoder) { fatalError() }
