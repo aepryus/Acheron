@@ -42,7 +42,7 @@ open class AETableView: UITableView {
             }
             if super.contentSize != newSize { super.contentSize = newSize }
         }
-        get { return requestedSize }
+        get { return super.contentSize }
     }
 }
 
