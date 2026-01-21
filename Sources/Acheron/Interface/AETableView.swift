@@ -12,7 +12,6 @@ import UIKit
 
 open class AETableView: UITableView {
     public var minimumContentHeight: CGFloat? = nil
-    private var requestedSize: CGSize = CGSize.zero
     
     public init() {
         super.init(frame: CGRect.zero, style: .plain)
@@ -34,14 +33,11 @@ open class AETableView: UITableView {
     }
     public override var contentSize: CGSize {
         set {
-            requestedSize = newValue
-            let newSize: CGSize
             if let minimumContentHeight = minimumContentHeight {
-                newSize = CGSize(width: newValue.width, height: max(newValue.height, minimumContentHeight))
+                super.contentSize = CGSize(width: newValue.width, height: max(newValue.height, minimumContentHeight))
             } else {
-                newSize = newValue
+                super.contentSize = newValue
             }
-            if super.contentSize != newSize { super.contentSize = newSize }
         }
         get { return super.contentSize }
     }
