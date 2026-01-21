@@ -41,10 +41,12 @@ open class AETableView: UITableView {
                 newSize = newValue
             }
             
+            print("=============================")
             print("A:\(super.contentSize)")
             print("B:\(newSize)")
             
             if super.contentSize != newSize {
+                print("\tmodifying")
                 super.contentSize = newSize
             }
 
