@@ -40,16 +40,7 @@ open class AETableView: UITableView {
             } else {
                 newSize = newValue
             }
-            
-            print("=============================")
-            print("A:\(super.contentSize)")
-            print("B:\(newSize)")
-            
-            if super.contentSize != newSize {
-                print("\tmodifying")
-                super.contentSize = newSize
-            }
-
+            if super.contentSize != newSize { super.contentSize = newSize }
         }
         get { return requestedSize }
     }
