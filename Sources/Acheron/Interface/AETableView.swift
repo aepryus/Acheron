@@ -33,13 +33,21 @@ open class AETableView: UITableView {
     }
     public override var contentSize: CGSize {
         set {
-            guard UIApplication.shared.applicationState == .active else { return }
             requestedSize = newValue
+            let newSize: CGSize
             if let minimumContentHeight = minimumContentHeight {
-                super.contentSize = CGSize(width: newValue.width, height: max(newValue.height, minimumContentHeight))
+                newSize = CGSize(width: newValue.width, height: max(newValue.height, minimumContentHeight))
             } else {
-                super.contentSize = newValue
+                newSize = newValue
             }
+            
+            print("A:\(super.contentSize)")
+            print("B:\(newSize)")
+            
+            if super.contentSize != newSize {
+                super.contentSize = newSize
+            }
+
         }
         get { return requestedSize }
     }
