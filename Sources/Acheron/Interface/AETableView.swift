@@ -20,6 +20,7 @@ open class AETableView: UITableView {
         separatorStyle = .none
         tableFooterView = nil
         allowsSelection = false
+        contentInsetAdjustmentBehavior = .never
     }
     @available(*, unavailable)
     public required init?(coder aDecoder: NSCoder) { fatalError() }
@@ -40,7 +41,7 @@ open class AETableView: UITableView {
                 super.contentSize = newValue
             }
         }
-        get { return requestedSize }
+        get { UIApplication.shared.applicationState == .active ? requestedSize : super.contentSize }
     }
 }
 
