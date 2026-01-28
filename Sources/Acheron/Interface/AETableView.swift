@@ -12,6 +12,7 @@ import UIKit
 
 open class AETableView: UITableView {
     public var minimumContentHeight: CGFloat? = nil
+    private var requestedSize: CGSize = CGSize.zero
     
     public init() {
         super.init(frame: CGRect.zero, style: .plain)
@@ -19,7 +20,6 @@ open class AETableView: UITableView {
         separatorStyle = .none
         tableFooterView = nil
         allowsSelection = false
-        contentInsetAdjustmentBehavior = .never
     }
     @available(*, unavailable)
     public required init?(coder aDecoder: NSCoder) { fatalError() }
@@ -33,13 +33,14 @@ open class AETableView: UITableView {
     }
     public override var contentSize: CGSize {
         set {
+            requestedSize = newValue
             if let minimumContentHeight = minimumContentHeight {
                 super.contentSize = CGSize(width: newValue.width, height: max(newValue.height, minimumContentHeight))
             } else {
                 super.contentSize = newValue
             }
         }
-        get { return super.contentSize }
+        get { return requestedSize }
     }
 }
 
