@@ -37,7 +37,8 @@ open class AETableView: UITableView {
             print("==========================================================")
             print("SS:\(requestedSize)::\(super.contentSize)::\(newValue)")
             Thread.callStackSymbols.prefix(10).forEach { print($0) }
-            if UIApplication.shared.applicationState != .background { requestedSize = newValue }
+            guard UIApplication.shared.applicationState == .active else { return }
+            requestedSize = newValue
             if let minimumContentHeight = minimumContentHeight {
                 super.contentSize = CGSize(width: newValue.width, height: max(newValue.height, minimumContentHeight))
             } else {
