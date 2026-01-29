@@ -35,7 +35,7 @@ open class AETableView: UITableView {
     public override var contentSize: CGSize {
         set {
             print("==========================================================")
-            print("SS:\(contentSize)")
+            print("SS:\(contentSize)::\(newValue)")
             Thread.callStackSymbols.prefix(10).forEach { print($0) }
             requestedSize = newValue
             if let minimumContentHeight = minimumContentHeight {
