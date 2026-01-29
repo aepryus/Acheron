@@ -34,9 +34,6 @@ open class AETableView: UITableView {
     }
     public override var contentSize: CGSize {
         set {
-            print("==========================================================")
-            print("SS:\(requestedSize)::\(super.contentSize)::\(newValue)")
-            Thread.callStackSymbols.prefix(10).forEach { print($0) }
             guard UIApplication.shared.applicationState == .active else { return }
             requestedSize = newValue
             if let minimumContentHeight = minimumContentHeight {
@@ -45,8 +42,7 @@ open class AETableView: UITableView {
                 super.contentSize = newValue
             }
         }
-        get { UIApplication.shared.applicationState != .background ? requestedSize : super.contentSize }
-//        get { super.contentSize }
+        get { UIApplication.shared.applicationState == .active ? requestedSize : super.contentSize }
     }
 }
 
