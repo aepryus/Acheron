@@ -44,7 +44,8 @@ open class AETableView: UITableView {
                 super.contentSize = newValue
             }
         }
-        get { UIApplication.shared.applicationState != .background ? requestedSize : super.contentSize }
+//        get { UIApplication.shared.applicationState != .background ? requestedSize : super.contentSize }
+        get { requestedSize }
     }
 }
 
