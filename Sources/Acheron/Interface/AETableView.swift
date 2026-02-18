@@ -43,7 +43,6 @@ open class AETableView: UITableView {
             }
         }
         get { UIApplication.shared.applicationState == .active ? requestedSize : super.contentSize }
-//        get { requestedSize }
     }
 }
 
