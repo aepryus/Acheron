@@ -35,15 +35,9 @@ public struct RGB {
         self.init(r: CGFloat(r)/255, g: CGFloat(g)/255, b: CGFloat(b)/255)
     }
     public init(uiColor: UIColor) {
-        var color = uiColor
-        if color == UIColor.white            { color = UIColor(red: 6/6, green: 6/6, blue: 6/6, alpha: 1) }
-        else if color == UIColor.lightGray    { color = UIColor(red: 4/6, green: 4/6, blue: 4/6, alpha: 1) }
-        else if color == UIColor.gray        { color = UIColor(red: 3/6, green: 3/6, blue: 3/6, alpha: 1) }
-        else if color == UIColor.darkGray    { color = UIColor(red: 2/6, green: 2/6, blue: 2/6, alpha: 1) }
-        else if color == UIColor.black        { color = UIColor(red: 0/6, green: 0/6, blue: 0/6, alpha: 1) }
-        
-        let c = color.cgColor.components!
-        self.init(r: c[0], g: c[1], b: c[2], a: c[3], uiColor: color)
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        uiColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+        self.init(r: r, g: g, b: b, a: a, uiColor: uiColor)
     }
     
     public static func + (p: RGB, q: RGB) -> RGB { RGB(r: p.r+q.r, g: p.g+q.g, b: p.b+q.b, a: p.a+q.a) }

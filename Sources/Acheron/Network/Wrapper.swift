@@ -14,13 +14,12 @@ open class Wrapper {
         var token: String { "\(self)".uppercased() }
     }
     let baseURL: String
-    open var session: URLSession { URLSession.shared }
     
     public init(baseURL: String) {
         self.baseURL = baseURL
     }
 
-    public func request(path: String, method: Method, params: [String:Any]? = nil, success: @escaping ([String:Any])->(), failure: @escaping (String)->()) {
+    public func request(path: String, method: Method, params: [String:Any]? = nil, success: @escaping ([String:Any])->(), failure: @escaping ()->()) {
         var urlString: String = "\(baseURL)\(path)"
         
         if method == .get, let params {
@@ -36,22 +35,26 @@ open class Wrapper {
         
         if method == .post, let params { request.httpBody = params.toJSON().data(using: .utf8) }
         
-        let task = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-            if let error {
-                failure(error.localizedDescription)
+        let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+            guard error == nil else {
+                print("error: \(error!)")
+                failure()
                 return
             }
 
-            guard let data else { failure("no data"); return }
+            guard let data else { failure(); return }
             
             if let response = response as? HTTPURLResponse, !(200...299).contains(response.statusCode) {
-                let message = String(data: data, encoding: .utf8) ?? ""
-                failure("HTTP \(response.statusCode): \(message.prefix(200))")
+                print("\n[ \(path) : \(response.statusCode) ] ===================================================")
+                if let headers = request.allHTTPHeaderFields { print("headers ========================\n\(headers.toJSON())\n") }
+                if let params = params { print("params =========================\n\(params.toJSON())\n") }
+                if let message = String(data: data, encoding: .utf8) { print("message =========================\n\(message)\n") }
+                failure()
                 return
             }
         
             if let result = String(data: data, encoding: .utf8) { success(result.toAttributes()) }
-            else { failure("decode failed") }
+            else { failure() }
         }
         task.resume()
     }
