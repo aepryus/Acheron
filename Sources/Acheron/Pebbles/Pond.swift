@@ -50,13 +50,13 @@ open class Pond {
         onComplete?()
     }
     
-    public func pebble(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
-        let pebble = Pebble(name: name, payload)
+    public func pebble(name: String, onMain: Bool = true, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) -> Pebble {
+        let pebble = Pebble(name: name, onMain: onMain, payload)
         pebbles.append(pebble)
         return pebble
     }
-    public func pebble(name: String, _ payload: @escaping () async -> Bool) -> Pebble {
-        pebble(name: name) { (complete: @escaping (Bool)->()) in
+    public func pebble(name: String, onMain: Bool = true, _ payload: @escaping () async -> Bool) -> Pebble {
+        pebble(name: name, onMain: onMain) { (complete: @escaping (Bool)->()) in
             Task {
                 let result: Bool = await payload()
                 complete(result)

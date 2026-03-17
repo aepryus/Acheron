@@ -14,6 +14,7 @@ public class Pebble {
     }
 
     let name: String
+    let onMain: Bool
     private let payload: (_ complete: @escaping (Bool)->())->()
     public var ready: (()->(Bool)) = { false }
     private(set) var state: State = .pending
@@ -23,8 +24,9 @@ public class Pebble {
     public var completed: Bool { state == .succeeded || state == .failed }
     public var skipped: Bool { state == .pending }
 
-    init(name: String, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
+    init(name: String, onMain: Bool = true, _ payload: @escaping (_ complete: @escaping (Bool)->())->()) {
         self.name = name
+        self.onMain = onMain
         self.payload = payload
     }
     
@@ -32,7 +34,8 @@ public class Pebble {
         guard state == .pending, ready() else { return }
         
         state = .running
-        DispatchQueue.main.async {
+        let queue: DispatchQueue = onMain ? DispatchQueue.main : DispatchQueue.global(qos: .userInitiated)
+        queue.async {
             let dashes: String = String(repeating: "-", count: (32-self.name.count)/2)
             Log.print("\n        \(dashes)\(self.name.count % 2 == 1 ? "-" : "") [ \(self.name) ] \(dashes)")
             self.payload { (success: Bool) in
