@@ -100,7 +100,7 @@ public class Basket: NSObject {
     }
     public func selectBy(cls: Anchor.Type, only: String) -> Anchor? {
         var result: Anchor? = nil
-        let type = String(describing: cls).lowercased()
+        let type = Loom.nameFromType(cls)
         if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] {
             result = anchor
         } else if let attributes = persist.attributes(type: type, only: only) {
@@ -240,6 +240,15 @@ public class Basket: NSObject {
     
     public func clearCache() {
         queue.sync { cache.removeAll() }
+    }
+
+    /// Removes duplicate `Document` rows for a type that uses the `Only` column (e.g. `folder`). Clears in-memory maps so the next load matches SQLite.
+    public func deduplicateDocumentsWithSharedOnlyKey(type: String) {
+        queue.sync {
+            persist.deduplicateDocumentsWithSharedOnlyKey(type: type)
+            cache.removeAll()
+            onlyToIden.removeAll()
+        }
     }
     
     public func set(key: String, value: String) { persist.set(key: key, value: value) }

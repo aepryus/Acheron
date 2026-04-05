@@ -71,6 +71,10 @@ public class Loom {
             if className.starts(with: "Array<") {
                 className.removeLast(1)
                 className.removeFirst(6)
+                // Mirror may emit "Pachinko.Message" — NSClassFromString needs "Message" + namespace prefix only.
+                if let dot = className.lastIndex(of: ".") {
+                    className = String(className[className.index(after: dot)...])
+                }
                 for namespace in Loom.namespaces {
                     if let cls = NSClassFromString("\(namespace).\(className)") {
                         return cls
@@ -101,6 +105,11 @@ public class Loom {
     public static func selectAll<T: Anchor>() -> [T] { Loom.basket.selectAll(T.self) as! [T] }
     
     public static func transact(_ closure: ()->()) { Loom.basket.transact(closure) }
+
+    /// Deletes extra persisted rows that share the same `Type` + `Only` (e.g. duplicate folders). Safe to call at launch.
+    public static func deduplicateDocumentsWithSharedOnlyKey(type: String) {
+        Loom.basket.deduplicateDocumentsWithSharedOnlyKey(type: type)
+    }
     
     public static func start(basket: Basket, namespaces: [String]) {
         Loom.basket = basket

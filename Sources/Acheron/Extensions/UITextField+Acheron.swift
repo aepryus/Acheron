@@ -5,6 +5,7 @@
 //  Created by Joe Charlier on 11/11/25.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public extension UITextField {
@@ -17,3 +18,4 @@ public extension UITextField {
         get { Pen(font: font, color: textColor, alignment: textAlignment) }
     }
 }
+#endif

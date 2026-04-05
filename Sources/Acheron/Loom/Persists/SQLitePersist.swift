@@ -245,15 +245,38 @@ public class SQLitePersist: Persist {
     }
     public override func attributes(type: String, only: String) -> [String : Any]? {
         let rows = query("SELECT * FROM Document WHERE Type='\(type)' AND Only='\(only)'")
-        guard rows.count < 2 else { fatalError() }
-        if rows.count == 0 {return nil}
+        if rows.count > 1 {
+            logError(message: "SQLitePersist: duplicate Document rows for Type=\(type) Only=\(only) (count=\(rows.count)); using first row")
+        }
+        if rows.count == 0 { return nil }
         do {
             let json: String = rows[0]["JSON"] as! String
-            let attributes = try JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options:[]) as! [String:Any]
+            let attributes = try JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options: []) as! [String: Any]
             return attributes
         } catch let error as NSError {
             logError(error)
-            return nil
+            return nil  
+        }
+    }
+
+    /// Deletes extra `Document` rows that share the same `Type` and `Only` (keeps lexicographically smallest `Iden`). Use after historic duplicates (e.g. folder rows).
+    public override func deduplicateDocumentsWithSharedOnlyKey(type: String) {
+        queue.sync {
+            let rows = unprotectedQuery("SELECT Iden, Only FROM Document WHERE Type='\(type)' AND Only IS NOT NULL")
+            var byOnly: [String: [String]] = [:]
+            for row in rows {
+                guard let iden = row["Iden"] as? String,
+                      let only = row["Only"] as? String,
+                      !only.isEmpty else { continue }
+                byOnly[only, default: []].append(iden)
+            }
+            for (_, idens) in byOnly where idens.count > 1 {
+                let sorted = idens.sorted()
+                guard let keep = sorted.first else { continue }
+                for iden in sorted where iden != keep {
+                    delete(iden: iden)
+                }
+            }
         }
     }
     

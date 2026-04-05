@@ -31,6 +31,9 @@ open class Persist: NSObject {
     
     open func attributes(iden: String) -> [String:Any]? { nil }
     open func attributes(type: String, only: String) -> [String:Any]? { nil }
+
+    /// Default no-op; `SQLitePersist` removes duplicate rows sharing `Type` + `Only`.
+    open func deduplicateDocumentsWithSharedOnlyKey(type: String) {}
     
     open func delete(iden: String) {}
     open func store(iden: String, attributes: [String:Any]) {}
