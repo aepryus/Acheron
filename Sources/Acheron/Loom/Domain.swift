@@ -179,20 +179,20 @@ open class Domain: NSObject {
 // Actions =========================================================================================
     func create() {
         status = .dirty
-        modified = Date.now
+        modified = Date()
         onCreate()
         handleTriggers(self, action: .create)
     }
     func edit() {
         dirty()
-        modified = Date.now
+        modified = Date()
         onEdit()
         handleTriggers(self, action: .edit)
         parent?.edit()
     }
     public func delete() {
         status = .deleted
-        modified = Date.now
+        modified = Date()
         onDelete()
         handleTriggers(self, action: .delete)
         allDomainChildren.forEach { $0.delete() }

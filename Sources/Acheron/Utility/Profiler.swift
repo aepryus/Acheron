@@ -41,11 +41,11 @@ public class Profiler {
     private let calls: TallyMap = TallyMap()
     
     private func start(_ key: String) {
-        stopwatches.put(key, x: Date.now.timeIntervalSince1970)
+        stopwatches.put(key, x: Date().timeIntervalSince1970)
         calls.increment(key)
     }
     private func stop(_ key: String) {
-        timekeeper.increment(key, x: Date.now.timeIntervalSince1970 - stopwatches.get(key))
+        timekeeper.increment(key, x: Date().timeIntervalSince1970 - stopwatches.get(key))
     }
     private func getTime(_ key: String) -> Double {
         timekeeper.getTally(key)
