@@ -107,12 +107,24 @@ open class Domain: NSObject {
     
     var allDomainChildren: [Domain] {
         var result: [Domain] = []
-        
+
+        // Single Domain instances stored as properties (e.g. engineer.jdWatson, jdWatson.quests).
+        // Without this walk, save()/delete()/deepSearchChildren never reach property-level Domains,
+        // which leaves them stuck in .dirty status after the first edit() — which means their KVO
+        // observers stay unsubscribed and subsequent mutations never propagate. Scalars in
+        // `properties` (iden, type, modified, name, etc.) cast to nil here and are skipped.
+        properties.forEach {
+            if let domain = self.value(forKeyPath: $0) as? Domain {
+                result.append(domain)
+            }
+        }
+
+        // Arrays of Domains stored under `children` (e.g. engineer.creations).
         children.forEach {
             guard let domains = self.value(forKeyPath: $0) as? [Domain] else { return }
             result += domains
         }
-        
+
         return result
     }
     func deepSearchChildren(_ search: (Domain)->(Bool)) -> Set<Domain> {
