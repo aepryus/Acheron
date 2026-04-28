@@ -111,10 +111,12 @@ open class Domain: NSObject {
         // Single Domain instances stored as properties (e.g. engineer.jdWatson, jdWatson.quests).
         // Without this walk, save()/delete()/deepSearchChildren never reach property-level Domains,
         // which leaves them stuck in .dirty status after the first edit() — which means their KVO
-        // observers stay unsubscribed and subsequent mutations never propagate. Scalars in
-        // `properties` (iden, type, modified, name, etc.) cast to nil here and are skipped.
+        // observers stay unsubscribed and subsequent mutations never propagate. We only walk
+        // properties that respond directly to the selector (matches unload()'s responds-to check;
+        // properties stored under a `Proxy` suffix or non-KVC keys aren't Domain instances).
         properties.forEach {
-            if let domain = self.value(forKeyPath: $0) as? Domain {
+            guard responds(to: NSSelectorFromString($0)) else { return }
+            if let domain = value(forKey: $0) as? Domain {
                 result.append(domain)
             }
         }
