@@ -11,6 +11,13 @@
 import UIKit
 
 public class Screen {
+    /// When `true`, iPad is treated like an iPhone for layout purposes:
+    /// `width` is the short edge, `height` is the long edge, and the `s`
+    /// scaler is computed as `width / iPhoneReferenceWidth` instead of
+    /// `height / iPadReferenceWidth`. Must be set before the first access
+    /// of any `Screen` member, since `width`/`height` are captured in `init`.
+    public static var iPadPortrait: Bool = false
+
     static let current: Screen = Screen()
     
     public enum Model {
@@ -80,9 +87,10 @@ public class Screen {
     
         let dw: CGFloat = UIScreen.main.bounds.size.width
         let dh: CGFloat = UIScreen.main.bounds.size.height
-    
-        let w: CGFloat = model == .iPhone ? min(dw, dh) : max(dw, dh)
-        let h: CGFloat = model == .iPhone ? max(dw, dh) : min(dw, dh)
+
+        let portrait: Bool = (model == .iPhone) || (model == .iPad && Screen.iPadPortrait)
+        let w: CGFloat = portrait ? min(dw, dh) : max(dw, dh)
+        let h: CGFloat = portrait ? max(dw, dh) : min(dw, dh)
     
         if w == 320 && h == 480 { dimensions = .dim320x480; ratio = .rat067 }
     
@@ -133,7 +141,7 @@ public class Screen {
     }
     
     func setReferenceWidth(iPhone: CGFloat, iPad: CGFloat) {
-        if model == .iPhone { s = width / iPhone }
+        if model == .iPhone || Screen.iPadPortrait { s = width / iPhone }
         else { s = height / iPad }
     }
     
