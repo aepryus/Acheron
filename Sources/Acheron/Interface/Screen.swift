@@ -160,19 +160,19 @@ public class Screen {
     
     public static var bounds: CGRect { CGRect(x: 0, y: 0, width: width, height: height) }
     public static var safeTop: CGFloat {
-        guard let window = Screen.keyWindow else { fatalError() }
+        guard let window = Screen.keyWindow else { return 0 }
         return window.safeAreaInsets.top
     }
     public static var safeBottom: CGFloat {
-        guard let window = Screen.keyWindow else { fatalError() }
+        guard let window = Screen.keyWindow else { return 0 }
         return window.safeAreaInsets.bottom
     }
     public static var safeLeft: CGFloat {
-        guard let window = Screen.keyWindow else { fatalError() }
+        guard let window = Screen.keyWindow else { return 0 }
         return window.safeAreaInsets.left
     }
     public static var safeRight: CGFloat {
-        guard let window = Screen.keyWindow else { fatalError() }
+        guard let window = Screen.keyWindow else { return 0 }
         return window.safeAreaInsets.right
     }
     

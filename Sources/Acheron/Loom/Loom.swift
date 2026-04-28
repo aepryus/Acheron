@@ -33,34 +33,37 @@ public class Loom {
     
     public static func classForKeyPath(keyPath: String, parent: Domain.Type) -> AnyClass? {
         var n: UInt32 = 0
-        guard let properties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(parent, &n) else { return nil }
         var cls: AnyClass?
-        
-        for i in 0..<Int(n) {
-            let name = String(validatingUTF8: property_getName(properties[i]))
-            if keyPath != name { continue }
-            
-            let attributes: UnsafePointer<Int8> = property_getAttributes(properties[i])!
-            if attributes[1] == Int8(UInt8(ascii:"@")) {
-                var className: String = String()
-                var j = 3
-                while attributes[j] != 0 && attributes[j] != Int8(UInt8(ascii:"\"")) {
-                    className.append(Character(UnicodeScalar(UInt8(attributes[j]))))
-                    j += 1
+
+        // class_copyPropertyList returns NULL when the class has no @objc properties.
+        // That's a valid state — we still need to recurse to the superclass below.
+        if let properties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(parent, &n) {
+            for i in 0..<Int(n) {
+                let name = String(validatingUTF8: property_getName(properties[i]))
+                if keyPath != name { continue }
+
+                let attributes: UnsafePointer<Int8> = property_getAttributes(properties[i])!
+                if attributes[1] == Int8(UInt8(ascii:"@")) {
+                    var className: String = String()
+                    var j = 3
+                    while attributes[j] != 0 && attributes[j] != Int8(UInt8(ascii:"\"")) {
+                        className.append(Character(UnicodeScalar(UInt8(attributes[j]))))
+                        j += 1
+                    }
+                    cls = NSClassFromString(className)
                 }
-                cls = NSClassFromString(className)
+                break
             }
-            break;
+            free(properties)
         }
-        free(properties)
-        
+
         if cls == nil {
             let superclass: NSObject.Type = class_getSuperclass(parent) as! NSObject.Type
             if superclass != NSObject.self {
                 cls = classForKeyPath(keyPath: keyPath, parent: superclass as! Domain.Type)
             }
         }
-        
+
         return cls
     }
     public static func arrayClassForKeyPath(keyPath: String, parent: AnyObject) -> AnyClass? {
