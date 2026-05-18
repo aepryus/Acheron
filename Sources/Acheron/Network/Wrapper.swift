@@ -16,7 +16,7 @@ open class Wrapper {
         case get, post
         var token: String { "\(self)".uppercased() }
     }
-    let baseURL: String
+    public let baseURL: String
     open var session: URLSession { URLSession.shared }
     
     public init(baseURL: String) {
