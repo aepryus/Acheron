@@ -25,8 +25,11 @@ extension UIImage {
 
         if UIImage.listeners[url] == nil {
             UIImage.listeners[url] = [finishedLoading]
-            URLSession.shared.dataTask(with: URLRequest(url: URL)) { (data: Data?, response: URLResponse?, error: Error?) in
-                guard let data = data, let image: UIImage = UIImage(data: data) else { return }
+            URLSession.shared.dataTask(with: URLRequest(url: URL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 15)) { (data: Data?, response: URLResponse?, error: Error?) in
+                guard let data = data, let image: UIImage = UIImage(data: data) else {
+                    DispatchQueue.main.async { UIImage.listeners.removeValue(forKey: url) }    // failed; allow retry
+                    return
+                }
                 DispatchQueue.main.async {
                     UIImage.images[url] = image
                     let listeners: [(UIImage)->()] = UIImage.listeners.removeValue(forKey: url)!
