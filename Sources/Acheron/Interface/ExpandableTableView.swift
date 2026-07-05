@@ -132,6 +132,7 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = expandableTableViewDelegate.expandableTableView(tableView as! ExpandableTableView, cellForRowAt: indexPath)
         cell.expandableTableView = self
+        cell.assignedBaseHeight = expandableTableViewDelegate.expandableTableView(self, baseHeightForRowAt: indexPath)
         if expandedPath == indexPath, let currentExpandedView = currentExpandedView {
             if currentExpandedView.superview != cell {
                 currentExpandedView.removeFromSuperview()

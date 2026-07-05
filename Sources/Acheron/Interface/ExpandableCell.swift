@@ -12,6 +12,7 @@ import UIKit
 
 open class ExpandableCell: UITableViewCell {
     weak var expandableTableView: ExpandableTableView!
+    var assignedBaseHeight: CGFloat? = nil
     private let baseView: UIView = UIView()
     
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -44,8 +45,10 @@ open class ExpandableCell: UITableViewCell {
     
 // UIView ==========================================================================================
     override open func layoutSubviews() {
-        var baseHeight: CGFloat = 0
-        if let indexPath = indexPath {
+        var baseHeight: CGFloat
+        if let assignedBaseHeight {
+            baseHeight = assignedBaseHeight
+        } else if let indexPath = indexPath {
             baseHeight = expandableTableView.expandableTableViewDelegate.expandableTableView(expandableTableView, baseHeightForRowAt: indexPath)
         } else {
             baseHeight = expandableTableView.baseHeight
