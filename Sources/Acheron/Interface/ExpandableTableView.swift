@@ -95,7 +95,11 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
     }
     public func collapseSilent() {
         expandedPath = nil
-        currentExpandedView = nil
+        if let view = currentExpandedView {
+            view.removeFromSuperview()      // else a reused cell comes back still wearing the expansion
+            expandedViews.append(view)
+            currentExpandedView = nil
+        }
         reloadData()
         layoutIfNeeded()
     }
