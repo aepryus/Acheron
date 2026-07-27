@@ -47,7 +47,16 @@ public extension String {
         return String(first).uppercased() + dropFirst()
     }
 
-    var localized: String { NSLocalizedString(self, comment: "") }
+    var localized: String {
+        for bundle in Bundle.localizations {
+            let localized: String = bundle.localizedString(forKey: self, value: String.notLocalized, table: nil)
+            if localized != String.notLocalized { return localized }
+        }
+#if DEBUG
+        Bundle.reportUnlocalized(key: self)
+#endif
+        return self
+    }
     func toInt8() -> UnsafeMutablePointer<Int8> { UnsafeMutablePointer<Int8>(mutating: (self as NSString).utf8String!) }
     func createInt8() -> UnsafeMutablePointer<Int8> {
         let cString: UnsafePointer<Int8> = (self as NSString).utf8String!
@@ -78,6 +87,7 @@ public extension String {
     }
     
     static func uuid() -> String { UUID().uuidString }
+    static let notLocalized: String = "\u{0}!nl!\u{0}"
     
 #if !os(Linux)
     func xmlToAttributes() -> [String:Any] {
