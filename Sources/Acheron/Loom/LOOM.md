@@ -87,6 +87,8 @@ let n: Int = Loom.count(Launch.self, where: "$name LIKE ?", ["Star%"])
   intentional one). Dates are their ISO strings.
 - The clause is appended to `WHERE Type=? AND …`, so parenthesize a top-level `OR` yourself.
 - A clause may begin with `ORDER BY` or `LIMIT` for sort-only selects: `select(where: "ORDER BY $flightNo DESC")`.
+- Clauses and `$field` names are developer-authored SQL, spliced verbatim. Never interpolate
+  user input into a clause or field name — user values go through the params, which bind.
 - A missing field is SQL `NULL`: `$flag IS NULL` matches documents written before `flag` existed.
 
 ## Using Loom
