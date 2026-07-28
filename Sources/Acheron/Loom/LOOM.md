@@ -89,6 +89,45 @@ let n: Int = Loom.count(Launch.self, where: "$name LIKE ?", ["Star%"])
 - A clause may begin with `ORDER BY` or `LIMIT` for sort-only selects: `select(where: "ORDER BY $flightNo DESC")`.
 - A missing field is SQL `NULL`: `$flag IS NULL` matches documents written before `flag` existed.
 
+## Using Loom
+
+Rules for writing app code against Loom — human or model. Both LLM-written bugs ever found
+in this ecosystem are anti-patterns below; don't repeat them.
+
+**Mode A — anchored state.**
+- Boot: `Loom.start(basket: Basket(SQLitePersist("app")), namespaces: ["MyApp"])`.
+- Model: subclass `Anchor` for aggregate roots, `Domain` for their children. Every property
+  listed in `properties` must be `@objc dynamic` — a plain `@objc var` compiles and then
+  silently fails to capture changes. Transient state is any var you don't list; no rules.
+- Create: `let rocket: Rocket = Loom.create()` — a fresh anchor may be configured freely
+  before its first transact.
+- Mutate: every mutation of a persisted anchor goes inside the transact:
+  `Loom.transact { rocket.name = "Aepryus I" }`. Never mutate first and call
+  `Loom.transact {}` after — the empty-transact flush is a bug (found in the wild, written
+  by a model; the sweep will commit it and `discipline` will report you). Transacts nest
+  freely; reads need no transact.
+- Children: append to the array AND wire the graph — `rocket.stages.append(stage);
+  rocket.add(stage)`. Removal is the mirror: remove from the array AND call `remove(_:)`.
+- Unique keys: `basket.associate(type: "settings", only: "name")`, then
+  `Loom.selectBy(only:)` / `Loom.create(only:)`.
+- Query: `Loom.select(where: "$flightNo > ? ORDER BY $date DESC", [100])`;
+  `Loom.count(Rocket.self, where: "$crewed = 1")`.
+- Scalars: `Loom.set(key:value:)` / `Loom.get(key:)` — the key-value channel; no transact,
+  no dirty tracking, by design.
+
+**Mode B — free Domains.**
+- Subclass `Domain`; never touch a basket. Serialize out with `unload().toJSON()`, back in
+  with `load(attributes:)` or `Loom.domain(attributes:)`; deep-clone with `replicate: true`.
+- There is no dirty, no transact, no sweep in this mode. Persistence is your file write or
+  network call.
+
+**Never, in either mode:**
+- Copy a `Persist` implementation into an app — subclass or import it. A copied file has no
+  compile-time tie to its origin and drifts until it breaks (found in the wild, written by
+  a model). Storage engines belong behind `Persist`.
+- Add entities, repositories, DTOs, or a migration framework on top of Loom (see Notes for
+  AI assistants below).
+
 ## Citizenships
 
 An object's storage citizenship decides its rules. All four are served by the same
