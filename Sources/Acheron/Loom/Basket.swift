@@ -10,11 +10,10 @@
 
 import Foundation
 
-/// How strictly this basket's anchors must honor the transact boundary. `.tolerant` (the
-/// default) preserves the sweep semantics: an edit outside a transact waits in the dirty set
-/// for the next flush. `.warning` logs each such edit; `.strict` reprises the 2003 Java rule —
-/// modifying an Anchor outside a transact is fatal. Turn the dial up when more hands, human
-/// or AI, are in the codebase.
+/// How strictly this basket's anchors must honor the transact boundary. A mutation of a
+/// persisted Anchor outside a transact is a bug — `.warning` (the default) logs each one;
+/// `.strict` reprises the 2003 Java rule and fails fast; `.tolerant` silences the check.
+/// The basket-wide sweep still commits strays either way: staleness, not loss.
 public enum BasketDiscipline { case tolerant, warning, strict }
 
 public class Basket: NSObject {
@@ -24,7 +23,7 @@ public class Basket: NSObject {
 
     public var fork: Int
 
-    public var discipline: BasketDiscipline = .tolerant
+    public var discipline: BasketDiscipline = .warning
     private let inTransactKey = DispatchSpecificKey<Bool>()
 
     var cache: SafeMap = SafeMap<Anchor>()
@@ -262,12 +261,6 @@ public class Basket: NSObject {
         }
     }
     
-    public var hasUnsavedChanges: Bool { sync { dirty.count > 0 || pendingStores.count + pendingDeletes.count > 0 } }
-    /// Drains any anchors dirtied outside a transact, and retries any rows a failed commit
-    /// left pending. The only unrecoverable loss window is exiting with unsaved changes —
-    /// call this from applicationWillTerminate / applicationDidEnterBackground.
-    public func flush() { transact {} }
-
     public func clearCache() {
         sync { cache.removeAll() }
     }

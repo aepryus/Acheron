@@ -12,7 +12,9 @@ It is not modeled on Core Data, GRDB, Realm, or SwiftData — it predates all of
 - **`Domain`** — base model class. Schema is the overridden `properties` / `children` arrays.
   While `.clean`, a Domain KVO-observes its own properties: plain assignment is the mutation
   API. The `properties` array is a membrane — what's inside is observed, serialized, and
-  travels; anything else on the object is transient and runs at full speed.
+  travels; anything else on the object is transient and runs at full speed. Every listed
+  property must be declared `@objc dynamic` — a plain `@objc var` silently escapes change
+  capture, because Swift call sites bypass the KVO-swizzled setter.
 - **`Anchor`** — a Domain that is an aggregate root: the unit of persistence and sync.
   An Anchor lives in a Basket.
 - **`Basket`** — identity map (one live instance per iden), dirty set, `transact` (unit of
@@ -31,15 +33,14 @@ Each of these is a choice with a force behind it, not an oversight.
    `json_extract(JSON,'$.field')` — full SQLite expression power over document fields with no
    query DSL and no migrations (see Queries below). If a scan ever actually bottlenecks, the
    escape hatch is a generated column plus index on the hot field; the document stays the truth.
-3. **`transact` is a flush point, not a mutation scope.** The dirty sweep is basket-wide: an
-   edit made outside a transact waits in the dirty set and is committed by the next transact,
-   whoever runs it. Strays self-heal; the only unrecoverable window is exiting with unsaved
-   changes — call `Basket.flush()` (or `Loom.flush()`) on the way out. Nested `transact`
-   calls run inline and join the outer commit — `flush()` inside a transact is a harmless
-   no-op. `Basket.discipline` can warn about (`.warning`) or forbid (`.strict`) mutation
-   outside a transact; the strict mode reprises the rule this framework enforced in Java in
-   2003 and again at scale in 2015–17. Turn it up when more hands — human or AI — are in
-   the codebase.
+3. **`transact` is a flush point, not a mutation scope — but a stray is a bug.** The dirty
+   sweep is basket-wide: an edit made outside a transact waits in the dirty set and is
+   committed by the next transact, whoever runs it. The sweep is damage containment, not an
+   idiom — a 2026 survey of every app in this ecosystem found exactly three out-of-transact
+   mutations, and all three were defects. `Basket.discipline` defaults to `.warning`, which
+   logs each stray; `.strict` reprises the rule this framework enforced in Java in 2003 and
+   again at scale in 2015–17; `.tolerant` silences the check. Nested `transact` calls run
+   inline and join the outer commit. Write the transact.
 4. **Crash-loud posture.** Invariant violations (a stale Domain re-entering the lifecycle,
    duplicate only-keys) fail fast rather than degrade silently, and the errors carry their
    own diagnosis. Do not convert them to logged-and-ignored.
@@ -62,8 +63,8 @@ Each of these is a choice with a force behind it, not an oversight.
    I/O begins, so no mutation ever races the write into an observation gap: anything that
    lands during the commit is captured as the next transact's work. The gamble is that
    commits nearly always succeed, so nothing gates on them. When one fails, the snapshots
-   wait in a pending buffer — the persist layer's own dirty set — and are retried at the
-   next flush, superseded by any newer edit of the same document. Live objects are never
+   wait in a pending buffer — the persist layer's own dirty set — and are retried by the
+   next transact, superseded by any newer edit of the same document. Live objects are never
    re-involved in a persistence failure; they have moved on. Do not "fix" the flip ordering:
    flipping clean after the commit would trade this rare, buffered loss for routine, silent
    loss of every mutation that races an I/O. (The buffer assumes transacts are serial, which

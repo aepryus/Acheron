@@ -137,7 +137,6 @@ public class Loom {
     public static func selectAll<T: Anchor>() -> [T] { Loom.basket.selectAll(T.self) as! [T] }
     
     public static func transact(_ closure: ()->()) { Loom.basket.transact(closure) }
-    public static func flush() { Loom.basket.flush() }
 
     /// Deletes extra persisted rows that share the same `Type` + `Only` (e.g. duplicate folders). Safe to call at launch.
     public static func deduplicateDocumentsWithSharedOnlyKey(type: String) {

@@ -88,13 +88,12 @@ final class LoomTests: XCTestCase {
     }
 
     func testSweep() {
+        basket.discipline = .tolerant
         let widget: Widget = Loom.create()
         Loom.transact { widget.name = "v1" }
         widget.name = "v2"
-        XCTAssertTrue(basket.hasUnsavedChanges)
-        Loom.flush()
+        Loom.transact {}
         XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "v2")
-        XCTAssertFalse(basket.hasUnsavedChanges)
     }
 
     func testFailedCommitRetries() {
@@ -104,8 +103,7 @@ final class LoomTests: XCTestCase {
         Loom.transact { widget.name = "v2" }
         XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "v1")
         XCTAssertEqual(widget.status, DomainStatus.clean)
-        XCTAssertTrue(basket.hasUnsavedChanges)
-        Loom.flush()
+        Loom.transact {}
         XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "v2")
     }
 
@@ -116,7 +114,6 @@ final class LoomTests: XCTestCase {
         Loom.transact { widget.name = "v2" }
         Loom.transact { widget.name = "v3" }
         XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "v3")
-        XCTAssertFalse(basket.hasUnsavedChanges)
     }
 
     func testNestedTransact() {
@@ -124,7 +121,7 @@ final class LoomTests: XCTestCase {
         Loom.transact {
             widget.name = "outer"
             Loom.transact { widget.flightNo = 9 }
-            Loom.flush()
+            Loom.transact {}
         }
         XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "outer")
         XCTAssertEqual(persist.rows[widget.iden]?["flightNo"] as? Int, 9)
