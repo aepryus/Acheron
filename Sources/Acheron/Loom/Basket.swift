@@ -31,6 +31,8 @@ public class Basket: NSObject {
     var onlyToIden: SafeMap = SafeMap<String>()
     var dirty = SafeSet<Anchor>()
     var dehydrate = SafeSet<Domain>()
+    private var pendingStores: [String:[String:Any]] = [:]
+    private var pendingDeletes: Set<String> = []
 
     let queue: DispatchQueue
     
@@ -45,6 +47,9 @@ public class Basket: NSObject {
     
     public func associate(type: String, only: String) { persist.associate(type: type, only: only) }
     public func only(type: String) -> String? { persist.only(type: type) }
+
+    private var onQueue: Bool { DispatchQueue.getSpecific(key: inTransactKey) == true }
+    private func sync<T>(_ block: () -> T) -> T { onQueue ? block() : queue.sync(execute: block) }
         
     private func load(_ attributes: [String:Any], cls: Anchor.Type) -> Anchor {
         let anchor = cls.init(attributes: attributes)
@@ -57,71 +62,61 @@ public class Basket: NSObject {
         return anchor
     }
     private func load(_ attributes: [String:Any]) -> Anchor {
-        let cls = Loom.classFromName(attributes["type"] as! String) as! Anchor.Type
+        let cls = Loom.classForType(attributes["type"] as! String) as! Anchor.Type
         return load(attributes, cls: cls)
     }
     public func inject(_ attributes: [String:Any]) -> Anchor {
-        let anchor = load(attributes)
-        anchor.dirty()
-        return anchor
+        sync {
+            let anchor = load(attributes)
+            anchor.dirty()
+            return anchor
+        }
     }
-    
+
     public func createBy(cls: Anchor.Type, only: String? = nil) -> Anchor {
-        let anchor = cls.init(basket: self)
-        anchor.iden = generateIden(cls)
-        cache[anchor.iden] = anchor
-        if let only = only {
-            onlyToIden["\(anchor.type!):\(only)"] = anchor.iden
-        }
-        dirty.insert(anchor)
-        return anchor
-    }
-    
-    private func convert(array: [[String:Any]]) -> [Anchor] {
-        var anchors: [Anchor] = []
-        for attributes in array {
-            var anchor = cache[attributes["iden"] as! String]
-            if anchor == nil {
-                anchor = load(attributes)
+        sync {
+            let anchor = cls.init(basket: self)
+            anchor.iden = generateIden(cls)
+            cache[anchor.iden] = anchor
+            if let only = only {
+                onlyToIden["\(anchor.type!):\(only)"] = anchor.iden
             }
-            anchors.append(anchor!)
+            dirty.insert(anchor)
+            return anchor
         }
-        return anchors;
+    }
+
+    private func convert(array: [[String:Any]]) -> [Anchor] {
+        sync {
+            array.map { attributes in cache[attributes["iden"] as! String] ?? load(attributes) }
+        }
     }
     private func convert(array: [[String:Any]], type:Anchor.Type) -> [Anchor] {
-        var anchors: [Anchor] = []
-        for attributes in array {
-            var anchor = cache[attributes["iden"] as! String]
-            if anchor == nil {
-                anchor = load(attributes, cls: type)
-            }
-            anchors.append(anchor!)
+        sync {
+            array.map { attributes in cache[attributes["iden"] as! String] ?? load(attributes, cls: type) }
         }
-        return anchors;
     }
-    
+
     public func selectBy(iden: String) -> Anchor? {
-        var result: Anchor? = nil
-        if let anchor = cache[iden] {
-            result = anchor
-        } else if let attributes = persist.attributes(iden: iden) {
-            result = load(attributes)
+        sync {
+            if let anchor = cache[iden] { return anchor }
+            guard let attributes = persist.attributes(iden: iden) else { return nil }
+            return load(attributes)
         }
-        return result
     }
     public func selectBy(cls: Anchor.Type, only: String) -> Anchor? {
-        var result: Anchor? = nil
-        let type = Loom.nameFromType(cls)
-        if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] {
-            result = anchor
-        } else if let attributes = persist.attributes(type: type, only: only) {
-            result = load(attributes)
+        sync {
+            let type = Loom.nameFromType(cls)
+            if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] { return anchor }
+            guard let attributes = persist.attributes(type: type, only: only) else { return nil }
+            return load(attributes)
         }
-        return result
     }
     public func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
-        guard let attributes = persist.selectOne(where: field, is: value, type: Loom.nameFromType(type)) else { return nil }
-        return cache[attributes["iden"] as! String] ?? load(attributes, cls: type)
+        sync {
+            guard let attributes = persist.selectOne(where: field, is: value, type: Loom.nameFromType(type)) else { return nil }
+            return cache[attributes["iden"] as! String] ?? load(attributes, cls: type)
+        }
     }
     public func select(where field: String, is value: String, type: Anchor.Type) -> [Domain] {
         let array = persist.select(where: field, is: value, type: Loom.nameFromType(type))
@@ -145,8 +140,8 @@ public class Basket: NSObject {
     
     public func syncPacket() -> [String:Any] {
         var attributes: [String:Any] = [:]
-        
-        queue.sync {
+
+        sync {
             var documents: [[String:Any]] = []
             for anchor in selectForked() {
                 if anchor.isUploaded {
@@ -182,7 +177,7 @@ public class Basket: NSObject {
     }
     
     func deleteByID(_ iden: String ) {}
-    
+
     private func key(class cls: Domain.Type, action: DomainAction) -> String {
         return "\(String(describing: cls))_\(action)"
     }
@@ -201,33 +196,25 @@ public class Basket: NSObject {
         return blocks[key] ?? []
     }
     
-    private static func loadDirty(into: inout Set<Domain>, domain: Domain) {
-        into.insert(domain)
-        for child in domain.allDomainChildren {
-            if child.status != .clean {
-                loadDirty(into:&into, domain:child)
-            }
-        }
-    }
-    
     /// Commits every outstanding dirty anchor — not just those touched inside the closure.
     /// transact is a basket-wide flush point, not a mutation scope: anchors dirtied outside
-    /// any transact are swept in here. Deliberate; see LOOM.md.
+    /// any transact are swept in here, and nested calls run inline, joining the outer commit.
+    /// Writes are optimistic — anchors flip clean at the snapshot, before the I/O; a failed
+    /// commit's rows wait in a pending buffer for the next flush. Deliberate; see LOOM.md.
     public func transact(_ closure: ()->()) {
-        var dirty = Set<Anchor>()
-        
-        var editedAnchors = Set<Anchor>()
-        var deletedAnchors = Set<Anchor>()
-        var editedDomains = Set<Domain>()
-        var deletedDomains = Set<Domain>()
+        if onQueue { closure(); return }
+
+        var stores: [String:[String:Any]] = [:]
+        var deletes: Set<String> = []
 
         queue.sync {
             autoreleasepool {
                 closure()
-                
+
+                var dirty = Set<Anchor>()
                 while self.dirty.count > 0 {
                     dirty.formUnion(self.dirty)
-                    
+
                     var dirtyDomains = Set<Domain>()
                     for anchor in self.dirty {
                         dirtyDomains.formUnion(anchor.deepSearchChildren({ (domain: Domain) -> (Bool) in
@@ -237,52 +224,57 @@ public class Basket: NSObject {
                     self.dirty.removeAll()
                     dirtyDomains.forEach { $0.dirtied() }
                 }
-                
-                deletedDomains.formUnion(self.dehydrate)
-                
+
                 for anchor in dirty {
                     if anchor.status == .deleted {
-                        deletedAnchors.insert(anchor)
-                        deletedDomains.insert(anchor)
+                        if let only = anchor.only { onlyToIden["\(anchor.type!):\(only)"] = nil }
+                        deletes.insert(anchor.iden)
                     } else {
-                        editedAnchors.insert(anchor)
-                        Basket.loadDirty(into:&editedDomains, domain:anchor)
+                        if let only = anchor.only { onlyToIden["\(anchor.type!):\(only)"] = anchor.iden }
                         anchor.save()
+                        stores[anchor.iden] = anchor.unload()
                     }
                 }
+
+                for iden in pendingDeletes where stores[iden] == nil { deletes.insert(iden) }
+                for (iden, attributes) in pendingStores where stores[iden] == nil && !deletes.contains(iden) { stores[iden] = attributes }
+                pendingStores.removeAll()
+                pendingDeletes.removeAll()
             }
         }
 
-        if dirty.count > 0 {
-            self.persist.transact({ () -> (Bool) in
-                autoreleasepool {
-                    for anchor in deletedAnchors {
-                        if let only = anchor.only { onlyToIden["\(anchor.type!):\(only)"] = nil }
-                        persist.delete(iden: anchor.iden)
-                    }
-                    for anchor in editedAnchors {
-                        if let only = anchor.only { onlyToIden["\(anchor.type!):\(only)"] = anchor.iden }
-                        persist.store(iden: anchor.iden, attributes: anchor.unload())
-                    }
-                }
-                return true
-            })
+        guard stores.count + deletes.count > 0 else { return }
+
+        let committed = persist.transact { () -> (Bool) in
+            autoreleasepool {
+                var ok: Bool = true
+                for iden in deletes { ok = persist.delete(iden: iden) && ok }
+                for (iden, attributes) in stores { ok = persist.store(iden: iden, attributes: attributes) && ok }
+                return ok
+            }
+        }
+
+        if !committed {
+            queue.sync {
+                for (iden, attributes) in stores where pendingStores[iden] == nil { pendingStores[iden] = attributes }
+                pendingDeletes.formUnion(deletes)
+            }
         }
     }
     
-    public var hasUnsavedChanges: Bool { dirty.count > 0 }
-    /// Drains any anchors dirtied outside a transact. Under the tolerant discipline the only
-    /// unrecoverable loss window is exiting with dirty anchors — call this from
-    /// applicationWillTerminate / applicationDidEnterBackground.
+    public var hasUnsavedChanges: Bool { sync { dirty.count > 0 || pendingStores.count + pendingDeletes.count > 0 } }
+    /// Drains any anchors dirtied outside a transact, and retries any rows a failed commit
+    /// left pending. The only unrecoverable loss window is exiting with unsaved changes —
+    /// call this from applicationWillTerminate / applicationDidEnterBackground.
     public func flush() { transact {} }
 
     public func clearCache() {
-        queue.sync { cache.removeAll() }
+        sync { cache.removeAll() }
     }
 
     /// Removes duplicate `Document` rows for a type that uses the `Only` column (e.g. `folder`). Clears in-memory maps so the next load matches SQLite.
     public func deduplicateDocumentsWithSharedOnlyKey(type: String) {
-        queue.sync {
+        sync {
             persist.deduplicateDocumentsWithSharedOnlyKey(type: type)
             cache.removeAll()
             onlyToIden.removeAll()
@@ -298,21 +290,25 @@ public class Basket: NSObject {
     func showID(_ iden: String) { persist.show(iden) }
     
     public func wipe() {
-        queue.sync {
+        sync {
             persist.wipe()
             fork = 0
             cache.removeAll()
             dirty.removeAll()
             dehydrate.removeAll()
+            pendingStores.removeAll()
+            pendingDeletes.removeAll()
         }
     }
     public func wipeDocuments() {
-        queue.sync {
+        sync {
             persist.wipeDocuments()
             fork = 0
             cache.removeAll()
             dirty.removeAll()
             dehydrate.removeAll()
+            pendingStores.removeAll()
+            pendingDeletes.removeAll()
         }
     }
 

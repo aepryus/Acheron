@@ -33,11 +33,13 @@ Each of these is a choice with a force behind it, not an oversight.
    escape hatch is a generated column plus index on the hot field; the document stays the truth.
 3. **`transact` is a flush point, not a mutation scope.** The dirty sweep is basket-wide: an
    edit made outside a transact waits in the dirty set and is committed by the next transact,
-   whoever runs it. Strays self-heal; the only unrecoverable window is exiting with dirty
-   anchors — call `Basket.flush()` (or `Loom.flush()`) on the way out. `Basket.discipline`
-   can warn about (`.warning`) or forbid (`.strict`) mutation outside a transact; the strict
-   mode reprises the rule this framework enforced in Java in 2003 and again at scale in
-   2015–17. Turn it up when more hands — human or AI — are in the codebase.
+   whoever runs it. Strays self-heal; the only unrecoverable window is exiting with unsaved
+   changes — call `Basket.flush()` (or `Loom.flush()`) on the way out. Nested `transact`
+   calls run inline and join the outer commit — `flush()` inside a transact is a harmless
+   no-op. `Basket.discipline` can warn about (`.warning`) or forbid (`.strict`) mutation
+   outside a transact; the strict mode reprises the rule this framework enforced in Java in
+   2003 and again at scale in 2015–17. Turn it up when more hands — human or AI — are in
+   the codebase.
 4. **Crash-loud posture.** Invariant violations (a stale Domain re-entering the lifecycle,
    duplicate only-keys) fail fast rather than degrade silently, and the errors carry their
    own diagnosis. Do not convert them to logged-and-ignored.
@@ -49,7 +51,24 @@ Each of these is a choice with a force behind it, not an oversight.
    the client half of a two-phase-commit reconciliation protocol whose mature server
    implementation is the companion Pequod project (per-document optimistic versioning,
    pluggable per-type conflict resolution, tombstone deletes, device-chain fast-forward).
-   Do not remove them, and do not re-derive what they already encode.
+   The dormant surface also includes `Basket.dehydrate` and `deleteByID` — the unfinished
+   client half of deleted-tracking (the server already handles tombstones; `syncPacket`
+   sends `deleted: []` until this is completed). Do not remove any of it, and do not
+   re-derive what it already encodes. The planned Observation/macros port (decision 5)
+   also targets Linux, unifying client and server on one Loom — this machinery is its
+   raw material.
+7. **Writes are optimistic; the clean-flip is the mutation-capture cut line.** Inside
+   `transact`, anchors flip `.clean` — re-arming KVO — and are snapshotted *before* the disk
+   I/O begins, so no mutation ever races the write into an observation gap: anything that
+   lands during the commit is captured as the next transact's work. The gamble is that
+   commits nearly always succeed, so nothing gates on them. When one fails, the snapshots
+   wait in a pending buffer — the persist layer's own dirty set — and are retried at the
+   next flush, superseded by any newer edit of the same document. Live objects are never
+   re-involved in a persistence failure; they have moved on. Do not "fix" the flip ordering:
+   flipping clean after the commit would trade this rare, buffered loss for routine, silent
+   loss of every mutation that races an I/O. (The buffer assumes transacts are serial, which
+   they are in practice; a contrived concurrent-transact interleaving during a failure could
+   retry a stale row.)
 
 ## Queries
 

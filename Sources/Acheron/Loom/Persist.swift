@@ -37,10 +37,10 @@ open class Persist: NSObject {
     /// Default no-op; `SQLitePersist` removes duplicate rows sharing `Type` + `Only`.
     open func deduplicateDocumentsWithSharedOnlyKey(type: String) {}
     
-    open func delete(iden: String) {}
-    open func store(iden: String, attributes: [String:Any]) {}
-    
-    open func transact(_ closure: ()->(Bool)) { _ = closure() }
+    @discardableResult open func delete(iden: String) -> Bool { true }
+    @discardableResult open func store(iden: String, attributes: [String:Any]) -> Bool { true }
+
+    @discardableResult open func transact(_ closure: ()->(Bool)) -> Bool { closure() }
     
     open func wipe() {}
     open func wipeDocuments() {}

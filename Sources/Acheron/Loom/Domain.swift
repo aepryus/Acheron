@@ -246,7 +246,7 @@ open class Domain: NSObject {
             }
             let unloader = self.unloader(keyPath:keyPath)
             if let unloader = unloader {
-                attributes[keyPath] = unloader(value!)
+                if let value { attributes[keyPath] = unloader(value) }
             } else if let value = value as? Date {
                 attributes[keyPath] = value.toISOFormattedString() as NSString
             } else if let value = value as? Packable {
@@ -314,20 +314,16 @@ open class Domain: NSObject {
                 } else {
                     let cls: AnyClass? = classForKeyPath(keyPath)
                     if cls == NSDate.self {
-                        if let string = value as? String {
-                            var time = Date.fromISOFormatted(string: string)
-                            if time == nil {
-                                time = nil
-                            }
-                            value = time
+                        if let string = value as? String, let date = Date.fromISOFormatted(string: string) ?? Double(string).map({ Date(timeIntervalSinceReferenceDate: $0) }) {
+                            value = date
                         } else {
-                            value = NSDate(timeIntervalSinceReferenceDate: Double(value as! String)!)
+                            value = nil
                         }
                     } else if let cls = cls as? Packable.Type {
                         value = cls.init(value as! String)
                     } else if cls?.superclass() == Domain.self {
                         let valueAtts = value as! [String:Any]
-                        let cls = Loom.classFromName(valueAtts["type"] as! String) as! Domain.Type
+                        let cls = Loom.classForType(valueAtts["type"] as! String) as! Domain.Type
                         let domain = cls.init(attributes: valueAtts, parent: self)
                         domain.load(attributes:valueAtts, replicate: replicate)
                         load(domain)
@@ -385,7 +381,7 @@ open class Domain: NSObject {
                     for child in children as! [[String:Any]] {
                         var domain: Domain? = existing[child["iden"] as! String]
                         if domain == nil {
-                            let cls = Loom.classFromName(child["type"] as! String) as! Domain.Type
+                            let cls = Loom.classForType(child["type"] as! String) as! Domain.Type
                             domain = cls.init(attributes: child, parent: self)
                         }
                         domain!.load(attributes:child, replicate: replicate)

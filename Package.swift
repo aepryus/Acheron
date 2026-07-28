@@ -13,6 +13,7 @@ let package = Package(
     dependencies: [
     ],
     targets: [
-        .target(name: "Acheron", dependencies: []),
+        .target(name: "Acheron", dependencies: [], exclude: ["Loom/LOOM.md"]),
+        .testTarget(name: "AcheronTests", dependencies: ["Acheron"]),
     ]
 )

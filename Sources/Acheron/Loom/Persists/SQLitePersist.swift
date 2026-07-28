@@ -15,11 +15,14 @@ public class SQLitePersist: Persist {
     var db: OpaquePointer? = nil
     let queue: DispatchQueue = DispatchQueue(label: "SQLite")
 
-    public override init(_ name: String) {
-        
-        let path = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]).appendingPathComponent("data")
-        
-        if !FileManager.default.fileExists(atPath: path.absoluteString) {
+    public convenience override init(_ name: String) {
+        self.init(name, directory: (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]).appendingPathComponent("data"))
+    }
+    public init(_ name: String, directory: URL) {
+
+        let path = directory
+
+        if !FileManager.default.fileExists(atPath: path.path) {
             do {
                 try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
             } catch  {
@@ -153,19 +156,20 @@ public class SQLitePersist: Persist {
         return documents("SELECT JSON FROM Document WHERE Type=?\(glue)\(expanded)", [type] + params)
     }
     public override func count(type: String, where clause: String, params: [Any]) -> Int {
-        let sql = "SELECT COUNT(*) AS n FROM Document WHERE Type=?" + (clause.isEmpty ? "" : " AND \(expand(clause))")
-        return (query(sql, [type] + params).first?["n"] as? NSNumber)?.intValue ?? 0
+        let expanded = expand(clause)
+        let glue = clause.isEmpty || expanded.hasPrefix("ORDER") || expanded.hasPrefix("LIMIT") ? " " : " AND "
+        return (query("SELECT COUNT(*) AS n FROM Document WHERE Type=?\(glue)\(expanded)", [type] + params).first?["n"] as? NSNumber)?.intValue ?? 0
     }
 
     public override func selectForked() -> [[String:Any]] {
-        let fork: Int = Int(get(key: "fork") ?? "0")!
+        let fork: Int = Int(get(key: "fork") ?? "0") ?? 0
         return documents("SELECT JSON FROM Document WHERE Fork=?", [fork+1])
     }
     public override func selectForkedMemories() -> [[String:Any]] {
-        let fork: Int = Int(get(key: "fork") ?? "0")!
-        
+        let fork: Int = Int(get(key: "fork") ?? "0") ?? 0
+
         var result: [[String:Any]] = []
-        let rows = query("SELECT * FROM Memory WHERE Server=1 AND Fork=\(fork+1)")
+        let rows = query("SELECT * FROM Memory WHERE Server=1 AND Fork=?", [fork+1])
         for row in rows {
             var attributes = [String:Any]()
             attributes["name"] = row["Name"] as! String
@@ -225,7 +229,7 @@ public class SQLitePersist: Persist {
         }
     }
     
-    public override func delete(iden: String) {
+    @discardableResult public override func delete(iden: String) -> Bool {
         dispatchPrecondition(condition: .onQueue(queue))
         var s: OpaquePointer? = nil
         _ = executeSQLite(sqlite: { () -> (Int32) in
@@ -235,26 +239,28 @@ public class SQLitePersist: Persist {
         _ = executeSQLite(sqlite: { () -> (Int32) in
             return sqlite3_bind_text(s, 1, iden, -1, SQLITE_TRANSIENT)
         })
-        _ = executeSQLite(sqlite: { () -> (Int32) in
+        let result = executeSQLite(sqlite: { () -> (Int32) in
             return sqlite3_step(s)
         })
         sqlite3_finalize(s)
+        return result == SQLITE_DONE
     }
-    public override func store(iden: String, attributes: [String : Any]) {
+    @discardableResult public override func store(iden: String, attributes: [String : Any]) -> Bool {
         dispatchPrecondition(condition: .onQueue(queue))
         let type = attributes["type"] as! String
-        
+
         var json: String?
         do {
             let data = try JSONSerialization.data(withJSONObject: attributes, options: [])
             json = String(data:data, encoding: .utf8)
         } catch {
             logError(error)
-            return
+            return true
         }
 
         let fork: Int32 = (attributes["fork"] as? NSNumber)?.int32Value ?? 0
-        
+
+        var result: Int32 = SQLITE_DONE
         if let json = json {
             var s: OpaquePointer? = nil
             
@@ -288,14 +294,15 @@ public class SQLitePersist: Persist {
             _ = executeSQLite(sqlite: { () -> (Int32) in
                 return sqlite3_bind_int(s, 5, fork)
             })
-            _ = executeSQLite(sqlite: { () -> (Int32) in
+            result = executeSQLite(sqlite: { () -> (Int32) in
                 return sqlite3_step(s)
             })
             sqlite3_finalize(s)
         }
+        return result == SQLITE_DONE
     }
-    
-    public override func transact(_ transact: ()->(Bool)) {
+
+    @discardableResult public override func transact(_ transact: ()->(Bool)) -> Bool {
         queue.sync {
             var error: UnsafeMutablePointer<Int8>?
             let result: Int32 = executeSQLite { () -> (Int32) in
@@ -303,26 +310,20 @@ public class SQLitePersist: Persist {
             }
             if result != SQLITE_OK {
                 logError(message: "begin transaction failed")
-                return;
+                return false
             }
-            
+
             let shouldCommit = transact()
-            
-            if shouldCommit {
-                _ = executeSQLite(sqlite: { () -> (Int32) in
-                    return sqlite3_exec(db, "COMMIT TRANSACTION", nil, nil, &error);
-                })
-            } else {
-                _ = executeSQLite(sqlite: { () -> (Int32) in
-                    return sqlite3_exec(db, "ROLLBACK TRANSACTION", nil, nil, &error);
-                })
-            }
-            
+
+            let finish: Int32 = executeSQLite(sqlite: { () -> (Int32) in
+                return sqlite3_exec(db, shouldCommit ? "COMMIT TRANSACTION" : "ROLLBACK TRANSACTION", nil, nil, &error);
+            })
+
             if let error = error {
                 print("SQLitePersist: error in database [\(self.name)] @3\n\terror: \(String(cString: error))")
                 sqlite3_free(error)
-                return
             }
+            return shouldCommit && finish == SQLITE_OK
         }
     }
     
@@ -353,7 +354,7 @@ public class SQLitePersist: Persist {
     }
     public override func show(_ iden: String) {
         print("===========================================================================")
-        print("\(attributes(iden: iden)!)")
+        print("\(attributes(iden: iden) ?? [:])")
     }
     public override func census() {
         print("\nprinting census [\(self.name)]")

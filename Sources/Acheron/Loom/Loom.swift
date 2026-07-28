@@ -51,6 +51,12 @@ public class Loom {
         }
         return cls
     }
+    static func classForType(_ name: String) -> AnyClass {
+        guard let cls: AnyClass = classFromName(name) else {
+            fatalError("Loom: no class found for type '\(name)' in namespaces \(namespaces); if the class was renamed or removed, documents of this type can no longer load — restore the class or migrate the rows.")
+        }
+        return cls
+    }
     
     public static func classForKeyPath(keyPath: String, parent: Domain.Type) -> AnyClass? {
         var n: UInt32 = 0
@@ -111,7 +117,7 @@ public class Loom {
     }
     
     public static func domain(attributes: [String:Any], parent: Domain? = nil, replicate: Bool = false) -> Domain {
-        let cls = Loom.classFromName(attributes["type"] as! String) as! Domain.Type
+        let cls = Loom.classForType(attributes["type"] as! String) as! Domain.Type
         let domain: Domain = cls.init(attributes: attributes, parent: parent)
         domain.load(attributes:attributes, replicate: replicate)
         return domain
