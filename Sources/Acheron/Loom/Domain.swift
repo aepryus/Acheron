@@ -52,12 +52,14 @@ open class Domain: NSObject {
             } else if (_status == .clean || _status == .dirty) && newValue == .deleted {
                 
             } else {
-                print("transition error: [\((String(describing: Swift.type(of: self))))] moving from \(_status) to \(newValue)")
+                print("Loom transition error: [\((String(describing: Swift.type(of: self))))] \(iden ?? "?") moving from \(_status) to \(newValue)")
             }
-            
+
             _status = newValue
-            
-            if _status == .clean && isStatic == false && subscribed == false { fatalError() }
+
+            if _status == .clean && isStatic == false && subscribed == false {
+                fatalError("Loom: [\(String(describing: Swift.type(of: self)))] \(iden ?? "?") became .clean without an active KVO subscription. A stale Domain has re-entered the lifecycle: it was deleted or removed from its Anchor's graph, but something still holds it and tried to save or load it. If it was removed with remove(_:), also remove it from its parent's children array so save() no longer reaches it. Domain objects should not be held after they leave their Anchor's graph.")
+            }
         }
         get { return _status }
     }
@@ -136,41 +138,21 @@ open class Domain: NSObject {
         return result
     }
     private func classForKeyPath(_ keyPath: String) -> AnyClass? {
-        var propertyToClass = Loom.domains[type]
-        if propertyToClass == nil {
-            propertyToClass = [String:AnyClass]()
-            Loom.domains[type] = propertyToClass;
-        }
-        var cls: AnyClass? = propertyToClass![keyPath];
+        var cls: AnyClass? = Loom.cachedClass(type: type, keyPath: keyPath)
         if cls == nil {
             cls = Loom.classForKeyPath(keyPath: keyPath, parent: Swift.type(of:self))
-            if cls != nil {
-                propertyToClass![keyPath] = cls
-            } else {
-                propertyToClass![keyPath] = NotFound.self
-            }
-        } else if cls === NotFound.self {
-            cls = nil
+            Loom.cacheClass(cls ?? NotFound.self, type: type, keyPath: keyPath)
         }
+        if cls === NotFound.self { cls = nil }
         return cls
     }
     private func arrayClassForKeyPath(_ keyPath: String) -> AnyClass? {
-        var propertyToClass = Loom.domains[type]
-        if propertyToClass == nil {
-            propertyToClass = [String:AnyClass]()
-            Loom.domains[type] = propertyToClass;
-        }
-        var cls: AnyClass? = propertyToClass![keyPath];
+        var cls: AnyClass? = Loom.cachedArrayClass(type: type, keyPath: keyPath)
         if cls == nil {
             cls = Loom.arrayClassForKeyPath(keyPath: keyPath, parent: self)
-            if cls != nil {
-                propertyToClass![keyPath] = cls
-            } else {
-                propertyToClass![keyPath] = NotFound.self
-            }
-        } else if cls === NotFound.self {
-            cls = nil
+            Loom.cacheArrayClass(cls ?? NotFound.self, type: type, keyPath: keyPath)
         }
+        if cls === NotFound.self { cls = nil }
         return cls
     }
 
@@ -450,6 +432,10 @@ open class Domain: NSObject {
     }
     
 // NSObject ========================================================================================
+    // No-op writes are suppressed. Beyond filtering redundant edits, this is what makes a
+    // wholesale reload cheap: a mirror-style refresh (e.g. AepX's BootPond) rewrites every
+    // property of every anchor, but only anchors whose data actually changed get dirtied
+    // and persisted — the equality check is the diff engine.
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         let oldValue = change?[.oldKey] as? NSObject
         let newValue = change?[.newKey] as? NSObject

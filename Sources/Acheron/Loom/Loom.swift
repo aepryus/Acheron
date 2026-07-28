@@ -5,6 +5,8 @@
 //  Created by Joe Charlier on 4/23/19.
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
+//  Before proposing structural changes to Loom, read LOOM.md in this directory.
+//
 
 #if !os(Linux)
 
@@ -14,7 +16,26 @@ public class Loom {
     public static var basket: Basket!
 
     public static var namespaces: [String] = []
-    static var domains = [String:[String:AnyClass]]()
+
+    // keyPath → class memos. Two namespaces: for an array property, classForKeyPath resolves
+    // the objc attribute type (NSArray) while arrayClassForKeyPath resolves the element class —
+    // same type and keyPath, different answers, so they must not share a slot.
+    private static var domains = [String:[String:AnyClass]]()
+    private static var arrayDomains = [String:[String:AnyClass]]()
+    private static let domainsQueue = DispatchQueue(label: "Loom.domains")
+
+    static func cachedClass(type: String, keyPath: String) -> AnyClass? {
+        domainsQueue.sync { domains[type]?[keyPath] }
+    }
+    static func cacheClass(_ cls: AnyClass, type: String, keyPath: String) {
+        domainsQueue.sync { domains[type, default: [:]][keyPath] = cls }
+    }
+    static func cachedArrayClass(type: String, keyPath: String) -> AnyClass? {
+        domainsQueue.sync { arrayDomains[type]?[keyPath] }
+    }
+    static func cacheArrayClass(_ cls: AnyClass, type: String, keyPath: String) {
+        domainsQueue.sync { arrayDomains[type, default: [:]][keyPath] = cls }
+    }
 
     static func nameFromType(_ type: Domain.Type) -> String {
         let fullname: String = NSStringFromClass(type)
@@ -105,9 +126,12 @@ public class Loom {
     public static func selectBy<T: Anchor>(only: String) -> T? { Loom.basket.selectBy(cls: T.self, only: only) as? T }
     public static func selectOne<T: Anchor>(where field: String, is value: String) -> T? { Loom.basket.selectOne(where: field, is: value, type: T.self) as? T }
     public static func select<T: Anchor>(where field: String, is value: String) -> [T] { Loom.basket.select(where: field, is: value, type: T.self) as! [T] }
+    public static func select<T: Anchor>(where clause: String, _ params: [Any] = []) -> [T] { Loom.basket.select(type: T.self, where: clause, params: params) as! [T] }
+    public static func count(_ type: Anchor.Type, where clause: String = "", _ params: [Any] = []) -> Int { Loom.basket.count(type: type, where: clause, params: params) }
     public static func selectAll<T: Anchor>() -> [T] { Loom.basket.selectAll(T.self) as! [T] }
     
     public static func transact(_ closure: ()->()) { Loom.basket.transact(closure) }
+    public static func flush() { Loom.basket.flush() }
 
     /// Deletes extra persisted rows that share the same `Type` + `Only` (e.g. duplicate folders). Safe to call at launch.
     public static func deduplicateDocumentsWithSharedOnlyKey(type: String) {

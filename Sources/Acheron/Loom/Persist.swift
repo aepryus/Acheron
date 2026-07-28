@@ -25,6 +25,8 @@ open class Persist: NSObject {
     open func selectAll(type: String) -> [[String:Any]] { [] }
     open func select(where: String, is value: String?, type: String) -> [[String:Any]] { [] }
     open func selectOne(where: String, is value: String, type: String) -> [String:Any]? { nil }
+    open func select(type: String, where clause: String, params: [Any]) -> [[String:Any]] { [] }
+    open func count(type: String, where clause: String, params: [Any]) -> Int { 0 }
     
     open func selectForked() -> [[String:Any]] { [] }
     open func selectForkedMemories() -> [[String:Any]] { [] }
@@ -52,8 +54,8 @@ open class Persist: NSObject {
     open func get(key: String) -> String? { nil }
     open func unset(key: String) {}
     
-    open func logError(_ error: Error) {}
-    open func logError(message: String) {}
+    open func logError(_ error: Error) { print("Persist [\(name)] error: \(error)") }
+    open func logError(message: String) { print("Persist [\(name)]: \(message)") }
 }
 
 #endif

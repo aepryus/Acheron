@@ -10,12 +10,22 @@
 
 import Foundation
 
+/// How strictly this basket's anchors must honor the transact boundary. `.tolerant` (the
+/// default) preserves the sweep semantics: an edit outside a transact waits in the dirty set
+/// for the next flush. `.warning` logs each such edit; `.strict` reprises the 2003 Java rule —
+/// modifying an Anchor outside a transact is fatal. Turn the dial up when more hands, human
+/// or AI, are in the codebase.
+public enum BasketDiscipline { case tolerant, warning, strict }
+
 public class Basket: NSObject {
     let persist: Persist
 
     var blocks: [String:[(Domain)->()]] = [:]
-    
+
     public var fork: Int
+
+    public var discipline: BasketDiscipline = .tolerant
+    private let inTransactKey = DispatchSpecificKey<Bool>()
 
     var cache: SafeMap = SafeMap<Anchor>()
     var onlyToIden: SafeMap = SafeMap<String>()
@@ -29,6 +39,7 @@ public class Basket: NSObject {
     public init(_ persist: Persist) {
         self.persist = persist
         queue = DispatchQueue(label: self.persist.name)
+        queue.setSpecific(key: inTransactKey, value: true)
         fork = Int(persist.get(key: "fork") ?? "0")!
     }
     
@@ -116,6 +127,12 @@ public class Basket: NSObject {
         let array = persist.select(where: field, is: value, type: Loom.nameFromType(type))
         return convert(array: array, type:type)
     }
+    public func select(type: Anchor.Type, where clause: String, params: [Any]) -> [Domain] {
+        convert(array: persist.select(type: Loom.nameFromType(type), where: clause, params: params), type: type)
+    }
+    public func count(type: Anchor.Type, where clause: String, params: [Any]) -> Int {
+        persist.count(type: Loom.nameFromType(type), where: clause, params: params)
+    }
     public func selectAll(_ type: Anchor.Type) -> [Anchor] {
         let array = persist.selectAll(type: Loom.nameFromType(type))
         return convert(array: array, type: type)
@@ -146,8 +163,20 @@ public class Basket: NSObject {
         return attributes
     }
     
-    func dirtyAnchor(_ anchor: Anchor) { dirty.insert(anchor) }
+    private func enforceDiscipline(_ anchor: Anchor) {
+        guard discipline != .tolerant else { return }
+        guard DispatchQueue.getSpecific(key: inTransactKey) != true else { return }
+        let message = "Loom: [\(anchor.type ?? "?")] \(anchor.iden ?? "?") was modified outside of a transact. Wrap the mutation in Loom.transact { }."
+        if discipline == .strict { fatalError(message) }
+        print(message + " The change is in the dirty set and will persist with the next transact's sweep.")
+    }
+
+    func dirtyAnchor(_ anchor: Anchor) {
+        enforceDiscipline(anchor)
+        dirty.insert(anchor)
+    }
     func deleteAnchor(_ anchor: Anchor) {
+        enforceDiscipline(anchor)
         dirty.insert(anchor)
         cache.removeValue(forKey: anchor.iden)
     }
@@ -181,6 +210,9 @@ public class Basket: NSObject {
         }
     }
     
+    /// Commits every outstanding dirty anchor — not just those touched inside the closure.
+    /// transact is a basket-wide flush point, not a mutation scope: anchors dirtied outside
+    /// any transact are swept in here. Deliberate; see LOOM.md.
     public func transact(_ closure: ()->()) {
         var dirty = Set<Anchor>()
         
@@ -238,6 +270,12 @@ public class Basket: NSObject {
         }
     }
     
+    public var hasUnsavedChanges: Bool { dirty.count > 0 }
+    /// Drains any anchors dirtied outside a transact. Under the tolerant discipline the only
+    /// unrecoverable loss window is exiting with dirty anchors — call this from
+    /// applicationWillTerminate / applicationDidEnterBackground.
+    public func flush() { transact {} }
+
     public func clearCache() {
         queue.sync { cache.removeAll() }
     }
