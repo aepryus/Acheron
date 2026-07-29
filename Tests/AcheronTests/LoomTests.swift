@@ -509,6 +509,29 @@ final class SQLitePersistTests: XCTestCase {
         }
     }
 
+    func testRollbackDiscardsWrites() {
+        seed("keep", ["iden":"keep", "type":"widget", "name":"safe"])
+        let committed = persist.transact { () -> (Bool) in
+            persist.store(iden: "keep", attributes: ["iden":"keep", "type":"widget", "name":"clobbered"])
+            persist.store(iden: "new", attributes: ["iden":"new", "type":"widget"])
+            return false
+        }
+        XCTAssertFalse(committed)
+        XCTAssertEqual(persist.attributes(iden: "keep")?["name"] as? String, "safe")
+        XCTAssertNil(persist.attributes(iden: "new"))
+        seed("after", ["iden":"after", "type":"widget"])
+        XCTAssertNotNil(persist.attributes(iden: "after"))
+    }
+
+    func testRollbackRestoresDeletes() {
+        seed("a", ["iden":"a", "type":"widget", "name":"survivor"])
+        persist.transact { () -> (Bool) in
+            persist.delete(iden: "a")
+            return false
+        }
+        XCTAssertEqual(persist.attributes(iden: "a")?["name"] as? String, "survivor")
+    }
+
     func testDollarQueriesAndCount() {
         seed("a", ["iden":"a", "type":"widget", "name":"Starlink", "flightNo":101])
         seed("b", ["iden":"b", "type":"widget", "flightNo":99])
