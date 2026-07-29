@@ -23,6 +23,16 @@ final class LoomBenchTests: XCTestCase {
         XCTAssertGreaterThan(total, 0)
     }
 
+    func testBenchArrayGets() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.gadgets.append(Gadget()) }
+        var total = 0
+        measure {
+            for _ in 0..<1_000_000 { total &+= widget.gadgets.count }
+        }
+        XCTAssertGreaterThan(total, 0)
+    }
+
     func testBenchFieldSets() {
         let widget: Widget = Loom.create()
         Loom.transact {}
