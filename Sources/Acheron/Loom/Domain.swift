@@ -356,7 +356,7 @@ open class Domain: Hashable {
     }
     public func toJSON() -> String { unload().toJSON() }
 
-    public func load(attributes: [String:Any], replicate: Bool = false) {
+    open func load(attributes: [String:Any], replicate: Bool = false) {
         replicating = replicate
         hydrating = true
         defer { hydrating = false }
