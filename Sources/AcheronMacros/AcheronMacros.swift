@@ -16,12 +16,12 @@ func wovenFields(of declaration: some DeclGroupSyntax) -> [WovenField] {
         for attribute in varDecl.attributes {
             guard let attr = attribute.as(AttributeSyntax.self) else { continue }
             let name = attr.attributeName.trimmedDescription
-            if name == "Field" || name == "Kids" { kind = name }
+            if name == "Field" || name == "Child" { kind = name }
         }
         guard let kind else { continue }
         for binding in varDecl.bindings {
             guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self) else { continue }
-            fields.append(WovenField(name: pattern.identifier.text, isKids: kind == "Kids"))
+            fields.append(WovenField(name: pattern.identifier.text, isKids: kind == "Child"))
         }
     }
     return fields
@@ -120,10 +120,10 @@ public struct FieldMacro: AccessorMacro, PeerMacro {
     }
 }
 
-public struct KidsMacro: AccessorMacro, PeerMacro {
+public struct ChildMacro: AccessorMacro, PeerMacro {
     public static func expansion(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax] {
         guard let (name, _) = storageDeclaration(for: declaration) else { return [] }
-        return captureAccessors(name: name, via: "loomDidSetKids")
+        return captureAccessors(name: name, via: "loomDidSetChildren")
     }
     public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         guard let (_, storage) = storageDeclaration(for: declaration) else { return [] }
@@ -133,5 +133,5 @@ public struct KidsMacro: AccessorMacro, PeerMacro {
 
 @main
 struct AcheronMacrosPlugin: CompilerPlugin {
-    let providingMacros: [Macro.Type] = [WovenMacro.self, FieldMacro.self, KidsMacro.self]
+    let providingMacros: [Macro.Type] = [WovenMacro.self, FieldMacro.self, ChildMacro.self]
 }

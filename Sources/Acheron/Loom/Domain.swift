@@ -135,7 +135,7 @@ open class Domain: Hashable {
     }
     public func loomDidSet<T: Equatable>(_ old: T, _ new: T) { if old != new { loomCapture() } }
     public func loomDidSet<T>(_ old: T, _ new: T) { loomCapture() }
-    public func loomDidSetKids<T: Domain>(_ old: [T], _ new: [T]) { if old != new { loomCapture() } }
+    public func loomDidSetChildren<T: Domain>(_ old: [T], _ new: [T]) { if old != new { loomCapture() } }
 
 // Conversion ======================================================================================
     private func flatten(_ value: Any?) -> Any? {

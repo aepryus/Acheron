@@ -17,7 +17,7 @@ public macro Field() = #externalMacro(module: "AcheronMacros", type: "FieldMacro
 
 @attached(accessor, names: named(init), named(get), named(set))
 @attached(peer, names: prefixed(`_`))
-public macro Kids() = #externalMacro(module: "AcheronMacros", type: "KidsMacro")
+public macro Child() = #externalMacro(module: "AcheronMacros", type: "ChildMacro")
 
 public protocol LoomOptional {
     static var loomNil: Self { get }
