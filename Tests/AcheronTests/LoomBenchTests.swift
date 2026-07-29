@@ -13,6 +13,16 @@ final class LoomBenchTests: XCTestCase {
         Loom.register([Widget.self, Gadget.self, Gizmo.self])
     }
 
+    func testBenchFieldGets() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.flightNo = 7 }
+        var total = 0
+        measure {
+            for _ in 0..<1_000_000 { total &+= widget.flightNo }
+        }
+        XCTAssertGreaterThan(total, 0)
+    }
+
     func testBenchFieldSets() {
         let widget: Widget = Loom.create()
         Loom.transact {}
