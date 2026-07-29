@@ -32,6 +32,7 @@ open class Domain: Hashable {
     // Transient
     weak public var parent: Domain?
     var replicating: Bool = false
+    var hydrating: Bool = false
     private let statusLock = NSLock()
     private var _status: DomainStatus = .loading
     public var status: DomainStatus {
@@ -76,12 +77,14 @@ open class Domain: Hashable {
         domain.onLoaded()
     }
     public func add(_ domain: Domain) {
+        guard domain.parent !== self else { return }
         load(domain)
         domain.onAdded()
         edit()
         domain.handleTriggers(self, action: .added)
     }
     public func remove(_ domain: Domain) {
+        guard domain.status != .deleted else { return }
         domain.onRemoved()
         domain.delete()
         edit()
@@ -91,7 +94,9 @@ open class Domain: Hashable {
     var allDomainChildren: [Domain] {
         var result: [Domain] = []
         properties.forEach {
-            if let domain = flatten(loomGet($0)) as? Domain { result.append(domain) }
+            let value = flatten(loomGet($0))
+            if let domain = value as? Domain { result.append(domain) }
+            else if let domains = value as? [Domain] { result += domains }
         }
         children.forEach {
             if let domains = loomGet($0) as? [Domain] { result += domains }
@@ -135,6 +140,32 @@ open class Domain: Hashable {
     }
     public func loomDidSet<T: Equatable>(_ old: T, _ new: T) { if old != new { loomCapture() } }
     public func loomDidSet<T>(_ old: T, _ new: T) { loomCapture() }
+    public func loomDidSet<T: Domain>(_ old: T, _ new: T) {
+        guard !hydrating, old !== new else { return }
+        load(new)
+        loomCapture()
+    }
+    public func loomDidSet<T: Domain>(_ old: T?, _ new: T?) {
+        guard !hydrating, old !== new else { return }
+        if let new { load(new) }
+        loomCapture()
+    }
+    public func loomDidSet<T: Domain>(_ old: [T], _ new: [T]) {
+        guard !hydrating else { return }
+        let oldIds = Set(old.map(ObjectIdentifier.init))
+        let newIds = Set(new.map(ObjectIdentifier.init))
+        for child in new where !oldIds.contains(ObjectIdentifier(child)) {
+            load(child)
+            child.onAdded()
+            child.handleTriggers(self, action: .added)
+        }
+        for child in old where !newIds.contains(ObjectIdentifier(child)) {
+            child.onRemoved()
+            child.delete()
+            child.handleTriggers(child, action: .removed)
+        }
+        if old != new { edit() }
+    }
 
 // Conversion ======================================================================================
     private func flatten(_ value: Any?) -> Any? {
@@ -293,6 +324,8 @@ open class Domain: Hashable {
 
     public func load(attributes: [String:Any], replicate: Bool = false) {
         replicating = replicate
+        hydrating = true
+        defer { hydrating = false }
         if replicate { iden = UUID().uuidString }
         for keyPath in properties {
             guard !(replicate && keyPath == "iden") else { continue }

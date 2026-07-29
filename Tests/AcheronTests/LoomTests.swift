@@ -56,7 +56,6 @@ final class LoomTests: XCTestCase {
             let gadget = Gadget()
             gadget.label = "leg"
             widget.gadgets.append(gadget)
-            widget.add(gadget)
         }
         basket.clearCache()
         let reloaded: Widget = Loom.selectBy(iden: iden)!
@@ -130,6 +129,24 @@ final class LoomTests: XCTestCase {
         var found: Widget? = nil
         Loom.transact { found = Loom.selectBy(iden: widget.iden) }
         XCTAssertTrue(found === widget)
+    }
+
+    func testChildAppendWiresParent() {
+        let widget: Widget = Loom.create()
+        let gadget = Gadget()
+        Loom.transact { widget.gadgets.append(gadget) }
+        XCTAssertTrue(gadget.parent === widget)
+        Loom.transact { gadget.label = "arm" }
+        XCTAssertEqual((persist.rows[widget.iden]?["gadgets"] as? [[String:Any]])?.first?["label"] as? String, "arm")
+    }
+
+    func testChildRemovalDeletes() {
+        let widget: Widget = Loom.create()
+        let gadget = Gadget()
+        Loom.transact { widget.gadgets.append(gadget) }
+        Loom.transact { widget.gadgets.removeAll() }
+        XCTAssertEqual(gadget.status, DomainStatus.deleted)
+        XCTAssertEqual((persist.rows[widget.iden]?["gadgets"] as? [[String:Any]])?.count ?? 0, 0)
     }
 
     func testDelete() {
