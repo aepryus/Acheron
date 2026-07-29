@@ -140,17 +140,17 @@ open class Domain: Hashable {
     }
     public func loomDidSet<T: Equatable>(_ old: T, _ new: T) { if old != new { loomCapture() } }
     public func loomDidSet<T>(_ old: T, _ new: T) { loomCapture() }
-    public func loomDidSet<T: Domain>(_ old: T, _ new: T) {
+    public func loomDidSetChild<T: Domain>(_ old: T, _ new: T) {
         guard !hydrating, old !== new else { return }
         load(new)
         loomCapture()
     }
-    public func loomDidSet<T: Domain>(_ old: T?, _ new: T?) {
+    public func loomDidSetChild<T: Domain>(_ old: T?, _ new: T?) {
         guard !hydrating, old !== new else { return }
         if let new { load(new) }
         loomCapture()
     }
-    public func loomDidSet<T: Domain>(_ old: [T], _ new: [T]) {
+    public func loomDidSetChild<T: Domain>(_ old: [T], _ new: [T]) {
         guard !hydrating else { return }
         let oldIds = Set(old.map(ObjectIdentifier.init))
         let newIds = Set(new.map(ObjectIdentifier.init))

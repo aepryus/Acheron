@@ -16,12 +16,12 @@ func wovenFields(of declaration: some DeclGroupSyntax) -> [WovenField] {
         for attribute in varDecl.attributes {
             guard let attr = attribute.as(AttributeSyntax.self) else { continue }
             let name = attr.attributeName.trimmedDescription
-            if name == "Field" { kind = name }
+            if name == "Field" || name == "Child" { kind = name }
         }
         guard let kind else { continue }
         for binding in varDecl.bindings {
             guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self) else { continue }
-            fields.append(WovenField(name: pattern.identifier.text, isKids: false))
+            fields.append(WovenField(name: pattern.identifier.text, isKids: kind == "Child"))
         }
     }
     return fields
@@ -30,8 +30,7 @@ func wovenFields(of declaration: some DeclGroupSyntax) -> [WovenField] {
 public struct DomainMacro: MemberMacro {
     public static func expansion(of node: AttributeSyntax, providingMembersOf declaration: some DeclGroupSyntax, conformingTo protocols: [TypeSyntax], in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         let fields = wovenFields(of: declaration)
-        let props = fields.filter { !$0.isKids }.map { $0.name }
-        let kids = fields.filter { $0.isKids }.map { $0.name }
+        let props = fields.map { $0.name }
 
         let access: String
         if declaration.modifiers.contains(where: { $0.name.text == "open" || $0.name.text == "public" }) { access = "public " } else { access = "" }
@@ -42,20 +41,12 @@ public struct DomainMacro: MemberMacro {
             let list = props.map { "\"\($0)\"" }.joined(separator: ", ")
             decls.append("override \(raw: access)var properties: [String] { super.properties + [\(raw: list)] }")
         }
-        if !kids.isEmpty {
-            let list = kids.map { "\"\($0)\"" }.joined(separator: ", ")
-            decls.append("override \(raw: access)var children: [String] { super.children + [\(raw: list)] }")
-        }
 
         var getCases: [String] = []
         var setCases: [String] = []
         for f in fields {
             getCases.append("case \"\(f.name)\": return \(f.name)")
-            if f.isKids {
-                setCases.append("case \"\(f.name)\": \(f.name) = loomChildren(value, current: \(f.name), parent: self)")
-            } else {
-                setCases.append("case \"\(f.name)\": \(f.name) = loomConvert(value, current: \(f.name), parent: self)")
-            }
+            setCases.append("case \"\(f.name)\": \(f.name) = loomConvert(value, current: \(f.name), parent: self)")
         }
         if !fields.isEmpty {
             decls.append("""
@@ -121,7 +112,18 @@ public struct FieldMacro: AccessorMacro, PeerMacro {
 }
 
 
+public struct ChildMacro: AccessorMacro, PeerMacro {
+    public static func expansion(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax] {
+        guard let (name, _) = storageDeclaration(for: declaration) else { return [] }
+        return captureAccessors(name: name, via: "loomDidSetChild")
+    }
+    public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
+        guard let (_, storage) = storageDeclaration(for: declaration) else { return [] }
+        return [storage]
+    }
+}
+
 @main
 struct AcheronMacrosPlugin: CompilerPlugin {
-    let providingMacros: [Macro.Type] = [DomainMacro.self, FieldMacro.self]
+    let providingMacros: [Macro.Type] = [DomainMacro.self, FieldMacro.self, ChildMacro.self]
 }

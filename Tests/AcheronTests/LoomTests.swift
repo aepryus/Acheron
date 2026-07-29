@@ -32,7 +32,7 @@ class MemoryPersist: Persist {
     @Field var name: String = ""
     @Field var flightNo: Int = 0
     @Field var when: Date = Date()
-    @Field var gadgets: [Gadget] = []
+    @Child var gadgets: [Gadget] = []
 }
 
 final class LoomTests: XCTestCase {
