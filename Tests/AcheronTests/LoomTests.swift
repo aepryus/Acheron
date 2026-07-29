@@ -5,24 +5,35 @@ class MemoryPersist: Persist {
     var rows: [String:[String:Any]] = [:]
     var kv: [String:String] = [:]
     var failNextCommit: Bool = false
+    private let lock = NSRecursiveLock()
 
-    override func selectAll(type: String) -> [[String:Any]] { rows.values.filter { $0["type"] as? String == type } }
-    override func attributes(iden: String) -> [String:Any]? { rows[iden] }
+    private func locked<T>(_ block: () -> T) -> T {
+        lock.lock()
+        defer { lock.unlock() }
+        return block()
+    }
+
+    override func selectAll(type: String) -> [[String:Any]] { locked { rows.values.filter { $0["type"] as? String == type } } }
+    override func attributes(iden: String) -> [String:Any]? { locked { rows[iden] } }
     override func attributes(type: String, only: String) -> [String:Any]? {
-        guard let key = typeToOnly[type] else { return nil }
-        return rows.values.first { $0["type"] as? String == type && $0[key] as? String == only }
+        locked {
+            guard let key = typeToOnly[type] else { return nil }
+            return rows.values.first { $0["type"] as? String == type && $0[key] as? String == only }
+        }
     }
-    override func store(iden: String, attributes: [String:Any]) -> Bool { rows[iden] = attributes; return true }
-    override func delete(iden: String) -> Bool { rows.removeValue(forKey: iden); return true }
+    override func store(iden: String, attributes: [String:Any]) -> Bool { locked { rows[iden] = attributes }; return true }
+    override func delete(iden: String) -> Bool { locked { rows.removeValue(forKey: iden) }; return true }
     override func transact(_ closure: ()->(Bool)) -> Bool {
-        let snapshot = rows
-        let ok = closure() && !failNextCommit
-        if !ok { rows = snapshot }
-        failNextCommit = false
-        return ok
+        locked {
+            let snapshot = rows
+            let ok = closure() && !failNextCommit
+            if !ok { rows = snapshot }
+            failNextCommit = false
+            return ok
+        }
     }
-    override func set(key: String, value: String) { kv[key] = value }
-    override func get(key: String) -> String? { kv[key] }
+    override func set(key: String, value: String) { locked { kv[key] = value } }
+    override func get(key: String) -> String? { locked { kv[key] } }
 }
 
 struct Vector: Packable, Equatable {
@@ -356,6 +367,111 @@ final class LoomTests: XCTestCase {
         XCTAssertEqual(clone.gizmos.first?.tag, "wired")
         XCTAssertTrue(clone.gizmos.first?.parent === clone)
         XCTAssertEqual(clone.gizmos.first?.addedCount ?? -1, 0)
+    }
+
+    func testWarningStrayStillCommits() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.name = "v1" }
+        widget.name = "stray"
+        Loom.transact {}
+        XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "stray")
+    }
+
+    func testFailedDeleteRetries() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.name = "doomed" }
+        persist.failNextCommit = true
+        Loom.transact { widget.delete() }
+        XCTAssertNotNil(persist.rows[widget.iden])
+        Loom.transact {}
+        XCTAssertNil(persist.rows[widget.iden])
+    }
+
+    func testReplicate() {
+        let gadget = Gadget()
+        gadget.label = "original"
+        let gizmo = Gizmo()
+        gadget.gizmos.append(gizmo)
+        let copy = Loom.domain(attributes: gadget.unload(), replicate: true) as! Gadget
+        XCTAssertNotEqual(copy.iden, gadget.iden)
+        XCTAssertEqual(copy.label, "original")
+        XCTAssertEqual(copy.gizmos.count, 1)
+        XCTAssertNotEqual(copy.gizmos.first?.iden, gizmo.iden)
+        XCTAssertTrue(copy.gizmos.first?.parent === copy)
+    }
+
+    func testDirtyUsingAttributesMergesChildren() {
+        let widget: Widget = Loom.create()
+        let gadget = Gadget()
+        Loom.transact {
+            widget.gadgets.append(gadget)
+            gadget.label = "before"
+        }
+        var attributes = widget.unload()
+        var kids = attributes["gadgets"] as! [[String:Any]]
+        kids[0]["label"] = "after"
+        attributes["gadgets"] = kids
+        attributes["name"] = "merged"
+        Loom.transact { widget.dirtyUsingAttributes(attributes) }
+        XCTAssertTrue(widget.gadgets.first === gadget)
+        XCTAssertEqual(gadget.label, "after")
+        XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "merged")
+    }
+
+    func testInject() {
+        basket.discipline = .tolerant
+        let attributes: [String:Any] = ["iden": "inj-1", "type": "widget", "name": "beamed", "flightNo": 3]
+        let anchor = basket.inject(attributes) as! Widget
+        XCTAssertEqual(anchor.name, "beamed")
+        Loom.transact {}
+        XCTAssertEqual(persist.rows["inj-1"]?["name"] as? String, "beamed")
+    }
+
+    func testForkVersColumns() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.name = "sync" }
+        XCTAssertEqual(persist.rows[widget.iden]?["fork"] as? Int, 1)
+        XCTAssertEqual(persist.rows[widget.iden]?["vers"] as? Int, 0)
+        persist.rows[widget.iden]?["fork"] = 4
+        persist.rows[widget.iden]?["vers"] = 7
+        basket.clearCache()
+        let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertEqual(reloaded.fork, 4)
+        XCTAssertEqual(reloaded.vers, 7)
+    }
+
+    func testOnlyKeyClearedOnDelete() {
+        basket.associate(type: "widget", only: "name")
+        let widget: Widget = Loom.create(only: "solo")
+        Loom.transact { widget.name = "solo" }
+        Loom.transact { widget.delete() }
+        XCTAssertNil(Loom.selectBy(only: "solo") as Widget?)
+    }
+
+    func testConcurrentTransacts() {
+        DispatchQueue.concurrentPerform(iterations: 16) { i in
+            let widget: Widget = Loom.create()
+            Loom.transact {
+                widget.name = "thread\(i)"
+                widget.gadgets.append(Gadget())
+            }
+        }
+        XCTAssertEqual(persist.rows.count, 16)
+        XCTAssertTrue(persist.rows.values.allSatisfy { ($0["gadgets"] as? [[String:Any]])?.count == 1 })
+    }
+
+    func testConcurrentReadsDuringWrites() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.name = "base" }
+        DispatchQueue.concurrentPerform(iterations: 32) { i in
+            if i % 2 == 0 {
+                Loom.transact { widget.flightNo = i }
+            } else {
+                let found: Widget? = Loom.selectBy(iden: widget.iden)
+                XCTAssertTrue(found === widget)
+            }
+        }
+        XCTAssertEqual(widget.status, DomainStatus.clean)
     }
 
     func testDateRoundTrip() {
