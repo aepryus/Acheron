@@ -25,13 +25,41 @@ class MemoryPersist: Persist {
     override func get(key: String) -> String? { kv[key] }
 }
 
+struct Vector: Packable, Equatable {
+    let x: Double, y: Double
+    init(_ x: Double, _ y: Double) { self.x = x; self.y = y }
+    init?(_ string: String) {
+        let parts = string.split(separator: ",").compactMap { Double($0) }
+        guard parts.count == 2 else { return nil }
+        x = parts[0]; y = parts[1]
+    }
+    func pack() -> String { "\(x),\(y)" }
+}
+
+@Domain class Gizmo: Domain {
+    @Field var tag: String = ""
+    var addedCount: Int = 0
+    override func onAdded() { addedCount += 1 }
+}
 @Domain class Gadget: Domain {
     @Field var label: String = ""
+    @Child var gizmos: [Gizmo] = []
+    var addedCount: Int = 0
+    var removedCount: Int = 0
+    override func onAdded() { addedCount += 1 }
+    override func onRemoved() { removedCount += 1 }
 }
 @Domain class Widget: Anchor {
     @Field var name: String = ""
     @Field var flightNo: Int = 0
+    @Field var active: Bool = false
     @Field var when: Date = Date()
+    @Field var note: String? = nil
+    @Field var thrust: Vector = Vector(0, 0)
+    @Field var path: [Vector] = []
+    @Field var tags: [String] = []
+    @Field var spare: Gizmo? = nil
+    @Child var pilot: Gizmo? = nil
     @Child var gadgets: [Gadget] = []
 }
 
@@ -44,7 +72,7 @@ final class LoomTests: XCTestCase {
         persist = MemoryPersist("test")
         basket = Basket(persist)
         Loom.basket = basket
-        Loom.register([Widget.self, Gadget.self])
+        Loom.register([Widget.self, Gadget.self, Gizmo.self])
     }
 
     func testRoundTrip() {
@@ -170,6 +198,164 @@ final class LoomTests: XCTestCase {
         Loom.transact { widget.delete() }
         XCTAssertNil(persist.rows[widget.iden])
         XCTAssertNil(basket.selectBy(iden: widget.iden))
+    }
+
+    func testFieldMenagerieRoundTrip() {
+        let widget: Widget = Loom.create()
+        Loom.transact {
+            widget.active = true
+            widget.note = "check"
+            widget.thrust = Vector(3, 4)
+            widget.path = [Vector(0, 0), Vector(1, 1)]
+            widget.tags = ["fast", "red"]
+        }
+        Loom.transact { widget.tags.append("blue") }
+        basket.clearCache()
+        let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertEqual(reloaded.active, true)
+        XCTAssertEqual(reloaded.note, "check")
+        XCTAssertEqual(reloaded.thrust, Vector(3, 4))
+        XCTAssertEqual(reloaded.path, [Vector(0, 0), Vector(1, 1)])
+        XCTAssertEqual(reloaded.tags, ["fast", "red", "blue"])
+    }
+
+    func testOptionalNilRoundTrip() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.note = "temp" }
+        Loom.transact { widget.note = nil }
+        basket.clearCache()
+        let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertNil(reloaded.note)
+        XCTAssertNil(reloaded.spare)
+        XCTAssertNil(reloaded.pilot)
+    }
+
+    func testLegacyNSNumberLoad() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.name = "raw" }
+        persist.rows[widget.iden]?["active"] = NSNumber(value: true)
+        persist.rows[widget.iden]?["flightNo"] = NSNumber(value: 42)
+        basket.clearCache()
+        let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertEqual(reloaded.active, true)
+        XCTAssertEqual(reloaded.flightNo, 42)
+    }
+
+    func testDomainValueFieldDoesNotWire() {
+        let widget: Widget = Loom.create()
+        let gizmo = Gizmo()
+        gizmo.tag = "data"
+        Loom.transact { widget.spare = gizmo }
+        XCTAssertNil(gizmo.parent)
+        basket.clearCache()
+        let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertEqual(reloaded.spare?.tag, "data")
+    }
+
+    func testChildScalarWires() {
+        let widget: Widget = Loom.create()
+        let gizmo = Gizmo()
+        Loom.transact { widget.pilot = gizmo }
+        XCTAssertTrue(gizmo.parent === widget)
+        Loom.transact { gizmo.tag = "ace" }
+        XCTAssertEqual((persist.rows[widget.iden]?["pilot"] as? [String:Any])?["tag"] as? String, "ace")
+    }
+
+    func testEqualValueSetStaysClean() {
+        basket.discipline = .tolerant
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.name = "same" }
+        widget.name = "same"
+        XCTAssertEqual(widget.status, DomainStatus.clean)
+        widget.name = "different"
+        XCTAssertEqual(widget.status, DomainStatus.dirty)
+    }
+
+    func testChildEventsFireOnce() {
+        var addedBlocks = 0, removedBlocks = 0
+        basket.addBlock({ _ in addedBlocks += 1 }, class: Widget.self, event: .added)
+        basket.addBlock({ _ in removedBlocks += 1 }, class: Gadget.self, event: .removed)
+        let widget: Widget = Loom.create()
+        let gadget = Gadget()
+        Loom.transact {
+            widget.gadgets.append(gadget)
+            widget.add(gadget)
+        }
+        XCTAssertEqual(gadget.addedCount, 1)
+        XCTAssertEqual(addedBlocks, 1)
+        Loom.transact {
+            widget.gadgets.removeAll()
+            widget.remove(gadget)
+        }
+        XCTAssertEqual(gadget.removedCount, 1)
+        XCTAssertEqual(removedBlocks, 1)
+        XCTAssertEqual(gadget.status, DomainStatus.deleted)
+    }
+
+    func testHydrationFiresNoEvents() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.gadgets.append(Gadget()) }
+        basket.clearCache()
+        let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertEqual(reloaded.gadgets.first?.addedCount, 0)
+        XCTAssertTrue(reloaded.gadgets.first?.parent === reloaded)
+    }
+
+    func testReorderCapturesAndPersists() {
+        let widget: Widget = Loom.create()
+        let a = Gadget(), b = Gadget()
+        a.label = "a"; b.label = "b"
+        Loom.transact { widget.gadgets = [a, b] }
+        Loom.transact { widget.gadgets = [b, a] }
+        XCTAssertEqual(a.addedCount, 1)
+        XCTAssertEqual(a.removedCount, 0)
+        let labels = (persist.rows[widget.iden]?["gadgets"] as? [[String:Any]])?.map { $0["label"] as? String }
+        XCTAssertEqual(labels, ["b", "a"])
+    }
+
+    func testGrandchildDirtiesAnchor() {
+        let widget: Widget = Loom.create()
+        let gadget = Gadget(), gizmo = Gizmo()
+        Loom.transact {
+            widget.gadgets.append(gadget)
+            gadget.gizmos.append(gizmo)
+        }
+        XCTAssertTrue(gizmo.parent === gadget)
+        Loom.transact { gizmo.tag = "deep" }
+        let stored = ((persist.rows[widget.iden]?["gadgets"] as? [[String:Any]])?.first?["gizmos"] as? [[String:Any]])?.first
+        XCTAssertEqual(stored?["tag"] as? String, "deep")
+        XCTAssertEqual(gizmo.status, DomainStatus.clean)
+    }
+
+    func testDeleteCascades() {
+        let widget: Widget = Loom.create()
+        let gadget = Gadget(), gizmo = Gizmo()
+        Loom.transact {
+            widget.gadgets.append(gadget)
+            gadget.gizmos.append(gizmo)
+        }
+        Loom.transact { widget.delete() }
+        XCTAssertEqual(gadget.status, DomainStatus.deleted)
+        XCTAssertEqual(gizmo.status, DomainStatus.deleted)
+        XCTAssertNil(persist.rows[widget.iden])
+    }
+
+    func testModeBFreeGraph() {
+        let gadget = Gadget()
+        gadget.label = "free"
+        let gizmo = Gizmo()
+        gizmo.tag = "wired"
+        gadget.gizmos.append(gizmo)
+        XCTAssertTrue(gizmo.parent === gadget)
+
+        let attributes = gadget.unload()
+        let clone = Gadget(attributes: attributes)
+        clone.load(attributes: attributes)
+        XCTAssertFalse(clone === gadget)
+        XCTAssertEqual(clone.label, "free")
+        XCTAssertEqual(clone.gizmos.first?.tag, "wired")
+        XCTAssertTrue(clone.gizmos.first?.parent === clone)
+        XCTAssertEqual(clone.gizmos.first?.addedCount ?? -1, 0)
     }
 
     func testDateRoundTrip() {

@@ -138,6 +138,7 @@ open class Domain: Hashable {
         guard status == .clean else { return }
         edit()
     }
+    public func loomDidMutate() { loomCapture() }
     public func loomDidSet<T: Equatable>(_ old: T, _ new: T) { if old != new { loomCapture() } }
     public func loomDidSet<T>(_ old: T, _ new: T) { loomCapture() }
     public func loomDidSetChild<T: Domain>(_ old: T, _ new: T) {
@@ -152,13 +153,19 @@ open class Domain: Hashable {
     }
     public func loomDidSetChild<T: Domain>(_ old: [T], _ new: [T]) {
         guard !hydrating else { return }
-        let oldIds = Set(old.map(ObjectIdentifier.init))
-        let newIds = Set(new.map(ObjectIdentifier.init))
-        for child in new where !oldIds.contains(ObjectIdentifier(child)) {
+        func arrive(_ child: T) {
             load(child)
             child.onAdded()
             child.handleTriggers(self, action: .added)
         }
+        if new.count == old.count + 1, zip(old, new).allSatisfy({ $0 === $1 }) {
+            arrive(new.last!)
+            edit()
+            return
+        }
+        let oldIds = Set(old.map(ObjectIdentifier.init))
+        let newIds = Set(new.map(ObjectIdentifier.init))
+        for child in new where !oldIds.contains(ObjectIdentifier(child)) { arrive(child) }
         for child in old where !newIds.contains(ObjectIdentifier(child)) {
             child.onRemoved()
             if child.parent === self { child.delete() }
@@ -204,6 +211,10 @@ open class Domain: Hashable {
     }
     public func loomConvert<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
         loomChildren(raw, current: current, parent: parent)
+    }
+    public func loomConvert<T: Packable>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
+        guard let strings = raw as? [String] else { return current }
+        return strings.compactMap { T($0) }
     }
     public func loomChildren<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
         guard let list = raw as? [[String:Any]], !list.isEmpty else { return current }

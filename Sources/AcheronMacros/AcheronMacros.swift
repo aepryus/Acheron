@@ -83,8 +83,8 @@ func storageDeclaration(for declaration: some DeclSyntaxProtocol) -> (name: Stri
     return (name, "private var _\(raw: name): \(raw: type)")
 }
 
-func captureAccessors(name: String, via didSetCall: String) -> [AccessorDeclSyntax] {
-    return [
+func captureAccessors(name: String, via didSetCall: String, inPlace: Bool = false) -> [AccessorDeclSyntax] {
+    var accessors: [AccessorDeclSyntax] = [
         """
         @storageRestrictions(initializes: _\(raw: name))
         init(initialValue) { _\(raw: name) = initialValue }
@@ -98,12 +98,21 @@ func captureAccessors(name: String, via didSetCall: String) -> [AccessorDeclSynt
         }
         """,
     ]
+    if inPlace {
+        accessors.append("""
+            _modify {
+                yield &_\(raw: name)
+                loomDidMutate()
+            }
+            """)
+    }
+    return accessors
 }
 
 public struct FieldMacro: AccessorMacro, PeerMacro {
     public static func expansion(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax] {
         guard let (name, _) = storageDeclaration(for: declaration) else { return [] }
-        return captureAccessors(name: name, via: "loomDidSet")
+        return captureAccessors(name: name, via: "loomDidSet", inPlace: true)
     }
     public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         guard let (_, storage) = storageDeclaration(for: declaration) else { return [] }
