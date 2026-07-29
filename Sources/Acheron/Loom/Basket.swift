@@ -16,7 +16,7 @@ import Foundation
 /// The basket-wide sweep still commits strays either way: staleness, not loss.
 public enum BasketDiscipline { case tolerant, warning, strict }
 
-public class Basket: NSObject {
+public class Basket {
     let persist: Persist
 
     var blocks: [String:[(Domain)->()]] = [:]
@@ -105,7 +105,7 @@ public class Basket: NSObject {
     }
     public func selectBy(cls: Anchor.Type, only: String) -> Anchor? {
         sync {
-            let type = Loom.nameFromType(cls)
+            let type = Loom.name(for: cls)
             if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] { return anchor }
             guard let attributes = persist.attributes(type: type, only: only) else { return nil }
             return load(attributes)
@@ -113,22 +113,22 @@ public class Basket: NSObject {
     }
     public func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
         sync {
-            guard let attributes = persist.selectOne(where: field, is: value, type: Loom.nameFromType(type)) else { return nil }
+            guard let attributes = persist.selectOne(where: field, is: value, type: Loom.name(for: type)) else { return nil }
             return cache[attributes["iden"] as! String] ?? load(attributes, cls: type)
         }
     }
     public func select(where field: String, is value: String, type: Anchor.Type) -> [Domain] {
-        let array = persist.select(where: field, is: value, type: Loom.nameFromType(type))
+        let array = persist.select(where: field, is: value, type: Loom.name(for: type))
         return convert(array: array, type:type)
     }
     public func select(type: Anchor.Type, where clause: String, params: [Any]) -> [Domain] {
-        convert(array: persist.select(type: Loom.nameFromType(type), where: clause, params: params), type: type)
+        convert(array: persist.select(type: Loom.name(for: type), where: clause, params: params), type: type)
     }
     public func count(type: Anchor.Type, where clause: String, params: [Any]) -> Int {
-        persist.count(type: Loom.nameFromType(type), where: clause, params: params)
+        persist.count(type: Loom.name(for: type), where: clause, params: params)
     }
     public func selectAll(_ type: Anchor.Type) -> [Anchor] {
-        let array = persist.selectAll(type: Loom.nameFromType(type))
+        let array = persist.selectAll(type: Loom.name(for: type))
         return convert(array: array, type: type)
     }
     public func selectForked() -> [Anchor] {

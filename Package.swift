@@ -1,6 +1,7 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.9
 
 import PackageDescription
+import CompilerPluginSupport
 
 let package = Package(
     name: "Acheron",
@@ -11,9 +12,14 @@ let package = Package(
         .library(name: "Acheron", targets: ["Acheron"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
     ],
     targets: [
-        .target(name: "Acheron", dependencies: [], exclude: ["Loom/LOOM.md"]),
+        .macro(name: "AcheronMacros", dependencies: [
+            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+        ]),
+        .target(name: "Acheron", dependencies: ["AcheronMacros"]),
         .testTarget(name: "AcheronTests", dependencies: ["Acheron"]),
     ]
 )

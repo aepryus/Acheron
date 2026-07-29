@@ -15,119 +15,42 @@ import Foundation
 public class Loom {
     public static var basket: Basket!
 
-    public static var namespaces: [String] = []
+    private static var types: [String: Domain.Type] = [:]
 
-    // keyPath → class memos. Two namespaces: for an array property, classForKeyPath resolves
-    // the objc attribute type (NSArray) while arrayClassForKeyPath resolves the element class —
-    // same type and keyPath, different answers, so they must not share a slot.
-    private static var domains = [String:[String:AnyClass]]()
-    private static var arrayDomains = [String:[String:AnyClass]]()
-    private static let domainsQueue = DispatchQueue(label: "Loom.domains")
-
-    static func cachedClass(type: String, keyPath: String) -> AnyClass? {
-        domainsQueue.sync { domains[type]?[keyPath] }
+    public static func register(_ list: [Domain.Type]) {
+        list.forEach { types[name(for: $0)] = $0 }
     }
-    static func cacheClass(_ cls: AnyClass, type: String, keyPath: String) {
-        domainsQueue.sync { domains[type, default: [:]][keyPath] = cls }
+    static func name(for type: Domain.Type) -> String {
+        let name = String(describing: type)
+        return name[0...0].lowercased() + name[1...]
     }
-    static func cachedArrayClass(type: String, keyPath: String) -> AnyClass? {
-        domainsQueue.sync { arrayDomains[type]?[keyPath] }
-    }
-    static func cacheArrayClass(_ cls: AnyClass, type: String, keyPath: String) {
-        domainsQueue.sync { arrayDomains[type, default: [:]][keyPath] = cls }
-    }
-
-    static func nameFromType(_ type: Domain.Type) -> String {
-        let fullname: String = NSStringFromClass(type)
-        let name = String(fullname[fullname.range(of: ".")!.upperBound...])
-        return name[0...0].lowercased()+name[1...]
-    }
-    static func classFromName(_ name: String) -> AnyClass? {
-        var cls: AnyClass? = nil
-        for namespace in Loom.namespaces {
-            let fullname = namespace + "." + name[0...0].uppercased()+name[1...]
-            cls =  NSClassFromString(fullname)
-            if cls != nil { break }
+    static func classFromName(_ name: String) -> Domain.Type? { types[name] }
+    static func classForType(_ name: String) -> Domain.Type {
+        guard let cls = types[name] else {
+            fatalError("Loom: no class registered for type '\(name)'; register it in Loom.start(basket:types:) — if the class was renamed or removed, documents of this type can no longer load; restore the class or migrate the rows.")
         }
         return cls
     }
-    static func classForType(_ name: String) -> AnyClass {
-        guard let cls: AnyClass = classFromName(name) else {
-            fatalError("Loom: no class found for type '\(name)' in namespaces \(namespaces); if the class was renamed or removed, documents of this type can no longer load — restore the class or migrate the rows.")
-        }
-        return cls
+
+    static func date(from raw: Any?) -> Date? {
+        guard let raw else { return nil }
+        if let date = raw as? Date { return date }
+        guard let string = raw as? String else { return nil }
+        return Date.fromISOFormatted(string: string) ?? Double(string).map { Date(timeIntervalSinceReferenceDate: $0) }
     }
-    
-    public static func classForKeyPath(keyPath: String, parent: Domain.Type) -> AnyClass? {
-        var n: UInt32 = 0
-        var cls: AnyClass?
 
-        // class_copyPropertyList returns NULL when the class has no @objc properties.
-        // That's a valid state — we still need to recurse to the superclass below.
-        if let properties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(parent, &n) {
-            for i in 0..<Int(n) {
-                let name = String(validatingUTF8: property_getName(properties[i]))
-                if keyPath != name { continue }
-
-                let attributes: UnsafePointer<Int8> = property_getAttributes(properties[i])!
-                if attributes[1] == Int8(UInt8(ascii:"@")) {
-                    var className: String = String()
-                    var j = 3
-                    while attributes[j] != 0 && attributes[j] != Int8(UInt8(ascii:"\"")) {
-                        className.append(Character(UnicodeScalar(UInt8(attributes[j]))))
-                        j += 1
-                    }
-                    cls = NSClassFromString(className)
-                }
-                break
-            }
-            free(properties)
-        }
-
-        if cls == nil {
-            let superclass: NSObject.Type = class_getSuperclass(parent) as! NSObject.Type
-            if superclass != NSObject.self {
-                cls = classForKeyPath(keyPath: keyPath, parent: superclass as! Domain.Type)
-            }
-        }
-
-        return cls
-    }
-    public static func arrayClassForKeyPath(keyPath: String, parent: AnyObject) -> AnyClass? {
-        let mirror: Mirror = Mirror(reflecting: parent)
-        for property in mirror.children {
-            guard property.label! == keyPath else {continue}
-            var className = "\(Swift.type(of: property.value))"
-            if className.starts(with: "Array<") {
-                className.removeLast(1)
-                className.removeFirst(6)
-                // Mirror may emit "Pachinko.Message" — NSClassFromString needs "Message" + namespace prefix only.
-                if let dot = className.lastIndex(of: ".") {
-                    className = String(className[className.index(after: dot)...])
-                }
-                for namespace in Loom.namespaces {
-                    if let cls = NSClassFromString("\(namespace).\(className)") {
-                        return cls
-                    }
-                }
-            }
-            return nil
-        }
-        return nil
-    }
-    
     public static func domain(attributes: [String:Any], parent: Domain? = nil, replicate: Bool = false) -> Domain {
-        let cls = Loom.classForType(attributes["type"] as! String) as! Domain.Type
+        let cls = Loom.classForType(attributes["type"] as! String)
         let domain: Domain = cls.init(attributes: attributes, parent: parent)
-        domain.load(attributes:attributes, replicate: replicate)
+        domain.load(attributes: attributes, replicate: replicate)
         return domain
     }
-    
+
     public static func set(key: String, value: String) { Loom.basket.set(key: key, value: value) }
     public static func get(key: String) -> String? { Loom.basket.get(key: key) }
     public static func unset(key: String) { Loom.basket.unset(key: key) }
     public static func create<T: Anchor>(only: String? = nil) -> T { Loom.basket.createBy(cls: T.self, only: only) as! T }
-    
+
     public static func selectBy<T: Anchor>(iden: String) -> T? { Loom.basket.selectBy(iden: iden) as? T }
     public static func selectBy<T: Anchor>(only: String) -> T? { Loom.basket.selectBy(cls: T.self, only: only) as? T }
     public static func selectOne<T: Anchor>(where field: String, is value: String) -> T? { Loom.basket.selectOne(where: field, is: value, type: T.self) as? T }
@@ -135,17 +58,17 @@ public class Loom {
     public static func select<T: Anchor>(where clause: String, _ params: [Any] = []) -> [T] { Loom.basket.select(type: T.self, where: clause, params: params) as! [T] }
     public static func count(_ type: Anchor.Type, where clause: String = "", _ params: [Any] = []) -> Int { Loom.basket.count(type: type, where: clause, params: params) }
     public static func selectAll<T: Anchor>() -> [T] { Loom.basket.selectAll(T.self) as! [T] }
-    
+
     public static func transact(_ closure: ()->()) { Loom.basket.transact(closure) }
 
     /// Deletes extra persisted rows that share the same `Type` + `Only` (e.g. duplicate folders). Safe to call at launch.
     public static func deduplicateDocumentsWithSharedOnlyKey(type: String) {
         Loom.basket.deduplicateDocumentsWithSharedOnlyKey(type: type)
     }
-    
-    public static func start(basket: Basket, namespaces: [String]) {
+
+    public static func start(basket: Basket, types: [Domain.Type]) {
         Loom.basket = basket
-        Loom.namespaces = namespaces
+        Loom.register(types)
     }
 }
 

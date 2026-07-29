@@ -10,7 +10,7 @@
 
 import Foundation
 
-open class Persist: NSObject {
+open class Persist {
     open var name: String
     var typeToOnly: [String:String] = [:]
 

@@ -11,15 +11,15 @@
 import Foundation
 
 open class Anchor: Domain {
-    @objc public dynamic var fork: Int = 0
-    @objc public dynamic var vers: Int = 0
-    
+    public var fork: Int = 0
+    public var vers: Int = 0
+
     public unowned var basket: Basket? = nil
-    
+
     public override init() {
         super.init()
     }
-    public required init(attributes: [String : Any], parent: Domain? = nil) {
+    public required init(attributes: [String:Any], parent: Domain? = nil) {
         super.init(attributes: attributes, parent: parent)
     }
     public required init(basket: Basket) {
@@ -30,14 +30,30 @@ open class Anchor: Domain {
         self.basket = basket
         super.init(attributes: attributes)
     }
-    
+
     var only: String? {
         guard let basket = basket, let key = basket.only(type: type) else { return nil }
-        return value(forKey: key) as? String
+        return loomGet(key) as? String
     }
-    
+
     public func resolveConflicts(_ attributes: [String:Any]) {}
-    
+
+// Field access ====================================================================================
+    override open func loomGet(_ field: String) -> Any? {
+        switch field {
+            case "fork": return fork
+            case "vers": return vers
+            default: return super.loomGet(field)
+        }
+    }
+    override open func loomSet(_ field: String, _ value: Any?) {
+        switch field {
+            case "fork": fork = (value as? Int) ?? (value as? NSNumber)?.intValue ?? fork
+            case "vers": vers = (value as? Int) ?? (value as? NSNumber)?.intValue ?? vers
+            default: super.loomSet(field, value)
+        }
+    }
+
 // Actions =========================================================================================
     override func create() {
         super.create()
@@ -56,10 +72,10 @@ open class Anchor: Domain {
         super.dirty()
         basket?.dirtyAnchor(self)
     }
-    
+
 // Anchor ==========================================================================================
     open var isUploaded: Bool { true }
-    
+
 // Domain ==========================================================================================
     public override var anchor: Anchor {
         get { return self }

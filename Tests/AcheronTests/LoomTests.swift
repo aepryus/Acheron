@@ -25,17 +25,14 @@ class MemoryPersist: Persist {
     override func get(key: String) -> String? { kv[key] }
 }
 
-class Gadget: Domain {
-    @objc dynamic var label: String = ""
-    override var properties: [String] { super.properties + ["label"] }
+@Woven class Gadget: Domain {
+    @Field var label: String = ""
 }
-class Widget: Anchor {
-    @objc dynamic var name: String = ""
-    @objc dynamic var flightNo: Int = 0
-    @objc dynamic var when: Date = Date()
-    @objc dynamic var gadgets: [Gadget] = []
-    override var properties: [String] { super.properties + ["name", "flightNo", "when"] }
-    override var children: [String] { ["gadgets"] }
+@Woven class Widget: Anchor {
+    @Field var name: String = ""
+    @Field var flightNo: Int = 0
+    @Field var when: Date = Date()
+    @Kids var gadgets: [Gadget] = []
 }
 
 final class LoomTests: XCTestCase {
@@ -47,7 +44,7 @@ final class LoomTests: XCTestCase {
         persist = MemoryPersist("test")
         basket = Basket(persist)
         Loom.basket = basket
-        Loom.namespaces = ["AcheronTests"]
+        Loom.register([Widget.self, Gadget.self])
     }
 
     func testRoundTrip() {
