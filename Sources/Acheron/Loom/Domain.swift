@@ -8,7 +8,6 @@
 
 #if !os(Linux)
 
-import Acheron
 import Foundation
 
 public enum DomainStatus {

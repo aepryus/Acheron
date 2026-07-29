@@ -30,6 +30,10 @@ class GroupNodeData: NodeData {
     func value(for name: String) -> Any? { value }
 }
 
+extension Domain: NodeData {
+    public var availableNames: [String] { properties }
+    public func value(for name: String) -> Any? { loomGet(name) }
+}
 
 extension Dictionary: NodeData where Key == String {
     public var availableNames: [String] { Array(keys) }

@@ -1,6 +1,5 @@
 import XCTest
 @testable import Acheron
-@testable import AcheronLoom
 
 final class LoomBenchTests: XCTestCase {
     var persist: MemoryPersist!

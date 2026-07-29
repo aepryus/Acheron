@@ -6,7 +6,6 @@
 //  Copyright © 2026 Aepryus Software. All rights reserved.
 //
 
-@_exported import Acheron
 import Foundation
 
 @attached(member, names: named(properties), named(children), named(loomGet), named(loomSet))

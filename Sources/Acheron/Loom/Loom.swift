@@ -10,7 +10,6 @@
 
 #if !os(Linux)
 
-import Acheron
 import Foundation
 
 public class Loom {

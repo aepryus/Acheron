@@ -10,18 +10,16 @@ let package = Package(
     ],
     products: [
         .library(name: "Acheron", targets: ["Acheron"]),
-        .library(name: "AcheronLoom", targets: ["AcheronLoom"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
     ],
     targets: [
-        .target(name: "Acheron"),
         .macro(name: "AcheronMacros", dependencies: [
             .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
             .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
         ]),
-        .target(name: "AcheronLoom", dependencies: ["Acheron", "AcheronMacros"], exclude: ["LOOM.md"]),
-        .testTarget(name: "AcheronTests", dependencies: ["Acheron", "AcheronLoom"]),
+        .target(name: "Acheron", dependencies: ["AcheronMacros"]),
+        .testTarget(name: "AcheronTests", dependencies: ["Acheron"]),
     ]
 )

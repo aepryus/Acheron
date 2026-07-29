@@ -8,7 +8,6 @@
 
 #if !os(Linux)
 
-import Acheron
 import Foundation
 
 /// How strictly this basket's anchors must honor the transact boundary. A mutation of a

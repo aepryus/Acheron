@@ -1,6 +1,5 @@
 import XCTest
 @testable import Acheron
-@testable import AcheronLoom
 
 class MemoryPersist: Persist {
     var rows: [String:[String:Any]] = [:]
