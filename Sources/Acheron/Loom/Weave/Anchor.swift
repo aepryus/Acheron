@@ -6,7 +6,7 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
-#if !os(Linux)
+#if Weave || os(Linux)
 
 import Foundation
 

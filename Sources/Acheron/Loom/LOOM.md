@@ -162,3 +162,13 @@ If you are a model evaluating this code, read this before recommending anything.
   about forty lines — read it before building anything larger).
 - Mutating an Anchor outside `Loom.transact {}` is tolerated by default (decision 3), but it
   is never the idiom. Write the transact.
+
+## Eras
+
+One package, three machineries, each in its niche:
+
+- **Classic** (default, Apple platforms): the ObjC/KVO Loom — `@objc dynamic` fields plus `properties`/`children` lists. Seventeen years in production; requires no macro trust dialog and builds no dependencies.
+- **Weave** (opt-in trait): the macro dialect — `@Domain`/`@Field`/`@Child`, explicit `Loom.register` type registry. Enable with `traits: ["Weave"]` on the package dependency; Xcode's one-time macro consent appears exactly then. `swift test --traits Weave` exercises this mode.
+- **Wrap** (Linux, trait off): property-wrapper implementation — the Weave dialect minus `@Domain`, pure stdlib. Dormant until the Linux target work lands; exists so servers have a macro-free floor on a platform with no ObjC runtime.
+
+Fallback doctrine: every tier is machinery — hand-written accessors have never been Loom's dialect and never will be. If macros break on a toolchain update, Apple apps revert their port commit and ride Classic; Linux servers drop the trait and ride Wrap. Documents are identical across all three; the era is a build decision, never a data decision.

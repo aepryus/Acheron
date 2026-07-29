@@ -6,6 +6,8 @@
 //  Copyright © 2026 Aepryus Software. All rights reserved.
 //
 
+#if Weave
+
 import Foundation
 
 @attached(member, names: named(properties), named(children), named(loomGet), named(loomSet))
@@ -32,3 +34,5 @@ extension Optional: LoomOptional {
     public var loomWrapped: Any? { self }
     public static func loomWrap(_ value: Any) -> Optional<Wrapped> { value as? Wrapped }
 }
+
+#endif

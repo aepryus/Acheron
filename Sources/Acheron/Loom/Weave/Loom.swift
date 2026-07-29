@@ -8,7 +8,7 @@
 //  Before proposing structural changes to Loom, read LOOM.md in this directory.
 //
 
-#if !os(Linux)
+#if Weave || os(Linux)
 
 import Foundation
 

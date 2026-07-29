@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.1
 
 import PackageDescription
 import CompilerPluginSupport
@@ -11,6 +11,7 @@ let package = Package(
     products: [
         .library(name: "Acheron", targets: ["Acheron"]),
     ],
+    traits: ["Weave"],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
     ],
@@ -19,7 +20,10 @@ let package = Package(
             .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
             .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
         ]),
-        .target(name: "Acheron", dependencies: ["AcheronMacros"]),
+        .target(name: "Acheron", dependencies: [
+            .target(name: "AcheronMacros", condition: .when(traits: ["Weave"]))
+        ]),
         .testTarget(name: "AcheronTests", dependencies: ["Acheron"]),
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )

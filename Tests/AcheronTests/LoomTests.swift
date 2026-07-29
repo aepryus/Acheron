@@ -1,3 +1,5 @@
+#if Weave
+
 import XCTest
 @testable import Acheron
 
@@ -598,3 +600,5 @@ final class SQLitePersistTests: XCTestCase {
         XCTAssertEqual(persist.selectOne(where: "name", is: "Starlink", type: "widget")?["iden"] as? String, "a")
     }
 }
+
+#endif

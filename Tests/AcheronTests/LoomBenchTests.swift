@@ -1,3 +1,5 @@
+#if Weave
+
 import XCTest
 @testable import Acheron
 
@@ -81,3 +83,5 @@ final class LoomBenchTests: XCTestCase {
         }
     }
 }
+
+#endif
