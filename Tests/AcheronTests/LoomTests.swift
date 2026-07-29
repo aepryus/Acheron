@@ -25,14 +25,14 @@ class MemoryPersist: Persist {
     override func get(key: String) -> String? { kv[key] }
 }
 
-@Woven class Gadget: Domain {
+@Domain class Gadget: Domain {
     @Field var label: String = ""
 }
-@Woven class Widget: Anchor {
+@Domain class Widget: Anchor {
     @Field var name: String = ""
     @Field var flightNo: Int = 0
     @Field var when: Date = Date()
-    @Child var gadgets: [Gadget] = []
+    @Field var gadgets: [Gadget] = []
 }
 
 final class LoomTests: XCTestCase {

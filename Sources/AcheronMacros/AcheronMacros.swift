@@ -16,18 +16,18 @@ func wovenFields(of declaration: some DeclGroupSyntax) -> [WovenField] {
         for attribute in varDecl.attributes {
             guard let attr = attribute.as(AttributeSyntax.self) else { continue }
             let name = attr.attributeName.trimmedDescription
-            if name == "Field" || name == "Child" { kind = name }
+            if name == "Field" { kind = name }
         }
         guard let kind else { continue }
         for binding in varDecl.bindings {
             guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self) else { continue }
-            fields.append(WovenField(name: pattern.identifier.text, isKids: kind == "Child"))
+            fields.append(WovenField(name: pattern.identifier.text, isKids: false))
         }
     }
     return fields
 }
 
-public struct WovenMacro: MemberMacro {
+public struct DomainMacro: MemberMacro {
     public static func expansion(of node: AttributeSyntax, providingMembersOf declaration: some DeclGroupSyntax, conformingTo protocols: [TypeSyntax], in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         let fields = wovenFields(of: declaration)
         let props = fields.filter { !$0.isKids }.map { $0.name }
@@ -120,18 +120,8 @@ public struct FieldMacro: AccessorMacro, PeerMacro {
     }
 }
 
-public struct ChildMacro: AccessorMacro, PeerMacro {
-    public static func expansion(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax] {
-        guard let (name, _) = storageDeclaration(for: declaration) else { return [] }
-        return captureAccessors(name: name, via: "loomDidSetChildren")
-    }
-    public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
-        guard let (_, storage) = storageDeclaration(for: declaration) else { return [] }
-        return [storage]
-    }
-}
 
 @main
 struct AcheronMacrosPlugin: CompilerPlugin {
-    let providingMacros: [Macro.Type] = [WovenMacro.self, FieldMacro.self, ChildMacro.self]
+    let providingMacros: [Macro.Type] = [DomainMacro.self, FieldMacro.self]
 }

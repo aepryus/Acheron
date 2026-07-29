@@ -135,7 +135,6 @@ open class Domain: Hashable {
     }
     public func loomDidSet<T: Equatable>(_ old: T, _ new: T) { if old != new { loomCapture() } }
     public func loomDidSet<T>(_ old: T, _ new: T) { loomCapture() }
-    public func loomDidSetChildren<T: Domain>(_ old: [T], _ new: [T]) { if old != new { loomCapture() } }
 
 // Conversion ======================================================================================
     private func flatten(_ value: Any?) -> Any? {
@@ -171,6 +170,9 @@ open class Domain: Hashable {
         if type == Double.self { return (raw as? Double) ?? (raw as? NSNumber)?.doubleValue }
         if type == Bool.self { return (raw as? Bool) ?? (raw as? NSNumber)?.boolValue }
         return raw
+    }
+    public func loomConvert<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
+        loomChildren(raw, current: current, parent: parent)
     }
     public func loomChildren<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
         guard let list = raw as? [[String:Any]], !list.isEmpty else { return current }
