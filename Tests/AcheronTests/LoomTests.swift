@@ -47,6 +47,11 @@ struct Vector: Packable, Equatable {
     func pack() -> String { "\(x),\(y)" }
 }
 
+struct Spec: Codable, Packable, Equatable {
+    var thrust: Double = 0
+    var name: String = ""
+}
+
 @Domain class Gizmo: Domain {
     @Field var tag: String = ""
     var addedCount: Int = 0
@@ -69,6 +74,7 @@ struct Vector: Packable, Equatable {
     @Field var thrust: Vector = Vector(0, 0)
     @Field var path: [Vector] = []
     @Field var tags: [String] = []
+    @Field var spec: Spec = Spec()
     @Field var spare: Gizmo? = nil
     @Child var pilot: Gizmo? = nil
     @Child var gadgets: [Gadget] = []
@@ -367,6 +373,17 @@ final class LoomTests: XCTestCase {
         XCTAssertEqual(clone.gizmos.first?.tag, "wired")
         XCTAssertTrue(clone.gizmos.first?.parent === clone)
         XCTAssertEqual(clone.gizmos.first?.addedCount ?? -1, 0)
+    }
+
+    func testCodablePackableBridge() {
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.spec = Spec(thrust: 9.81, name: "raptor") }
+        let stored = persist.rows[widget.iden]?["spec"] as? String
+        XCTAssertNotNil(stored)
+        XCTAssertEqual(Spec(stored!), Spec(thrust: 9.81, name: "raptor"))
+        basket.clearCache()
+        let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertEqual(reloaded.spec, Spec(thrust: 9.81, name: "raptor"))
     }
 
     func testWarningStrayStillCommits() {

@@ -21,6 +21,18 @@ public protocol Packable {
     init?(_: String)
     func pack() -> String
 }
+public extension Packable where Self: Codable {
+    init?(_ string: String) {
+        guard let data = string.data(using: .utf8),
+              let value = try? JSONDecoder().decode(Self.self, from: data) else { return nil }
+        self = value
+    }
+    func pack() -> String {
+        guard let data = try? JSONEncoder().encode(self),
+              let string = String(data: data, encoding: .utf8) else { return "" }
+        return string
+    }
+}
 
 open class Domain: Hashable {
 
