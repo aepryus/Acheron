@@ -149,6 +149,21 @@ final class LoomTests: XCTestCase {
         XCTAssertEqual((persist.rows[widget.iden]?["gadgets"] as? [[String:Any]])?.count ?? 0, 0)
     }
 
+    func testChildMove() {
+        let w1: Widget = Loom.create()
+        let w2: Widget = Loom.create()
+        let gadget = Gadget()
+        Loom.transact { w1.gadgets.append(gadget) }
+        Loom.transact {
+            w2.gadgets.append(gadget)
+            w1.gadgets.removeAll()
+        }
+        XCTAssertNotEqual(gadget.status, DomainStatus.deleted)
+        XCTAssertTrue(gadget.parent === w2)
+        XCTAssertEqual((persist.rows[w1.iden]?["gadgets"] as? [[String:Any]])?.count ?? 0, 0)
+        XCTAssertEqual((persist.rows[w2.iden]?["gadgets"] as? [[String:Any]])?.count, 1)
+    }
+
     func testDelete() {
         let widget: Widget = Loom.create()
         Loom.transact { widget.name = "gone" }

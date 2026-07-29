@@ -161,7 +161,7 @@ open class Domain: Hashable {
         }
         for child in old where !newIds.contains(ObjectIdentifier(child)) {
             child.onRemoved()
-            child.delete()
+            if child.parent === self { child.delete() }
             child.handleTriggers(child, action: .removed)
         }
         if old != new { edit() }
