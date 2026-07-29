@@ -51,6 +51,9 @@ struct Spec: Codable, Packable, Equatable {
     var thrust: Double = 0
     var name: String = ""
 }
+enum Rating: String, Packable { case unknown, good, great }
+enum Tier: Int, Packable { case zero, one, two }
+enum Payload: Codable, Packable, Equatable { case empty; case cargo(kg: Double) }
 
 @Domain class Gizmo: Domain {
     @Field var tag: String = ""
@@ -75,6 +78,10 @@ struct Spec: Codable, Packable, Equatable {
     @Field var path: [Vector] = []
     @Field var tags: [String] = []
     @Field var spec: Spec = Spec()
+    @Field var rating: Rating = .unknown
+    @Field var tier: Tier = .zero
+    @Field var payload: Payload = .empty
+    @Field var maybeRating: Rating? = nil
     @Field var spare: Gizmo? = nil
     @Child var pilot: Gizmo? = nil
     @Child var gadgets: [Gadget] = []
@@ -384,6 +391,28 @@ final class LoomTests: XCTestCase {
         basket.clearCache()
         let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
         XCTAssertEqual(reloaded.spec, Spec(thrust: 9.81, name: "raptor"))
+    }
+
+    func testEnumFields() {
+        let widget: Widget = Loom.create()
+        Loom.transact {
+            widget.rating = .great
+            widget.tier = .two
+            widget.payload = .cargo(kg: 17500)
+            widget.maybeRating = .good
+        }
+        XCTAssertEqual(persist.rows[widget.iden]?["rating"] as? String, "great")
+        XCTAssertEqual(persist.rows[widget.iden]?["tier"] as? String, "2")
+        basket.clearCache()
+        let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertEqual(reloaded.rating, Rating.great)
+        XCTAssertEqual(reloaded.tier, Tier.two)
+        XCTAssertEqual(reloaded.payload, Payload.cargo(kg: 17500))
+        XCTAssertEqual(reloaded.maybeRating, Rating.good)
+        Loom.transact { widget.maybeRating = nil }
+        basket.clearCache()
+        let again: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertNil(again.maybeRating)
     }
 
     func testWarningStrayStillCommits() {

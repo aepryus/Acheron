@@ -21,6 +21,17 @@ public protocol Packable {
     init?(_: String)
     func pack() -> String
 }
+public extension Packable where Self: RawRepresentable, RawValue == String {
+    init?(_ string: String) { self.init(rawValue: string) }
+    func pack() -> String { rawValue }
+}
+public extension Packable where Self: RawRepresentable, RawValue == Int {
+    init?(_ string: String) {
+        guard let raw = Int(string) else { return nil }
+        self.init(rawValue: raw)
+    }
+    func pack() -> String { "\(rawValue)" }
+}
 public extension Packable where Self: Codable {
     init?(_ string: String) {
         guard let data = string.data(using: .utf8),
