@@ -672,6 +672,10 @@ final class SQLitePersistTests: XCTestCase {
         let ordered = persist.select(type: "widget", where: "ORDER BY $flightNo DESC", params: [])
         XCTAssertEqual(ordered.map { $0["iden"] as! String }, ["a", "b"])
 
+        let lower = persist.select(type: "widget", where: "  order by $flightNo desc", params: [])
+        XCTAssertEqual(lower.map { $0["iden"] as! String }, ["a", "b"])
+        XCTAssertEqual(persist.select(type: "widget", where: "", params: []).count, 2)
+
         XCTAssertEqual(persist.count(type: "widget", where: "", params: []), 2)
         XCTAssertEqual(persist.count(type: "widget", where: "$name LIKE ?", params: ["Star%"]), 1)
 

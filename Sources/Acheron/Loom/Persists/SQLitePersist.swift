@@ -161,15 +161,19 @@ public class SQLitePersist: Persist {
         }
         execute("CREATE INDEX IF NOT EXISTS Document_\(type)_\(field) ON Document (Type, json_extract(JSON,'$.\(field)'))")
     }
+    private func glued(_ clause: String) -> String {
+        let expanded = expand(clause).trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !expanded.isEmpty else { return "" }
+        let upper = expanded.uppercased()
+        let bare = upper.hasPrefix("ORDER") || upper.hasPrefix("LIMIT") || upper.hasPrefix("GROUP")
+        return (bare ? " " : " AND ") + expanded
+    }
+
     public override func select(type: String, where clause: String, params: [Any]) -> [[String:Any]] {
-        let expanded = expand(clause)
-        let glue = expanded.hasPrefix("ORDER") || expanded.hasPrefix("LIMIT") ? " " : " AND "
-        return documents("SELECT JSON FROM Document WHERE Type=?\(glue)\(expanded)", [type] + params)
+        documents("SELECT JSON FROM Document WHERE Type=?" + glued(clause), [type] + params)
     }
     public override func count(type: String, where clause: String, params: [Any]) -> Int {
-        let expanded = expand(clause)
-        let glue = clause.isEmpty || expanded.hasPrefix("ORDER") || expanded.hasPrefix("LIMIT") ? " " : " AND "
-        return (query("SELECT COUNT(*) AS n FROM Document WHERE Type=?\(glue)\(expanded)", [type] + params).first?["n"] as? NSNumber)?.intValue ?? 0
+        (query("SELECT COUNT(*) AS n FROM Document WHERE Type=?" + glued(clause), [type] + params).first?["n"] as? NSNumber)?.intValue ?? 0
     }
 
     public override func selectForked() -> [[String:Any]] {
