@@ -16,15 +16,15 @@ import Foundation
 /// The basket-wide sweep still commits strays either way: staleness, not loss.
 public enum BasketDiscipline { case tolerant, warning, strict }
 
-public class Basket {
-    let persist: Persist
-
-    var blocks: [String:[(Domain)->()]] = [:]
-
-    public var fork: Int
+public class Basket: NSObject {
 
     public var discipline: BasketDiscipline = .warning
     private let inTransactKey = DispatchSpecificKey<Bool>()
+    let persist: Persist
+
+    var blocks: [String:[(Domain)->()]] = [:]
+    
+    public var fork: Int
 
     var cache: SafeMap = SafeMap<Anchor>()
     var onlyToIden: SafeMap = SafeMap<String>()
@@ -44,10 +44,9 @@ public class Basket {
     
     public func associate(type: String, only: String) { persist.associate(type: type, only: only) }
     public func index(type: String, field: String) { persist.index(type: type, field: field) }
-    public func only(type: String) -> String? { persist.only(type: type) }
 
     private var onQueue: Bool { DispatchQueue.getSpecific(key: inTransactKey) == true }
-    private func sync<T>(_ block: () -> T) -> T { onQueue ? block() : queue.sync(execute: block) }
+    public func only(type: String) -> String? { persist.only(type: type) }
         
     private func load(_ attributes: [String:Any], cls: Anchor.Type) -> Anchor {
         let anchor = cls.init(attributes: attributes)
@@ -61,61 +60,71 @@ public class Basket {
     }
     private func load(_ attributes: [String:Any]) -> Anchor {
         guard let type = attributes["type"] as? String else { fatalError("Loom: document \(attributes["iden"] ?? "?") has no type field; the row is malformed") }
-        guard let cls = Loom.classForType(type) as? Anchor.Type else { fatalError("Loom: type '\(type)' is not an Anchor; a non-anchor document reached the basket") }
+        guard let cls = Loom.classForType(type) as? Anchor.Type else { fatalError("Loom: type '\(type)' is not a registered Anchor") }
         return load(attributes, cls: cls)
     }
     public func inject(_ attributes: [String:Any]) -> Anchor {
-        sync {
-            let anchor = load(attributes)
-            anchor.dirty()
-            return anchor
-        }
+        let anchor = load(attributes)
+        anchor.dirty()
+        return anchor
     }
-
+    
     public func createBy(cls: Anchor.Type, only: String? = nil) -> Anchor {
-        sync {
-            let anchor = cls.init(basket: self)
-            anchor.iden = generateIden(cls)
-            cache[anchor.iden] = anchor
-            if let only = only {
-                onlyToIden["\(anchor.type!):\(only)"] = anchor.iden
-            }
-            dirty.insert(anchor)
-            return anchor
+        let anchor = cls.init(basket: self)
+        anchor.iden = generateIden(cls)
+        cache[anchor.iden] = anchor
+        if let only = only {
+            onlyToIden["\(anchor.type!):\(only)"] = anchor.iden
         }
+        dirty.insert(anchor)
+        return anchor
     }
-
+    
     private func convert(array: [[String:Any]]) -> [Anchor] {
-        sync {
-            array.map { attributes in cache[attributes["iden"] as! String] ?? load(attributes) }
+        var anchors: [Anchor] = []
+        for attributes in array {
+            var anchor = cache[attributes["iden"] as! String]
+            if anchor == nil {
+                anchor = load(attributes)
+            }
+            anchors.append(anchor!)
         }
+        return anchors;
     }
     private func convert(array: [[String:Any]], type:Anchor.Type) -> [Anchor] {
-        sync {
-            array.map { attributes in cache[attributes["iden"] as! String] ?? load(attributes, cls: type) }
+        var anchors: [Anchor] = []
+        for attributes in array {
+            var anchor = cache[attributes["iden"] as! String]
+            if anchor == nil {
+                anchor = load(attributes, cls: type)
+            }
+            anchors.append(anchor!)
         }
+        return anchors;
     }
-
+    
     public func selectBy(iden: String) -> Anchor? {
-        sync {
-            if let anchor = cache[iden] { return anchor }
-            guard let attributes = persist.attributes(iden: iden) else { return nil }
-            return load(attributes)
+        var result: Anchor? = nil
+        if let anchor = cache[iden] {
+            result = anchor
+        } else if let attributes = persist.attributes(iden: iden) {
+            result = load(attributes)
         }
+        return result
     }
     public func selectBy(cls: Anchor.Type, only: String) -> Anchor? {
-        sync {
-            let type = Loom.name(for: cls)
-            if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] { return anchor }
-            guard let attributes = persist.attributes(type: type, only: only) else { return nil }
-            return load(attributes)
+        var result: Anchor? = nil
+        let type = Loom.name(for: cls)
+        if let iden = onlyToIden["\(type):\(only)"], let anchor = cache[iden] {
+            result = anchor
+        } else if let attributes = persist.attributes(type: type, only: only) {
+            result = load(attributes)
         }
+        return result
     }
     public func selectOne(where field: String, is value: String, type: Anchor.Type) -> Domain? {
-        sync {
-            guard let attributes = persist.selectOne(where: field, is: value, type: Loom.name(for: type)) else { return nil }
-            return cache[attributes["iden"] as! String] ?? load(attributes, cls: type)
-        }
+        guard let attributes = persist.selectOne(where: field, is: value, type: Loom.name(for: type)) else { return nil }
+        return cache[attributes["iden"] as! String] ?? load(attributes, cls: type)
     }
     public func select(where field: String, is value: String, type: Anchor.Type) -> [Domain] {
         let array = persist.select(where: field, is: value, type: Loom.name(for: type))
@@ -139,8 +148,8 @@ public class Basket {
     
     public func syncPacket() -> [String:Any] {
         var attributes: [String:Any] = [:]
-
-        sync {
+        
+        queue.sync {
             var documents: [[String:Any]] = []
             for anchor in selectForked() {
                 if anchor.isUploaded {
@@ -159,7 +168,7 @@ public class Basket {
     
     private func enforceDiscipline(_ anchor: Anchor) {
         guard discipline != .tolerant else { return }
-        guard DispatchQueue.getSpecific(key: inTransactKey) != true else { return }
+        guard !onQueue else { return }
         let message = "Loom: [\(anchor.type ?? "?")] \(anchor.iden ?? "?") was modified outside of a transact. Wrap the mutation in Loom.transact { }."
         if discipline == .strict { fatalError(message) }
         print(message + " The change is in the dirty set and will persist with the next transact's sweep.")
@@ -176,7 +185,7 @@ public class Basket {
     }
     
     func deleteByID(_ iden: String ) {}
-
+    
     private func key(class cls: Domain.Type, action: DomainAction) -> String {
         return "\(String(describing: cls))_\(action)"
     }
@@ -195,11 +204,6 @@ public class Basket {
         return blocks[key] ?? []
     }
     
-    /// Commits every outstanding dirty anchor — not just those touched inside the closure.
-    /// transact is a basket-wide flush point, not a mutation scope: anchors dirtied outside
-    /// any transact are swept in here, and nested calls run inline, joining the outer commit.
-    /// Writes are optimistic — anchors flip clean at the snapshot, before the I/O; a failed
-    /// commit's rows wait in a pending buffer for the next flush. Deliberate; see LOOM.md.
     private static func loadDirty(into: inout Set<Domain>, domain: Domain) {
         into.insert(domain)
         for child in domain.allDomainChildren {
@@ -208,7 +212,7 @@ public class Basket {
             }
         }
     }
-
+    
     public func transact(_ closure: ()->()) {
         if onQueue { closure(); return }
 
@@ -267,6 +271,7 @@ public class Basket {
             })
         }
     }
+    
     public func transact(_ closure: @escaping () -> ()) async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             DispatchQueue.global().async {
@@ -275,14 +280,14 @@ public class Basket {
             }
         }
     }
-    
+
     public func clearCache() {
-        sync { cache.removeAll() }
+        queue.sync { cache.removeAll() }
     }
 
     /// Removes duplicate `Document` rows for a type that uses the `Only` column (e.g. `folder`). Clears in-memory maps so the next load matches SQLite.
     public func deduplicateDocumentsWithSharedOnlyKey(type: String) {
-        sync {
+        queue.sync {
             persist.deduplicateDocumentsWithSharedOnlyKey(type: type)
             cache.removeAll()
             onlyToIden.removeAll()
@@ -298,7 +303,7 @@ public class Basket {
     func showID(_ iden: String) { persist.show(iden) }
     
     public func wipe() {
-        sync {
+        queue.sync {
             persist.wipe()
             fork = 0
             cache.removeAll()
@@ -307,7 +312,7 @@ public class Basket {
         }
     }
     public func wipeDocuments() {
-        sync {
+        queue.sync {
             persist.wipeDocuments()
             fork = 0
             cache.removeAll()

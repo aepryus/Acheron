@@ -35,7 +35,7 @@ extension Domain: NodeData {
 #if Weave
     public func value(for name: String) -> Any? { loomGet(name) }
 #else
-    public func value(for name: String) -> Any? { value(forKey: name) }
+    public func value(for name: String) -> Any? { super.value(forKey: name) }
 #endif
 }
 
