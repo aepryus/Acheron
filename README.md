@@ -17,13 +17,25 @@ You can use SPM, to integrate Acheron into your project.  You can add the follow
 
 Or from Xcode go to `File/Add Packages` and enter the URL: `https://github.com/aepryus/Acheron.git`.
 
-## Loom ORM
+## Loom
 
-A lightweight threadsafe no SQL ORM.
+An object-document mapper: model classes are the schema, aggregates persist as JSON
+documents in SQLite, and assignment is the API — no migrations, no context objects,
+no boilerplate. In continuous production since 1999.
 
-* Dependencies: Odds and Ends
-* Classes: Anchor, Basket, Domain, Persist, Loom, SQLitePersist
-* Lines: 1189
+```swift
+@Domain class Widget: Anchor {
+    @Field var name: String = ""
+    @Field var rating: Rating = .unknown    // enum Rating: String, Packable
+    @Child var gadgets: [Gadget] = []
+}
+
+Loom.transact { widget.gadgets.append(gadget) }
+```
+
+* **[LoomGuide.md](LoomGuide.md)** — the user guide: installing, both dialects, queries, eras
+* **[LOOM.md](Sources/Acheron/Loom/LOOM.md)** — the charter: the deliberate decisions and why
+* Classes: Domain, Anchor, Basket, Persist, SQLitePersist, Loom
 
 
 ## AepLayout
