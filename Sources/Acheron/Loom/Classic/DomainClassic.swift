@@ -36,10 +36,10 @@ open class Domain: NSObject {
     private var _status: DomainStatus = .loading
     public var status: DomainStatus {
         set {
-            guard _status != newValue else { return }
-            
             objc_sync_enter(self)
             defer {objc_sync_exit(self)}
+
+            guard _status != newValue else { return }
             
             if _status == .loading && newValue == .dirty {
                 
@@ -61,7 +61,11 @@ open class Domain: NSObject {
                 fatalError("Loom: [\(String(describing: Swift.type(of: self)))] \(iden ?? "?") became .clean without an active KVO subscription. A stale Domain has re-entered the lifecycle: it was deleted or removed from its Anchor's graph, but something still holds it and tried to save or load it. If it was removed with remove(_:), also remove it from its parent's children array so save() no longer reaches it. Domain objects should not be held after they leave their Anchor's graph.")
             }
         }
-        get { return _status }
+        get {
+            objc_sync_enter(self)
+            defer {objc_sync_exit(self)}
+            return _status
+        }
     }
     
     var subscribed: Bool = false

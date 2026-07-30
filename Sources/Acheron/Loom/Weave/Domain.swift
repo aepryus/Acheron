@@ -60,10 +60,10 @@ open class Domain: Hashable {
     private var _status: DomainStatus = .loading
     public var status: DomainStatus {
         set {
-            guard _status != newValue else { return }
-
             statusLock.lock()
             defer { statusLock.unlock() }
+
+            guard _status != newValue else { return }
 
             let legal = (_status == .loading && newValue == .dirty)
                 || ((_status == .loading || _status == .dirty) && newValue == .clean)
@@ -73,7 +73,11 @@ open class Domain: Hashable {
 
             _status = newValue
         }
-        get { return _status }
+        get {
+            statusLock.lock()
+            defer { statusLock.unlock() }
+            return _status
+        }
     }
 
     // Inits
