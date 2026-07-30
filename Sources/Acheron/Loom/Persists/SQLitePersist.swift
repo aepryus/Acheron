@@ -150,6 +150,14 @@ public class SQLitePersist: Persist {
     public override func selectOne(where field: String, is value: String, type: String) -> [String:Any]? {
         documents("SELECT JSON FROM Document WHERE Type=? AND json_extract(JSON,'$.\(field)')=? LIMIT 1", [type, value]).first
     }
+    public override func index(type: String, field: String) {
+        let clean: (String) -> Bool = { !$0.isEmpty && $0.allSatisfy { $0.isLetter || $0.isNumber || $0 == "_" } }
+        guard clean(type), clean(field) else {
+            logError(message: "index: type '\(type)' or field '\(field)' has characters outside [A-Za-z0-9_]; no index created")
+            return
+        }
+        execute("CREATE INDEX IF NOT EXISTS Document_\(type)_\(field) ON Document (Type, json_extract(JSON,'$.\(field)'))")
+    }
     public override func select(type: String, where clause: String, params: [Any]) -> [[String:Any]] {
         let expanded = expand(clause)
         let glue = expanded.hasPrefix("ORDER") || expanded.hasPrefix("LIMIT") ? " " : " AND "

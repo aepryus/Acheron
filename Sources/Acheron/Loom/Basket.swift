@@ -45,6 +45,7 @@ public class Basket {
     }
     
     public func associate(type: String, only: String) { persist.associate(type: type, only: only) }
+    public func index(type: String, field: String) { persist.index(type: type, field: field) }
     public func only(type: String) -> String? { persist.only(type: type) }
 
     private var onQueue: Bool { DispatchQueue.getSpecific(key: inTransactKey) == true }

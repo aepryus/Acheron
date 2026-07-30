@@ -19,6 +19,7 @@ open class Persist {
     }
     
     public func associate(type: String, only: String) { typeToOnly[type] = only }
+    open func index(type: String, field: String) {}
     public func only(type: String) -> String? { typeToOnly[type] }
 
     open func selectAll() -> [[String:Any]] { [] }

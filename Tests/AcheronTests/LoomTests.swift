@@ -1,6 +1,7 @@
 #if Weave
 
 import XCTest
+import SQLite3
 @testable import Acheron
 
 class MemoryPersist: Persist {
@@ -594,6 +595,28 @@ final class SQLitePersistTests: XCTestCase {
             return false
         }
         XCTAssertEqual(persist.attributes(iden: "a")?["name"] as? String, "survivor")
+    }
+
+    func testIndexEscapeHatch() {
+        for i in 0..<500 {
+            seed("w\(i)", ["iden":"w\(i)", "type":"widget", "flightNo":i])
+        }
+        func plan() -> String {
+            var s: OpaquePointer? = nil
+            var detail = ""
+            sqlite3_prepare_v2(persist.db, "EXPLAIN QUERY PLAN SELECT JSON FROM Document WHERE Type=? AND json_extract(JSON,'$.flightNo')>?", -1, &s, nil)
+            while sqlite3_step(s) == SQLITE_ROW {
+                if let chars = sqlite3_column_text(s, 3) { detail += String(cString: chars) }
+            }
+            sqlite3_finalize(s)
+            return detail
+        }
+        XCTAssertFalse(plan().contains("Document_widget_flightNo"))
+        persist.index(type: "widget", field: "flightNo")
+        XCTAssertTrue(plan().contains("Document_widget_flightNo"))
+        XCTAssertEqual(persist.select(type: "widget", where: "$flightNo > ?", params: [497]).count, 2)
+        persist.index(type: "widget; DROP TABLE Document", field: "flightNo")
+        XCTAssertEqual(persist.count(type: "widget", where: "", params: []), 500)
     }
 
     func testDollarQueriesAndCount() {

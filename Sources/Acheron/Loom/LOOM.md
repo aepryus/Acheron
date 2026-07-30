@@ -32,7 +32,9 @@ Each of these is a choice with a force behind it, not an oversight.
 2. **Field queries are SQL over JSON, not a schema.** `$field` in a query clause expands to
    `json_extract(JSON,'$.field')` — full SQLite expression power over document fields with no
    query DSL and no migrations (see Queries below). If a scan ever actually bottlenecks, the
-   escape hatch is a generated column plus index on the hot field; the document stays the truth.
+   escape hatch is `basket.index(type:field:)` — a compound expression index on
+   `(Type, json_extract)` that the $-dialect's canonical output matches reliably; existing
+   queries accelerate with no call-site changes, and the document stays the truth.
 3. **`transact` is a flush point, not a mutation scope — but a stray is a bug.** The dirty
    sweep is basket-wide: an edit made outside a transact waits in the dirty set and is
    committed by the next transact, whoever runs it. The sweep is damage containment, not an
