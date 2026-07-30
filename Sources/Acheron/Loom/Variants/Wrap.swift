@@ -1,12 +1,12 @@
 //
-//  Domain.swift
+//  Wrap.swift
 //  Acheron
 //
 //  Created by Joe Charlier on 4/23/19.
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
-#if Weave
+#if !Weave && os(Linux)
 
 import Foundation
 
@@ -143,7 +143,31 @@ open class Domain: Hashable {
     }
 
 // Field access ====================================================================================
+    private var loomFieldsCache: [String: LoomWrapped]? = nil
+    private var loomFieldNamesCache: [String] = []
+    var loomFields: [String: LoomWrapped] {
+        if let loomFieldsCache { return loomFieldsCache }
+        var fields: [String: LoomWrapped] = [:]
+        var mirror: Mirror? = Mirror(reflecting: self)
+        while let current = mirror {
+            for child in current.children {
+                guard let label = child.label, label.hasPrefix("_"),
+                      let wrapped = child.value as? LoomWrapped else { continue }
+                fields[String(label.dropFirst())] = wrapped
+            }
+            mirror = current.superclassMirror
+        }
+        loomFieldsCache = fields
+        loomFieldNamesCache = fields.keys.sorted()
+        return fields
+    }
+    var loomFieldNames: [String] {
+        _ = loomFields
+        return loomFieldNamesCache
+    }
+
     open func loomGet(_ field: String) -> Any? {
+        if let wrapped = loomFields[field] { return wrapped.loomGet() }
         switch field {
             case "iden": return iden
             case "type": return type
@@ -152,6 +176,7 @@ open class Domain: Hashable {
         }
     }
     open func loomSet(_ field: String, _ value: Any?) {
+        if let wrapped = loomFields[field] { wrapped.loomSet(value, on: self); return }
         switch field {
             case "iden": iden = value as? String ?? iden
             case "type": type = value as? String ?? type
@@ -166,19 +191,26 @@ open class Domain: Hashable {
         edit()
     }
     public func loomDidMutate() { loomCapture() }
-    public func loomDidSet<T: Equatable>(_ old: T, _ new: T) { if old != new { loomCapture() } }
-    public func loomDidSet<T>(_ old: T, _ new: T) { loomCapture() }
-    public func loomDidSetChild<T: Domain>(_ old: T, _ new: T) {
-        guard !hydrating, old !== new else { return }
-        load(new)
+    func loomFieldDidSet(_ old: Any, _ new: Any) {
+        guard !loomEquals(old, new) else { return }
         loomCapture()
     }
-    public func loomDidSetChild<T: Domain>(_ old: T?, _ new: T?) {
-        guard !hydrating, old !== new else { return }
-        if let new { load(new) }
+    func loomChildDidSet(_ old: Any, _ new: Any) {
+        if old is [Domain] || new is [Domain] {
+            loomDidSetChild((old as? [Domain]) ?? [], (new as? [Domain]) ?? [])
+            return
+        }
+        let oldChild = flatten(old) as? Domain
+        let newChild = flatten(new) as? Domain
+        guard oldChild !== newChild else { return }
+        if let newChild { load(newChild) }
+        if let oldChild, oldChild.parent === self {
+            oldChild.onRemoved()
+            oldChild.delete()
+        }
         loomCapture()
     }
-    public func loomDidSetChild<T: Domain>(_ old: [T], _ new: [T]) {
+    func loomDidSetChild<T: Domain>(_ old: [T], _ new: [T]) {
         guard !hydrating else { return }
         func arrive(_ child: T) {
             load(child)
@@ -207,15 +239,17 @@ open class Domain: Hashable {
         if let optional = value as? LoomOptional { return optional.loomWrapped }
         return value
     }
-    public func loomConvert<T>(_ raw: Any?, current: T, parent: Domain) -> T {
-        if let optionalType = T.self as? LoomOptional.Type {
-            guard let raw, !(raw is NSNull) else { return optionalType.loomNil as! T }
-            let currentInner = (current as! LoomOptional).loomWrapped
-            guard let converted = loomConvertInner(raw, type: optionalType.loomWrappedType, current: currentInner) else { return optionalType.loomNil as! T }
-            return optionalType.loomWrap(converted) as! T
+    func loomConvert(_ raw: Any?, current: Any?, type: Any.Type) -> Any? {
+        if let optionalType = type as? LoomOptional.Type {
+            guard let raw, !(raw is NSNull) else { return optionalType.loomNil }
+            let currentInner = (current as? LoomOptional)?.loomWrapped ?? nil
+            guard let converted = loomConvert(raw, current: currentInner, type: optionalType.loomWrappedType) else { return optionalType.loomNil }
+            return optionalType.loomWrap(converted)
         }
         guard let raw, !(raw is NSNull) else { return current }
-        return (loomConvertInner(raw, type: T.self, current: current) as? T) ?? current
+        if let childType = type as? LoomChildren.Type { return childType.loomMerge(raw, current: current ?? [Domain](), parent: self) }
+        if let packedType = type as? LoomPacked.Type { return packedType.loomUnpack(raw) ?? current }
+        return loomConvertInner(raw, type: type, current: current)
     }
     private func loomConvertInner(_ raw: Any, type: Any.Type, current: Any?) -> Any? {
         if type == Date.self { return Loom.date(from: raw) }
@@ -236,14 +270,7 @@ open class Domain: Hashable {
         if type == Bool.self { return (raw as? Bool) ?? (raw as? NSNumber)?.boolValue }
         return raw
     }
-    public func loomConvert<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
-        loomChildren(raw, current: current, parent: parent)
-    }
-    public func loomConvert<T: Packable>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
-        guard let strings = raw as? [String] else { return current }
-        return strings.compactMap { T($0) }
-    }
-    public func loomChildren<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
+    func loomChildren<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
         guard let list = raw as? [[String:Any]], !list.isEmpty else { return current }
         var index: [String: T] = [:]
         current.forEach { index[$0.iden] = $0 }
@@ -398,7 +425,7 @@ open class Domain: Hashable {
     }
 
 // Domain ==========================================================================================
-    open var properties: [String] { ["iden", "type", "modified"] }
+    open var properties: [String] { ["iden", "type", "modified"] + loomFieldNames }
     open var children: [String] { [] }
     var isStatic: Bool { false }
     public var anchor: Anchor? {
@@ -408,6 +435,134 @@ open class Domain: Hashable {
 // Hashable ========================================================================================
     public static func == (lhs: Domain, rhs: Domain) -> Bool { lhs === rhs }
     public func hash(into hasher: inout Hasher) { hasher.combine(ObjectIdentifier(self)) }
+}
+
+// ================================================================================================
+
+final class LoomBox<Value> {
+    var value: Value
+    init(_ value: Value) { self.value = value }
+}
+
+protocol LoomWrapped {
+    func loomGet() -> Any?
+    func loomSet(_ raw: Any?, on domain: Domain)
+}
+
+@propertyWrapper public struct Field<Value> {
+    let box: LoomBox<Value>
+    public init(wrappedValue: Value) { box = LoomBox(wrappedValue) }
+
+    @available(*, unavailable, message: "@Field only works inside a Domain")
+    public var wrappedValue: Value {
+        get { fatalError() }
+        set { fatalError() }
+    }
+
+    public static subscript<E: Domain>(
+        _enclosingInstance instance: E,
+        wrapped wrappedKeyPath: ReferenceWritableKeyPath<E, Value>,
+        storage storageKeyPath: ReferenceWritableKeyPath<E, Field<Value>>
+    ) -> Value {
+        get { instance[keyPath: storageKeyPath].box.value }
+        set {
+            let box = instance[keyPath: storageKeyPath].box
+            let oldValue = box.value
+            box.value = newValue
+            instance.loomFieldDidSet(oldValue, newValue)
+        }
+        _modify {
+            let box = instance[keyPath: storageKeyPath].box
+            yield &box.value
+            instance.loomDidMutate()
+        }
+    }
+}
+extension Field: LoomWrapped {
+    func loomGet() -> Any? { box.value }
+    func loomSet(_ raw: Any?, on domain: Domain) {
+        guard let converted = domain.loomConvert(raw, current: box.value, type: Value.self) as? Value else { return }
+        box.value = converted
+    }
+}
+
+@propertyWrapper public struct Child<Value> {
+    let box: LoomBox<Value>
+    public init(wrappedValue: Value) { box = LoomBox(wrappedValue) }
+
+    @available(*, unavailable, message: "@Child only works inside a Domain")
+    public var wrappedValue: Value {
+        get { fatalError() }
+        set { fatalError() }
+    }
+
+    public static subscript<E: Domain>(
+        _enclosingInstance instance: E,
+        wrapped wrappedKeyPath: ReferenceWritableKeyPath<E, Value>,
+        storage storageKeyPath: ReferenceWritableKeyPath<E, Child<Value>>
+    ) -> Value {
+        get { instance[keyPath: storageKeyPath].box.value }
+        set {
+            let box = instance[keyPath: storageKeyPath].box
+            let oldValue = box.value
+            box.value = newValue
+            instance.loomChildDidSet(oldValue, newValue)
+        }
+    }
+}
+extension Child: LoomWrapped {
+    func loomGet() -> Any? { box.value }
+    func loomSet(_ raw: Any?, on domain: Domain) {
+        guard let converted = domain.loomConvert(raw, current: box.value, type: Value.self) as? Value else { return }
+        box.value = converted
+    }
+}
+
+// Runtime type recovery ===========================================================================
+protocol LoomChildren {
+    static func loomMerge(_ raw: Any?, current: Any, parent: Domain) -> Any
+}
+extension Array: LoomChildren where Element: Domain {
+    static func loomMerge(_ raw: Any?, current: Any, parent: Domain) -> Any {
+        parent.loomChildren(raw, current: current as! [Element], parent: parent)
+    }
+}
+
+protocol LoomPacked {
+    static func loomUnpack(_ raw: Any?) -> Any?
+}
+extension Array: LoomPacked where Element: Packable {
+    static func loomUnpack(_ raw: Any?) -> Any? {
+        (raw as? [String]).map { $0.compactMap { Element($0) } }
+    }
+}
+
+public protocol LoomOptional {
+    static var loomNil: Self { get }
+    static var loomWrappedType: Any.Type { get }
+    var loomWrapped: Any? { get }
+    static func loomWrap(_ value: Any) -> Self
+}
+extension Optional: LoomOptional {
+    public static var loomNil: Optional<Wrapped> { .none }
+    public static var loomWrappedType: Any.Type { Wrapped.self }
+    public var loomWrapped: Any? { self }
+    public static func loomWrap(_ value: Any) -> Optional<Wrapped> { value as? Wrapped }
+}
+
+extension Equatable {
+    func loomIsEqual(_ other: Any) -> Bool { (other as? Self).map { $0 == self } ?? false }
+}
+func loomEquals(_ a: Any, _ b: Any) -> Bool {
+    switch (a, b) {
+        case let (a as String, b as String): return a == b
+        case let (a as Int, b as Int): return a == b
+        case let (a as Double, b as Double): return a == b
+        case let (a as Bool, b as Bool): return a == b
+        default:
+            guard let a = a as? any Equatable else { return false }
+            return a.loomIsEqual(b)
+    }
 }
 
 #endif
