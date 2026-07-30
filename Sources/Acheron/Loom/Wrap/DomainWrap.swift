@@ -272,9 +272,13 @@ open class Domain: Hashable {
         current.forEach { index[$0.iden] = $0 }
         var result: [T] = []
         for attributes in list {
+            guard let iden = attributes["iden"] as? String else { fatalError("Loom: child document under [\(type ?? "?")] \(self.iden ?? "?") has no iden; the document is malformed") }
             let child: T
-            if let existing = index[attributes["iden"] as! String] { child = existing }
-            else { child = Loom.classForType(attributes["type"] as! String).init(attributes: attributes, parent: self) as! T }
+            if let existing = index[iden] { child = existing }
+            else {
+                guard let childType = attributes["type"] as? String else { fatalError("Loom: child document under [\(type ?? "?")] \(self.iden ?? "?") has no type; the document is malformed") }
+                child = Loom.classForType(childType).init(attributes: attributes, parent: self) as! T
+            }
             child.load(attributes: attributes, replicate: replicating)
             load(child)
             result.append(child)

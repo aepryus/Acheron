@@ -247,13 +247,23 @@ public class SQLitePersist: Persist {
     }
     @discardableResult public override func store(iden: String, attributes: [String : Any]) -> Bool {
         dispatchPrecondition(condition: .onQueue(queue))
-        let type = attributes["type"] as! String
+        guard let type = attributes["type"] as? String else {
+            logError(message: "store: document \(iden) has no type; row skipped")
+            return true
+        }
+
+        // A poisoned document must not dam the batch: log loudly, drop the row, commit the rest.
+        guard JSONSerialization.isValidJSONObject(attributes) else {
+            logError(message: "store: [\(type)] \(iden) is not JSON-encodable (NaN/Infinity or a non-plist value in its attributes); row skipped, prior version retained")
+            return true
+        }
 
         var json: String?
         do {
             let data = try JSONSerialization.data(withJSONObject: attributes, options: [])
             json = String(data:data, encoding: .utf8)
         } catch {
+            logError(message: "store: [\(type)] \(iden) failed to serialize; row skipped, prior version retained")
             logError(error)
             return true
         }

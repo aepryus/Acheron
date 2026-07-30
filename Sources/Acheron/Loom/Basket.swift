@@ -61,7 +61,8 @@ public class Basket {
         return anchor
     }
     private func load(_ attributes: [String:Any]) -> Anchor {
-        let cls = Loom.classForType(attributes["type"] as! String) as! Anchor.Type
+        guard let type = attributes["type"] as? String else { fatalError("Loom: document \(attributes["iden"] ?? "?") has no type field; the row is malformed") }
+        guard let cls = Loom.classForType(type) as? Anchor.Type else { fatalError("Loom: type '\(type)' is not an Anchor; a non-anchor document reached the basket") }
         return load(attributes, cls: cls)
     }
     public func inject(_ attributes: [String:Any]) -> Anchor {

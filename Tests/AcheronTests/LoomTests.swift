@@ -74,6 +74,7 @@ enum Payload: Codable, Packable, Equatable { case empty; case cargo(kg: Double) 
     @Field var name: String = ""
     @Field var flightNo: Int = 0
     @Field var active: Bool = false
+    @Field var ratio: Double = 0
     @Field var when: Date = Date()
     @Field var note: String? = nil
     @Field var thrust: Vector = Vector(0, 0)
@@ -216,6 +217,21 @@ final class LoomTests: XCTestCase {
         XCTAssertTrue(gadget.parent === w2)
         XCTAssertEqual((persist.rows[w1.iden]?["gadgets"] as? [[String:Any]])?.count ?? 0, 0)
         XCTAssertEqual((persist.rows[w2.iden]?["gadgets"] as? [[String:Any]])?.count, 1)
+    }
+
+    func testPoisonedDocumentSkipsLoudly() {
+        let sqlite = SQLitePersist("poison", directory: FileManager.default.temporaryDirectory.appendingPathComponent("LoomTests-\(UUID().uuidString)"))
+        let sqliteBasket = Basket(sqlite)
+        Loom.basket = sqliteBasket
+        let good: Widget = Loom.create()
+        let bad: Widget = Loom.create()
+        Loom.transact {
+            good.name = "healthy"
+            bad.name = "poisoned"
+            bad.ratio = .nan
+        }
+        XCTAssertEqual(sqlite.attributes(iden: good.iden)?["name"] as? String, "healthy")
+        XCTAssertNil(sqlite.attributes(iden: bad.iden))
     }
 
     func testDelete() {
