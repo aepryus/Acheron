@@ -144,14 +144,17 @@ public class SQLitePersist: Persist {
     public override func selectAll(type: String) -> [[String:Any]] {
         documents("SELECT JSON FROM Document WHERE Type=?", [type])
     }
+    private func clean(_ name: String) -> Bool { !name.isEmpty && name.allSatisfy { $0.isLetter || $0.isNumber || $0 == "_" } }
+
     public override func select(where field: String, is value: String?, type: String) -> [[String:Any]] {
-        documents("SELECT JSON FROM Document WHERE Type=? AND json_extract(JSON,'$.\(field)') IS ?", [type, value as Any? ?? NSNull()])
+        guard clean(field) else { logError(message: "select: field '\(field)' has characters outside [A-Za-z0-9_]; no rows returned"); return [] }
+        return documents("SELECT JSON FROM Document WHERE Type=? AND json_extract(JSON,'$.\(field)') IS ?", [type, value as Any? ?? NSNull()])
     }
     public override func selectOne(where field: String, is value: String, type: String) -> [String:Any]? {
-        documents("SELECT JSON FROM Document WHERE Type=? AND json_extract(JSON,'$.\(field)')=? LIMIT 1", [type, value]).first
+        guard clean(field) else { logError(message: "selectOne: field '\(field)' has characters outside [A-Za-z0-9_]; no rows returned"); return nil }
+        return documents("SELECT JSON FROM Document WHERE Type=? AND json_extract(JSON,'$.\(field)')=? LIMIT 1", [type, value]).first
     }
     public override func index(type: String, field: String) {
-        let clean: (String) -> Bool = { !$0.isEmpty && $0.allSatisfy { $0.isLetter || $0.isNumber || $0 == "_" } }
         guard clean(type), clean(field) else {
             logError(message: "index: type '\(type)' or field '\(field)' has characters outside [A-Za-z0-9_]; no index created")
             return

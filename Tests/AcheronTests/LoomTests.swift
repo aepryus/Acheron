@@ -654,6 +654,13 @@ final class SQLitePersistTests: XCTestCase {
         XCTAssertEqual(persist.count(type: "widget", where: "", params: []), 500)
     }
 
+    func testFieldNameGuard() {
+        seed("a", ["iden":"a", "type":"widget", "name":"safe"])
+        XCTAssertNil(persist.selectOne(where: "name') = '' OR 1=1 --", is: "x", type: "widget"))
+        XCTAssertEqual(persist.select(where: "bad'field", is: "x", type: "widget").count, 0)
+        XCTAssertEqual(persist.selectOne(where: "name", is: "safe", type: "widget")?["iden"] as? String, "a")
+    }
+
     func testDollarQueriesAndCount() {
         seed("a", ["iden":"a", "type":"widget", "name":"Starlink", "flightNo":101])
         seed("b", ["iden":"b", "type":"widget", "flightNo":99])

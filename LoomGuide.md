@@ -131,7 +131,9 @@ let n = Loom.count(Widget.self, where: "$name LIKE ?", ["Star%"])
 ```
 
 **The contract: clauses are code.** Bind *values* through `?` parameters, always. Never
-build a clause or a field name from user input — the dialect trusts its author.
+build a clause or a field name from user input — the dialect trusts its author. The same
+rule covers the name/value form (`select(where: field, is: value)`): the value is bound,
+the field name is code, and names outside `[A-Za-z0-9_]` are refused with a logged error.
 
 Queries scan the type's documents, which is instant at document-store scale (thousands of
 rows). If a hot field ever actually bottlenecks:
