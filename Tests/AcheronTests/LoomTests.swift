@@ -24,7 +24,16 @@ class MemoryPersist: Persist {
             return rows.values.first { $0["type"] as? String == type && $0[key] as? String == only }
         }
     }
-    override func store(iden: String, attributes: [String:Any]) -> Bool { locked { rows[iden] = attributes }; return true }
+    override func store(iden: String, attributes: [String:Any]) -> Bool {
+        locked {
+            if iden == watchIden, let n = attributes["flightNo"] as? Int {
+                if n < lastSeen { inversions += 1 }
+                lastSeen = max(lastSeen, n)
+            }
+            rows[iden] = attributes
+        }
+        return true
+    }
     override func delete(iden: String) -> Bool { locked { rows.removeValue(forKey: iden) }; return true }
     override func transact(_ closure: ()->(Bool)) -> Bool {
         locked {
@@ -35,6 +44,9 @@ class MemoryPersist: Persist {
             return ok
         }
     }
+    var watchIden: String? = nil
+    var lastSeen: Int = -1
+    var inversions: Int = 0
     override func set(key: String, value: String) { locked { kv[key] = value } }
     override func get(key: String) -> String? { locked { kv[key] } }
 }
@@ -511,6 +523,23 @@ final class LoomTests: XCTestCase {
         Loom.transact { widget.name = "solo" }
         Loom.transact { widget.delete() }
         XCTAssertNil(Loom.selectBy(only: "solo") as Widget?)
+    }
+
+    func testTransactOrderInversion() {
+        let widget: Widget = Loom.create()
+        Loom.transact {}
+        persist.watchIden = widget.iden
+        var counter = 0
+        for _ in 0..<20 {
+            DispatchQueue.concurrentPerform(iterations: 2000) { _ in
+                Loom.transact {
+                    counter += 1
+                    widget.flightNo = counter
+                }
+            }
+        }
+        print("[inversion probe] transacts: \(counter)  inversions: \(persist.inversions)")
+        XCTAssertEqual(persist.inversions, 0)
     }
 
     func testConcurrentTransacts() {

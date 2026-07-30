@@ -25,6 +25,7 @@ public class Basket {
 
     public var discipline: BasketDiscipline = .warning
     private let inTransactKey = DispatchSpecificKey<Bool>()
+    private let transactLock = NSLock()
 
     var cache: SafeMap = SafeMap<Anchor>()
     var onlyToIden: SafeMap = SafeMap<String>()
@@ -204,6 +205,11 @@ public class Basket {
     /// commit's rows wait in a pending buffer for the next flush. Deliberate; see LOOM.md.
     public func transact(_ closure: ()->()) {
         if onQueue { closure(); return }
+
+        // Pins write order to snapshot order: two serial queues in a relay preserve
+        // exclusivity but not sequence; this lock spans the gap. Reads never take it.
+        transactLock.lock()
+        defer { transactLock.unlock() }
 
         var stores: [String:[String:Any]] = [:]
         var deletes: Set<String> = []
