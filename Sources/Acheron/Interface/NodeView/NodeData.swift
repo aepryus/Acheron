@@ -32,11 +32,7 @@ class GroupNodeData: NodeData {
 
 extension Domain: NodeData {
     public var availableNames: [String] { properties }
-#if Weave
-    public func value(for name: String) -> Any? { loomGet(name) }
-#else
-    public func value(for name: String) -> Any? { value(forKey: name) }
-#endif
+    public func value(for name: String) -> Any? { super.value(forKey: name) }
 }
 
 extension Dictionary: NodeData where Key == String {

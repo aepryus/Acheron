@@ -10,7 +10,7 @@
 
 import Foundation
 
-open class Persist {
+open class Persist: NSObject {
     open var name: String
     var typeToOnly: [String:String] = [:]
 
@@ -19,15 +19,12 @@ open class Persist {
     }
     
     public func associate(type: String, only: String) { typeToOnly[type] = only }
-    open func index(type: String, field: String) {}
     public func only(type: String) -> String? { typeToOnly[type] }
 
     open func selectAll() -> [[String:Any]] { [] }
     open func selectAll(type: String) -> [[String:Any]] { [] }
     open func select(where: String, is value: String?, type: String) -> [[String:Any]] { [] }
     open func selectOne(where: String, is value: String, type: String) -> [String:Any]? { nil }
-    open func select(type: String, where clause: String, params: [Any]) -> [[String:Any]] { [] }
-    open func count(type: String, where clause: String, params: [Any]) -> Int { 0 }
     
     open func selectForked() -> [[String:Any]] { [] }
     open func selectForkedMemories() -> [[String:Any]] { [] }
@@ -38,10 +35,10 @@ open class Persist {
     /// Default no-op; `SQLitePersist` removes duplicate rows sharing `Type` + `Only`.
     open func deduplicateDocumentsWithSharedOnlyKey(type: String) {}
     
-    @discardableResult open func delete(iden: String) -> Bool { true }
-    @discardableResult open func store(iden: String, attributes: [String:Any]) -> Bool { true }
-
-    @discardableResult open func transact(_ closure: ()->(Bool)) -> Bool { closure() }
+    open func delete(iden: String) {}
+    open func store(iden: String, attributes: [String:Any]) {}
+    
+    open func transact(_ closure: ()->(Bool)) { _ = closure() }
     
     open func wipe() {}
     open func wipeDocuments() {}
@@ -55,8 +52,8 @@ open class Persist {
     open func get(key: String) -> String? { nil }
     open func unset(key: String) {}
     
-    open func logError(_ error: Error) { print("Persist [\(name)] error: \(error)") }
-    open func logError(message: String) { print("Persist [\(name)]: \(message)") }
+    open func logError(_ error: Error) {}
+    open func logError(message: String) {}
 }
 
 #endif

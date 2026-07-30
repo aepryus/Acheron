@@ -6,7 +6,7 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
-#if Weave
+#if !os(Linux)
 
 import Foundation
 
@@ -17,117 +17,102 @@ public enum DomainAction: String {
     case create, edit, delete, added, removed, load, save, dirty
 }
 
-public protocol Packable {
+class NotFound {}
+
+public protocol Packable where Self:NSObject {
     init?(_: String)
     func pack() -> String
 }
-public extension Packable where Self: RawRepresentable, RawValue == String {
-    init?(_ string: String) { self.init(rawValue: string) }
-    func pack() -> String { rawValue }
-}
-public extension Packable where Self: RawRepresentable, RawValue == Int {
-    init?(_ string: String) {
-        guard let raw = Int(string) else { return nil }
-        self.init(rawValue: raw)
-    }
-    func pack() -> String { "\(rawValue)" }
-}
-public extension Packable where Self: Codable {
-    init?(_ string: String) {
-        guard let data = string.data(using: .utf8),
-              let value = try? JSONDecoder().decode(Self.self, from: data) else { return nil }
-        self = value
-    }
-    func pack() -> String {
-        guard let data = try? JSONEncoder().encode(self),
-              let string = String(data: data, encoding: .utf8) else { return "" }
-        return string
-    }
-}
 
-open class Domain: Hashable {
-
+open class Domain: NSObject {
+    
     // Properties
-    public var iden: String!
-    public var type: String!
-    public var modified: Date!
-
+    @objc public dynamic var iden: String!
+    @objc public dynamic var type: String!
+    @objc public dynamic var modified: Date!
+    
     // Transient
     weak public var parent: Domain?
-    var replicating: Bool = false
-    var hydrating: Bool = false
-    private let statusLock = NSLock()
     private var _status: DomainStatus = .loading
     public var status: DomainStatus {
         set {
-            statusLock.lock()
-            defer { statusLock.unlock() }
-
             guard _status != newValue else { return }
-
-            let legal = (_status == .loading && newValue == .dirty)
-                || ((_status == .loading || _status == .dirty) && newValue == .clean)
-                || (_status == .clean && (newValue == .dirty || newValue == .deleted))
-                || ((_status == .clean || _status == .dirty) && newValue == .deleted)
-            if !legal { print("Loom transition error: [\(String(describing: Swift.type(of: self)))] \(iden ?? "?") moving from \(_status) to \(newValue)") }
-
+            
+            objc_sync_enter(self)
+            defer {objc_sync_exit(self)}
+            
+            if _status == .loading && newValue == .dirty {
+                
+            } else if (_status == .loading || status == .dirty) && newValue == .clean {
+                subscribe()
+                
+            } else if _status == .clean && (newValue == .dirty || newValue == .deleted) {
+                unsubscribe()
+                
+            } else if (_status == .clean || _status == .dirty) && newValue == .deleted {
+                
+            } else {
+                print("transition error: [\((String(describing: Swift.type(of: self))))] moving from \(_status) to \(newValue)")
+            }
+            
             _status = newValue
+            
+            if _status == .clean && isStatic == false && subscribed == false { fatalError() }
         }
-        get {
-            statusLock.lock()
-            defer { statusLock.unlock() }
-            return _status
-        }
+        get { return _status }
     }
-
+    
+    var subscribed: Bool = false
+    
     // Inits
-    public init() {
+    public override init() {
         self.iden = UUID().uuidString
-        self.type = Loom.name(for: Swift.type(of: self))
+        self.type = Loom.nameFromType(Swift.type(of: self))
+        super.init()
         create()
     }
     public init(parent: Domain) {
         self.iden = UUID().uuidString
-        self.type = Loom.name(for: Swift.type(of: self))
+        self.type = Loom.nameFromType(Swift.type(of: self))
         self.parent = parent
+        super.init()
         load()
     }
     public required init(attributes: [String:Any], parent: Domain? = nil) {
         self.iden = attributes["iden"] as? String
         self.type = attributes["type"] as? String
         self.parent = parent
+        super.init()
     }
-
+    
+    deinit { if status == .clean { unsubscribe() } }
+    
     // Methods
     func load(_ domain: Domain) {
         domain.parent = self
         domain.onLoaded()
     }
     public func add(_ domain: Domain) {
-        guard domain.parent !== self else { return }
         load(domain)
         domain.onAdded()
         edit()
         domain.handleTriggers(self, action: .added)
     }
     public func remove(_ domain: Domain) {
-        guard domain.status != .deleted else { return }
         domain.onRemoved()
         domain.delete()
         edit()
         domain.handleTriggers(domain, action: .removed)
     }
-
+    
     var allDomainChildren: [Domain] {
         var result: [Domain] = []
-        properties.forEach {
-            let value = flatten(loomGet($0))
-            if let domain = value as? Domain { result.append(domain) }
-            else if let domains = value as? [Domain] { result += domains }
-        }
+        
         children.forEach {
-            if let domains = loomGet($0) as? [Domain] { result += domains }
+            guard let domains = self.value(forKeyPath: $0) as? [Domain] else { return }
+            result += domains
         }
+        
         return result
     }
     func deepSearchChildren(_ search: (Domain)->(Bool)) -> Set<Domain> {
@@ -136,155 +121,83 @@ open class Domain: Hashable {
         allDomainChildren.forEach { result.formUnion($0.deepSearchChildren(search)) }
         return result
     }
+    private func classForKeyPath(_ keyPath: String) -> AnyClass? {
+        var propertyToClass = Loom.domains[type]
+        if propertyToClass == nil {
+            propertyToClass = [String:AnyClass]()
+            Loom.domains[type] = propertyToClass;
+        }
+        var cls: AnyClass? = propertyToClass![keyPath];
+        if cls == nil {
+            cls = Loom.classForKeyPath(keyPath: keyPath, parent: Swift.type(of:self))
+            if cls != nil {
+                propertyToClass![keyPath] = cls
+            } else {
+                propertyToClass![keyPath] = NotFound.self
+            }
+        } else if cls === NotFound.self {
+            cls = nil
+        }
+        return cls
+    }
+    private func arrayClassForKeyPath(_ keyPath: String) -> AnyClass? {
+        var propertyToClass = Loom.domains[type]
+        if propertyToClass == nil {
+            propertyToClass = [String:AnyClass]()
+            Loom.domains[type] = propertyToClass;
+        }
+        var cls: AnyClass? = propertyToClass![keyPath];
+        if cls == nil {
+            cls = Loom.arrayClassForKeyPath(keyPath: keyPath, parent: self)
+            if cls != nil {
+                propertyToClass![keyPath] = cls
+            } else {
+                propertyToClass![keyPath] = NotFound.self
+            }
+        } else if cls === NotFound.self {
+            cls = nil
+        }
+        return cls
+    }
 
+    private func subscribe() {
+        if isStatic { return }
+        properties.forEach { addObserver(self, forKeyPath: $0, options: [.new,.old], context: nil) }
+        subscribed = true
+    }
+    private func unsubscribe() {
+        if isStatic { return }
+        properties.forEach { removeObserver(self, forKeyPath: $0) }
+        subscribed = false
+    }
+    
     private func handleTriggers(_ domain: Domain, action: DomainAction) {
         guard let basket = domain.anchor?.basket else { return }
         basket.blocksFor(class: Swift.type(of: domain), action: action).forEach { $0(domain) }
     }
-
-// Field access ====================================================================================
-    open func loomGet(_ field: String) -> Any? {
-        switch field {
-            case "iden": return iden
-            case "type": return type
-            case "modified": return modified
-            default: return nil
-        }
-    }
-    open func loomSet(_ field: String, _ value: Any?) {
-        switch field {
-            case "iden": iden = value as? String ?? iden
-            case "type": type = value as? String ?? type
-            case "modified": if let date = Loom.date(from: value) { modified = date }
-            default: break
-        }
-    }
-
-// Capture =========================================================================================
-    func loomCapture() {
-        guard status == .clean else { return }
-        edit()
-    }
-    public func loomDidMutate() { loomCapture() }
-    public func loomDidSet<T: Equatable>(_ old: T, _ new: T) { if old != new { loomCapture() } }
-    public func loomDidSet<T>(_ old: T, _ new: T) { loomCapture() }
-    public func loomDidSetChild<T: Domain>(_ old: T, _ new: T) {
-        guard !hydrating, old !== new else { return }
-        load(new)
-        loomCapture()
-    }
-    public func loomDidSetChild<T: Domain>(_ old: T?, _ new: T?) {
-        guard !hydrating, old !== new else { return }
-        if let new { load(new) }
-        loomCapture()
-    }
-    public func loomDidSetChild<T: Domain>(_ old: [T], _ new: [T]) {
-        guard !hydrating else { return }
-        func arrive(_ child: T) {
-            load(child)
-            child.onAdded()
-            child.handleTriggers(self, action: .added)
-        }
-        if new.count == old.count + 1, zip(old, new).allSatisfy({ $0 === $1 }) {
-            arrive(new.last!)
-            edit()
-            return
-        }
-        let oldIds = Set(old.map(ObjectIdentifier.init))
-        let newIds = Set(new.map(ObjectIdentifier.init))
-        for child in new where !oldIds.contains(ObjectIdentifier(child)) { arrive(child) }
-        for child in old where !newIds.contains(ObjectIdentifier(child)) {
-            child.onRemoved()
-            if child.parent === self { child.delete() }
-            child.handleTriggers(child, action: .removed)
-        }
-        if old != new { edit() }
-    }
-
-// Conversion ======================================================================================
-    private func flatten(_ value: Any?) -> Any? {
-        guard let value else { return nil }
-        if let optional = value as? LoomOptional { return optional.loomWrapped }
-        return value
-    }
-    public func loomConvert<T>(_ raw: Any?, current: T, parent: Domain) -> T {
-        if let optionalType = T.self as? LoomOptional.Type {
-            guard let raw, !(raw is NSNull) else { return optionalType.loomNil as! T }
-            let currentInner = (current as! LoomOptional).loomWrapped
-            guard let converted = loomConvertInner(raw, type: optionalType.loomWrappedType, current: currentInner) else { return optionalType.loomNil as! T }
-            return optionalType.loomWrap(converted) as! T
-        }
-        guard let raw, !(raw is NSNull) else { return current }
-        return (loomConvertInner(raw, type: T.self, current: current) as? T) ?? current
-    }
-    private func loomConvertInner(_ raw: Any, type: Any.Type, current: Any?) -> Any? {
-        if type == Date.self { return Loom.date(from: raw) }
-        if let packableType = type as? Packable.Type {
-            guard let string = raw as? String else { return current }
-            return packableType.init(string)
-        }
-        if type is Domain.Type {
-            guard let attributes = raw as? [String:Any] else { return current }
-            let cls = Loom.classForType(attributes["type"] as! String)
-            let domain = cls.init(attributes: attributes, parent: self)
-            domain.load(attributes: attributes, replicate: replicating)
-            load(domain)
-            return domain
-        }
-        if type == Int.self { return (raw as? Int) ?? (raw as? NSNumber)?.intValue }
-        if type == Double.self { return (raw as? Double) ?? (raw as? NSNumber)?.doubleValue }
-        if type == Bool.self { return (raw as? Bool) ?? (raw as? NSNumber)?.boolValue }
-        return raw
-    }
-    public func loomConvert<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
-        loomChildren(raw, current: current, parent: parent)
-    }
-    public func loomConvert<T: Packable>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
-        guard let strings = raw as? [String] else { return current }
-        return strings.compactMap { T($0) }
-    }
-    public func loomChildren<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
-        guard let list = raw as? [[String:Any]], !list.isEmpty else { return current }
-        var index: [String: T] = [:]
-        current.forEach { index[$0.iden] = $0 }
-        var result: [T] = []
-        for attributes in list {
-            guard let iden = attributes["iden"] as? String else { fatalError("Loom: child document under [\(type ?? "?")] \(self.iden ?? "?") has no iden; the document is malformed") }
-            let child: T
-            if let existing = index[iden] { child = existing }
-            else {
-                guard let childType = attributes["type"] as? String else { fatalError("Loom: child document under [\(type ?? "?")] \(self.iden ?? "?") has no type; the document is malformed") }
-                child = Loom.classForType(childType).init(attributes: attributes, parent: self) as! T
-            }
-            child.load(attributes: attributes, replicate: replicating)
-            load(child)
-            result.append(child)
-        }
-        return result
-    }
-
+    
 // Actions =========================================================================================
     func create() {
         status = .dirty
-        modified = Date()
+        modified = Date.now
         onCreate()
         handleTriggers(self, action: .create)
     }
     func edit() {
         dirty()
-        modified = Date()
+        modified = Date.now
         onEdit()
         handleTriggers(self, action: .edit)
         parent?.edit()
     }
     public func delete() {
         status = .deleted
-        modified = Date()
+        modified = Date.now
         onDelete()
         handleTriggers(self, action: .delete)
         allDomainChildren.forEach { $0.delete() }
     }
-
+    
     func dirty() {
         guard status != .deleted else { return }
         status = .dirty
@@ -293,7 +206,7 @@ open class Domain: Hashable {
         onDirty()
         handleTriggers(self, action: .dirty)
     }
-
+    
     func load() {
         status = .clean
         onLoad()
@@ -305,85 +218,202 @@ open class Domain: Hashable {
         handleTriggers(self, action: .save)
         allDomainChildren.forEach { $0.save() }
     }
-
+    
 // Events ==========================================================================================
     open func onCreate() {}
     open func onEdit() {}
     open func onDelete() {}
-
+    
     open func onLoaded() {}
     open func onAdded() {}
     open func onRemoved() {}
-
+    
     open func onInit() {}
     open func onDirty() {}
-
+    
     open func onSave() {}
     open func onLoad() {}
-
+    
 // Load and Unload =================================================================================
     open func loader(keyPath: String) -> ((Any)->(Any?))? { nil }
     open func unloader(keyPath: String) -> ((Any)->(Any?))? { nil }
-
+    
     public func unload() -> [String:Any] {
         var attributes: [String:Any] = [:]
-
+        
         for keyPath in properties {
-            let value: Any? = flatten(loomGet(keyPath))
-            if let unloader = self.unloader(keyPath: keyPath) {
-                if let value { attributes[keyPath] = unloader(value) }
+            let value: Any?
+            if responds(to: NSSelectorFromString(keyPath)) {
+                value = self.value(forKeyPath: keyPath)
+            } else {
+                value = self.value(forKeyPath: "\(keyPath)Proxy")
+            }
+            let unloader = self.unloader(keyPath:keyPath)
+            if let unloader = unloader {
+                attributes[keyPath] = unloader(value!)
             } else if let value = value as? Date {
-                attributes[keyPath] = value.toISOFormattedString()
+                attributes[keyPath] = value.toISOFormattedString() as NSString
             } else if let value = value as? Packable {
                 attributes[keyPath] = value.pack()
             } else if let value = value as? Domain {
-                attributes[keyPath] = value.unload()
+                attributes[keyPath] = value.unload() as NSDictionary
             } else if let value = value as? [Domain] {
-                attributes[keyPath] = value.map { $0.unload() }
+                var array: [Any] = []
+                value.forEach { array.append($0.unload()) }
+                attributes[keyPath] = array as NSArray;
             } else if let value = value as? [Packable] {
-                attributes[keyPath] = value.map { $0.pack() }
-            } else if let value {
+                var array: [Any] = []
+                value.forEach { array.append($0.pack()) }
+                attributes[keyPath] = array as NSArray;
+            } else {
                 attributes[keyPath] = value
             }
         }
         for keyPath in children {
-            guard let domains = loomGet(keyPath) else { continue }
-            if let domains = domains as? [Domain] {
-                if domains.count == 0 { continue }
-                attributes[keyPath] = domains.map { $0.unload() }
-            } else if let packables = domains as? [Packable] {
-                if packables.count == 0 { continue }
-                attributes[keyPath] = packables.map { $0.pack() }
-            } else if let strings = domains as? [String] {
-                if strings.count == 0 { continue }
-                attributes[keyPath] = strings
+            let domains = value(forKeyPath: keyPath) as! [Any]
+            if domains.count == 0 {
+                attributes.removeValue(forKey: keyPath)
+                continue
             }
+            var array: [Any] = []
+            if let domains = domains as? [Domain] {
+                domains.forEach { array.append($0.unload()) }
+            } else if let packables = domains as? [Packable] {
+                packables.forEach { array.append($0.pack()) }
+            } else if let strings = domains as? [String] {
+                strings.forEach { array.append($0) }
+            }
+            attributes[keyPath] = array as NSArray;
         }
-
+        
         return attributes
     }
     public func toJSON() -> String { unload().toJSON() }
-
-    open func load(attributes: [String:Any], replicate: Bool = false) {
-        replicating = replicate
-        hydrating = true
-        defer { hydrating = false }
-        if replicate { iden = UUID().uuidString }
+    
+    private func indexOfChildren(_ keyPath: String) -> [String:Domain] {
+        var index: [String:Domain] = [:]
+        let domains = value(forKeyPath: keyPath) as! [Domain]
+        domains.forEach { index[$0.iden] = $0 }
+        return index
+    }
+    private func isOptional(_ instance: Any) -> Bool {
+        let mirror = Mirror(reflecting: instance)
+        let style = mirror.displayStyle
+        return style == .optional
+    }
+    public func load(attributes: [String:Any], replicate: Bool = false) {
+        // Properties
         for keyPath in properties {
-            guard !(replicate && keyPath == "iden") else { continue }
-            var raw = attributes[keyPath]
-            if let loader = self.loader(keyPath: keyPath), let value = raw { raw = loader(value) }
-            loomSet(keyPath, raw)
+            guard !(replicate && keyPath == "iden") else { iden = UUID().uuidString; continue }
+            var value = attributes[keyPath]
+            if value != nil {
+                let loader = self.loader(keyPath:keyPath)
+                if let loader = loader {
+                    let newValue = loader(value!)
+                    if let newValue = newValue {
+                        value = newValue
+                    } else {
+                        value = NSNumber(value: 0)
+                    }
+                } else {
+                    let cls: AnyClass? = classForKeyPath(keyPath)
+                    if cls == NSDate.self {
+                        if let string = value as? String {
+                            var time = Date.fromISOFormatted(string: string)
+                            if time == nil {
+                                time = nil
+                            }
+                            value = time
+                        } else {
+                            value = NSDate(timeIntervalSinceReferenceDate: Double(value as! String)!)
+                        }
+                    } else if let cls = cls as? Packable.Type {
+                        value = cls.init(value as! String)
+                    } else if cls?.superclass() == Domain.self {
+                        let valueAtts = value as! [String:Any]
+                        let cls = Loom.classFromName(valueAtts["type"] as! String) as! Domain.Type
+                        let domain = cls.init(attributes: valueAtts, parent: self)
+                        domain.load(attributes:valueAtts, replicate: replicate)
+                        load(domain)
+                        value = domain;
+                    } else if let cls = arrayClassForKeyPath(keyPath) as? Domain.Type {
+                        var array: [Any] = []
+                        let existing = indexOfChildren(keyPath)
+                        for child in value as! [[String:Any]] {
+                            var domain: Domain? = existing[child["iden"] as! String]
+                            if domain == nil {
+                                domain = cls.init(attributes: child, parent: self)
+                            }
+                            domain!.load(attributes:child, replicate: replicate)
+                            load(domain!)
+                            array.append(domain!)
+                        }
+                        value = array
+                    } else if let cls = arrayClassForKeyPath(keyPath) as? Packable.Type {
+                        var array: [Any] = []
+                        for package in value as! [String] {
+                            guard let row = cls.init(package) else { continue }
+                            array.append(row)
+                        }
+                        value = array
+                    }
+                }
+            }
+            
+            if value != nil {
+                if responds(to: NSSelectorFromString(keyPath)) {
+                    setValue(value, forKey: keyPath)
+                } else {
+                    setValue(value, forKey: "\(keyPath)Proxy")
+                }
+            }
+            else {
+                if let currentValue = self.value(forKeyPath: keyPath) as Any? {
+                    if isOptional(currentValue) {
+                        setValue(nil, forKey: keyPath)
+                    }
+                }
+            }
         }
+        // Children
         for keyPath in children {
-            loomSet(keyPath, attributes[keyPath])
+            
+            let children = attributes[keyPath] as! [Any]?
+            if let children = children  {
+                if children.count == 0 {continue}
+                
+                var array: [Any] = []
+                
+                if children.first is [String:Any] {
+                    let existing = indexOfChildren(keyPath)
+                    for child in children as! [[String:Any]] {
+                        var domain: Domain? = existing[child["iden"] as! String]
+                        if domain == nil {
+                            let cls = Loom.classFromName(child["type"] as! String) as! Domain.Type
+                            domain = cls.init(attributes: child, parent: self)
+                        }
+                        domain!.load(attributes:child, replicate: replicate)
+                        load(domain!)
+                        array.append(domain!)
+                    }
+                } else if let cls = arrayClassForKeyPath(keyPath) as? Packable.Type {
+                    for package in children as! [String] {
+                        guard let row = cls.init(package) else { continue }
+                        array.append(row)
+                    }
+                } else {
+                    for string in children as! [String] {
+                        array.append(string)
+                    }
+                }
+                setValue(array, forKey: keyPath)
+            }
         }
-        replicating = false
         load()
     }
     public func dirtyUsingAttributes(_ attributes: [String:Any]) {
         dirty()
-        deepSearchChildren({ _ in true }).forEach { $0.dirty() }
+        deepSearchChildren({ (domain) -> (Bool) in return true }).forEach { $0.dirty() }
         load(attributes: attributes)
     }
     public func dirtyUsingDomain(_ domain: Domain) {
@@ -396,18 +426,21 @@ open class Domain: Hashable {
     public func editUsingDomain(_ domain: Domain) {
         editUsingAttributes(domain.unload())
     }
-
+    
 // Domain ==========================================================================================
     open var properties: [String] { ["iden", "type", "modified"] }
-    open var children: [String] { [] }
+    open var children: [String] { []  }
     var isStatic: Bool { false }
     public var anchor: Anchor? {
         get { return parent?.anchor }
     }
-
-// Hashable ========================================================================================
-    public static func == (lhs: Domain, rhs: Domain) -> Bool { lhs === rhs }
-    public func hash(into hasher: inout Hasher) { hasher.combine(ObjectIdentifier(self)) }
+    
+// NSObject ========================================================================================
+    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        let oldValue = change?[.oldKey] as? NSObject
+        let newValue = change?[.newKey] as? NSObject
+        if newValue != oldValue { edit() }
+    }
 }
 
 #endif

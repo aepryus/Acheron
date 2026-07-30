@@ -15,14 +15,11 @@ public class SQLitePersist: Persist {
     var db: OpaquePointer? = nil
     let queue: DispatchQueue = DispatchQueue(label: "SQLite")
 
-    public convenience override init(_ name: String) {
-        self.init(name, directory: (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]).appendingPathComponent("data"))
-    }
-    public init(_ name: String, directory: URL) {
-
-        let path = directory
-
-        if !FileManager.default.fileExists(atPath: path.path) {
+    public override init(_ name: String) {
+        
+        let path = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]).appendingPathComponent("data")
+        
+        if !FileManager.default.fileExists(atPath: path.absoluteString) {
             do {
                 try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
             } catch  {
@@ -38,14 +35,11 @@ public class SQLitePersist: Persist {
             let error = String(cString: sqlite3_errmsg(db))
             print("\(error)")
         }
-        sqlite3_busy_timeout(db, 2000)
-
+        
         super.init(name)
-
-        execute("PRAGMA journal_mode=WAL")
+        
         createTables()
     }
-    deinit { sqlite3_close(db) }
     private func createDocument() {
         execute("CREATE TABLE IF NOT EXISTS Document (Iden TEXT PRIMARY KEY, Type TEXT, Only TEXT, JSON TEXT, Fork INTEGER)")
         execute("CREATE INDEX IF NOT EXISTS DocumentType ON Document (Type)")
@@ -65,66 +59,93 @@ public class SQLitePersist: Persist {
     }
     
 // Private =========================================================================================
-    func unprotectedQuery(_ query: String, _ params: [Any] = []) -> [[String:Any]] {
+    func unprotectedQuery(_ query: String) -> [[String:Any]] {
         var s: OpaquePointer? = nil
         if sqlite3_prepare_v2(db, query, -1, &s, nil) != SQLITE_OK {
-            logError(message: "prepare failed [\(String(cString: sqlite3_errmsg(db)))] in [\(query)]")
-            return []
+            let error = String(cString: sqlite3_errmsg(db))
+            print("\(error)")
         }
-
-        let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-        for (i, param) in params.enumerated() {
-            switch param {
-                case let value as Int:    _ = sqlite3_bind_int64(s, Int32(i+1), Int64(value))
-                case let value as Double: _ = sqlite3_bind_double(s, Int32(i+1), value)
-                case let value as String: _ = sqlite3_bind_text(s, Int32(i+1), value, -1, SQLITE_TRANSIENT)
-                default:                  _ = sqlite3_bind_null(s, Int32(i+1))
-            }
-        }
-
+        
         var result: [[String:Any]] = []
-        while true {
+        
+        var active = true
+        var n = 0
+        repeat {
             let sqlret = sqlite3_step(s)
+            
             if sqlret == SQLITE_ROW {
                 var row: [String:Any] = [:]
-                for i in 0..<sqlite3_column_count(s) {
-                    let key = String(validatingUTF8: sqlite3_column_name(s,i))!
+                var i: Int32 = 0
+                while i < sqlite3_column_count(s) {
+                    let key = String(validatingUTF8:sqlite3_column_name(s,i))!
+                    var value: NSObject? = nil
                     switch sqlite3_column_type(s,i) {
-                        case SQLITE_INTEGER: row[key] = NSNumber(value: sqlite3_column_int64(s,i))
-                        case SQLITE_FLOAT:   row[key] = NSNumber(value: sqlite3_column_double(s,i))
-                        case SQLITE_TEXT:    row[key] = String(cString: sqlite3_column_text(s,i)) as NSString
-                        default:             break
+                    case SQLITE_INTEGER:
+                        value = NSNumber(value: sqlite3_column_int(s,i))
+                    case SQLITE_TEXT:
+                        if let chars = UnsafeRawPointer(sqlite3_column_text(s, i)) {
+                            value = String(validatingUTF8:chars.bindMemory(to: CChar.self, capacity: 0))! as NSString
+                        }
+                    default:
+                        value = nil
                     }
+                    row[key] = value;
+                    i += 1
                 }
                 result.append(row)
+                
+            } else if sqlret == SQLITE_DONE {
+                active = false;
+                
+            } else if sqlret == SQLITE_BUSY {
+                n += 1
+                if n > 20 {
+                    logError(message: "SQLite command returned SQLITE_BUSY 20 times")
+                    active = false
+                }
+                Thread.sleep(forTimeInterval: 0.1)
+                
             } else {
-                if sqlret != SQLITE_DONE { logError(message: "step returned [\(sqlret)] in [\(query)]") }
-                break
+                active = false
             }
-        }
-
-        sqlite3_finalize(s)
-        return result
+            
+        } while active;
+        
+        _ = executeSQLite(sqlite: { () -> (Int32) in
+            return sqlite3_finalize(s)
+        })
+        
+        return result;
     }
-    private func query(_ query: String, _ params: [Any] = []) -> [[String:Any]] {
+    private func query(_ query: String) -> [[String:Any]] {
         var result: [[String:Any]] = []
         queue.sync {
-            result = unprotectedQuery(query, params)
+            result = unprotectedQuery(query)
         }
         return result;
     }
-    private func documents(_ sql: String, _ params: [Any] = []) -> [[String:Any]] {
-        query(sql, params).map { ($0["JSON"] as! String).toAttributes() }
-    }
-    private func expand(_ clause: String) -> String {
-        clause.replacingOccurrences(of: "\\$(\\w+)", with: "json_extract(JSON,'$.$1')", options: .regularExpression)
-    }
     private func executeSQLite(sqlite: ()->(Int32)) -> Int32 {
-        let result: Int32 = sqlite()
-        if result != SQLITE_OK && result != SQLITE_DONE {
-            logError(message: "SQLite command returned with error code [\(result)]")
-        }
-        return result
+        var result: Int32 = 0
+        var n = 0
+        repeat {
+            result = sqlite()
+            
+            if result == SQLITE_BUSY {
+                n += 1
+                if n > 20 {
+                    logError(message: "SQLite command returned SQLITE_BUSY 20 times")
+                    return result;
+                }
+                
+                Thread.sleep(forTimeInterval: 0.1)
+                
+            } else if result != SQLITE_OK && result != SQLITE_DONE {
+                logError(message: "SQLite command returned with error code [\(result)]")
+            }
+            
+        } while result == SQLITE_BUSY
+        
+        return result;
     }
     private func execute(_ execute: String) {
         var error: UnsafeMutablePointer<Int8>?
@@ -132,59 +153,74 @@ public class SQLitePersist: Persist {
             return sqlite3_exec(db, execute, nil, nil, &error)
         }
         if let error = error {
-            print("SQLitePersist: error in database [\(name)] @1\n\texecuting: \(execute)\n\terror: \(String(cString: error))")
+            print("SQLitePersist: error in database [\(name)] @1\n\texecuting: \(execute)\n\terror: \(error)")
             sqlite3_free(error)
         }
     }
     
 // Persist =========================================================================================
     public override func selectAll() -> [[String:Any]] {
-        documents("SELECT JSON FROM Document")
+        var result: [[String:Any]] = []
+        let rows = query("SELECT * FROM Document")
+        for row in rows {
+            let attributes = (row["JSON"] as! String).toAttributes()
+            result.append(attributes)
+        }
+        return result
     }
     public override func selectAll(type: String) -> [[String:Any]] {
-        documents("SELECT JSON FROM Document WHERE Type=?", [type])
+        var result: [[String:Any]] = []
+        let rows = query("SELECT * FROM Document WHERE Type='\(type)'")
+        for row in rows {
+            let attributes = (row["JSON"] as! String).toAttributes()
+            result.append(attributes)
+        }
+        return result;
     }
-    private func clean(_ name: String) -> Bool { !name.isEmpty && name.allSatisfy { $0.isLetter || $0.isNumber || $0 == "_" } }
-
     public override func select(where field: String, is value: String?, type: String) -> [[String:Any]] {
-        guard clean(field) else { logError(message: "select: field '\(field)' has characters outside [A-Za-z0-9_]; no rows returned"); return [] }
-        return documents("SELECT JSON FROM Document WHERE Type=? AND json_extract(JSON,'$.\(field)') IS ?", [type, value as Any? ?? NSNull()])
+        var result: [[String:Any]] = []
+        let rows = query("SELECT * FROM Document WHERE Type='\(type)'")
+        for row in rows {
+            let attributes = (row["JSON"] as! String).toAttributes()
+            if let rowValue = attributes[field] as? String? {
+                if rowValue == value {
+                    result.append(attributes)
+                }
+            } else if value == nil {
+                result.append(attributes)
+            }
+        }
+        return result
     }
     public override func selectOne(where field: String, is value: String, type: String) -> [String:Any]? {
-        guard clean(field) else { logError(message: "selectOne: field '\(field)' has characters outside [A-Za-z0-9_]; no rows returned"); return nil }
-        return documents("SELECT JSON FROM Document WHERE Type=? AND json_extract(JSON,'$.\(field)')=? LIMIT 1", [type, value]).first
-    }
-    public override func index(type: String, field: String) {
-        guard clean(type), clean(field) else {
-            logError(message: "index: type '\(type)' or field '\(field)' has characters outside [A-Za-z0-9_]; no index created")
-            return
+        let rows = query("SELECT * FROM Document WHERE Type='\(type)'")
+        for row in rows {
+            let attributes = (row["JSON"] as! String).toAttributes()
+            if let rowValue = attributes[field] as? String? {
+                if rowValue == value {
+                    return attributes
+                }
+            }
         }
-        execute("CREATE INDEX IF NOT EXISTS Document_\(type)_\(field) ON Document (Type, json_extract(JSON,'$.\(field)'))")
+        return nil
     }
-    private func glued(_ clause: String) -> String {
-        let expanded = expand(clause).trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !expanded.isEmpty else { return "" }
-        let upper = expanded.uppercased()
-        let bare = upper.hasPrefix("ORDER") || upper.hasPrefix("LIMIT") || upper.hasPrefix("GROUP")
-        return (bare ? " " : " AND ") + expanded
-    }
-
-    public override func select(type: String, where clause: String, params: [Any]) -> [[String:Any]] {
-        documents("SELECT JSON FROM Document WHERE Type=?" + glued(clause), [type] + params)
-    }
-    public override func count(type: String, where clause: String, params: [Any]) -> Int {
-        (query("SELECT COUNT(*) AS n FROM Document WHERE Type=?" + glued(clause), [type] + params).first?["n"] as? NSNumber)?.intValue ?? 0
-    }
-
+    
     public override func selectForked() -> [[String:Any]] {
-        let fork: Int = Int(get(key: "fork") ?? "0") ?? 0
-        return documents("SELECT JSON FROM Document WHERE Fork=?", [fork+1])
+        let fork: Int = Int(get(key: "fork") ?? "0")!
+        
+        var result: [[String:Any]] = []
+        let rows = query("SELECT * FROM Document WHERE Fork=\(fork+1)")
+        for row in rows {
+            let attributes = (row["JSON"] as! String).toAttributes()
+            result.append(attributes)
+        }
+        return result;
     }
     public override func selectForkedMemories() -> [[String:Any]] {
-        let fork: Int = Int(get(key: "fork") ?? "0") ?? 0
-
+        let fork: Int = Int(get(key: "fork") ?? "0")!
+        
         var result: [[String:Any]] = []
-        let rows = query("SELECT * FROM Memory WHERE Server=1 AND Fork=?", [fork+1])
+        let rows = query("SELECT * FROM Memory WHERE Server=1 AND Fork=\(fork+1)")
         for row in rows {
             var attributes = [String:Any]()
             attributes["name"] = row["Name"] as! String
@@ -196,7 +232,7 @@ public class SQLitePersist: Persist {
     }
     
     public override func attributes(iden: String) -> [String:Any]? {
-        let rows = query("SELECT * FROM Document WHERE Iden=?", [iden])
+        let rows = query("SELECT * FROM Document WHERE Iden='\(iden)'")
         if rows.count != 1 {return nil}
         do {
             let json: String = rows[0]["JSON"] as! String
@@ -208,7 +244,7 @@ public class SQLitePersist: Persist {
         }
     }
     public override func attributes(type: String, only: String) -> [String : Any]? {
-        let rows = query("SELECT * FROM Document WHERE Type=? AND Only=?", [type, only])
+        let rows = query("SELECT * FROM Document WHERE Type='\(type)' AND Only='\(only)'")
         if rows.count > 1 {
             logError(message: "SQLitePersist: duplicate Document rows for Type=\(type) Only=\(only) (count=\(rows.count)); using first row")
         }
@@ -226,7 +262,7 @@ public class SQLitePersist: Persist {
     /// Deletes extra `Document` rows that share the same `Type` and `Only` (keeps lexicographically smallest `Iden`). Use after historic duplicates (e.g. folder rows).
     public override func deduplicateDocumentsWithSharedOnlyKey(type: String) {
         queue.sync {
-            let rows = unprotectedQuery("SELECT Iden, Only FROM Document WHERE Type=? AND Only IS NOT NULL", [type])
+            let rows = unprotectedQuery("SELECT Iden, Only FROM Document WHERE Type='\(type)' AND Only IS NOT NULL")
             var byOnly: [String: [String]] = [:]
             for row in rows {
                 guard let iden = row["Iden"] as? String,
@@ -244,48 +280,32 @@ public class SQLitePersist: Persist {
         }
     }
     
-    @discardableResult public override func delete(iden: String) -> Bool {
+    public override func delete(iden: String) {
         dispatchPrecondition(condition: .onQueue(queue))
         var s: OpaquePointer? = nil
         _ = executeSQLite(sqlite: { () -> (Int32) in
-            return sqlite3_prepare(db, "DELETE FROM Document WHERE Iden=?", -1, &s, nil)
+            return sqlite3_prepare(db, "DELETE FROM Document WHERE Iden='\(iden)'", -1, &s, nil)
         })
-        let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
         _ = executeSQLite(sqlite: { () -> (Int32) in
-            return sqlite3_bind_text(s, 1, iden, -1, SQLITE_TRANSIENT)
-        })
-        let result = executeSQLite(sqlite: { () -> (Int32) in
             return sqlite3_step(s)
         })
         sqlite3_finalize(s)
-        return result == SQLITE_DONE
     }
-    @discardableResult public override func store(iden: String, attributes: [String : Any]) -> Bool {
+    public override func store(iden: String, attributes: [String : Any]) {
         dispatchPrecondition(condition: .onQueue(queue))
-        guard let type = attributes["type"] as? String else {
-            logError(message: "store: document \(iden) has no type; row skipped")
-            return true
-        }
-
-        // A poisoned document must not dam the batch: log loudly, drop the row, commit the rest.
-        guard JSONSerialization.isValidJSONObject(attributes) else {
-            logError(message: "store: [\(type)] \(iden) is not JSON-encodable (NaN/Infinity or a non-plist value in its attributes); row skipped, prior version retained")
-            return true
-        }
-
+        let type = attributes["type"] as! String
+        
         var json: String?
         do {
             let data = try JSONSerialization.data(withJSONObject: attributes, options: [])
             json = String(data:data, encoding: .utf8)
         } catch {
-            logError(message: "store: [\(type)] \(iden) failed to serialize; row skipped, prior version retained")
-            logError(error)
-            return true
+            print("\(error)")
+            return
         }
-
-        let fork: Int32 = (attributes["fork"] as? NSNumber)?.int32Value ?? 0
-
-        var result: Int32 = SQLITE_DONE
+        
+        let fork: Int32 = attributes["fork"] as! Int32
+        
         if let json = json {
             var s: OpaquePointer? = nil
             
@@ -319,15 +339,14 @@ public class SQLitePersist: Persist {
             _ = executeSQLite(sqlite: { () -> (Int32) in
                 return sqlite3_bind_int(s, 5, fork)
             })
-            result = executeSQLite(sqlite: { () -> (Int32) in
+            _ = executeSQLite(sqlite: { () -> (Int32) in
                 return sqlite3_step(s)
             })
             sqlite3_finalize(s)
         }
-        return result == SQLITE_DONE
     }
-
-    @discardableResult public override func transact(_ transact: ()->(Bool)) -> Bool {
+    
+    public override func transact(_ transact: ()->(Bool)) {
         queue.sync {
             var error: UnsafeMutablePointer<Int8>?
             let result: Int32 = executeSQLite { () -> (Int32) in
@@ -335,20 +354,26 @@ public class SQLitePersist: Persist {
             }
             if result != SQLITE_OK {
                 logError(message: "begin transaction failed")
-                return false
+                return;
             }
-
+            
             let shouldCommit = transact()
-
-            let finish: Int32 = executeSQLite(sqlite: { () -> (Int32) in
-                return sqlite3_exec(db, shouldCommit ? "COMMIT TRANSACTION" : "ROLLBACK TRANSACTION", nil, nil, &error);
-            })
-
-            if let error = error {
-                print("SQLitePersist: error in database [\(self.name)] @3\n\terror: \(String(cString: error))")
-                sqlite3_free(error)
+            
+            if shouldCommit {
+                _ = executeSQLite(sqlite: { () -> (Int32) in
+                    return sqlite3_exec(db, "COMMIT TRANSACTION", nil, nil, &error);
+                })
+            } else {
+                _ = executeSQLite(sqlite: { () -> (Int32) in
+                    return sqlite3_exec(db, "ROLLBACK TRANSACTION", nil, nil, &error);
+                })
             }
-            return shouldCommit && finish == SQLITE_OK
+            
+            if let error = error {
+                print("SQLitePersist: error in database [\(self.name)] @3\n\terror: \(error)")
+                sqlite3_free(error)
+                return
+            }
         }
     }
     
@@ -379,7 +404,7 @@ public class SQLitePersist: Persist {
     }
     public override func show(_ iden: String) {
         print("===========================================================================")
-        print("\(attributes(iden: iden) ?? [:])")
+        print("\(attributes(iden: iden)!)")
     }
     public override func census() {
         print("\nprinting census [\(self.name)]")
@@ -405,7 +430,7 @@ public class SQLitePersist: Persist {
         var s: OpaquePointer? = nil
         
         _ = executeSQLite(sqlite: { () -> (Int32) in
-            return sqlite3_prepare(db, "INSERT OR REPLACE INTO Memory (Name, Value, Server, Vers, Fork, Gone) VALUES (?, ?, ?, ?, ?, ?)", -1, &s, nil)
+            return sqlite3_prepare(db, "INSERT OR REPLACE INTO Memory (Name, Value, Server, Fork, Gone) VALUES (?, ?, ?, ?, ?)", -1, &s, nil)
         })
         
         let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
@@ -444,12 +469,12 @@ public class SQLitePersist: Persist {
         }
     }
     override open func get(key: String) -> String? {
-        let rows = query("SELECT Value FROM Memory WHERE Name=?", [key])
+        let rows = query("SELECT Value FROM Memory WHERE Name = '\(key)'")
         guard rows.count != 0 else {return nil}
         return rows[0]["Value"] as? String
     }
     private func unprotectedGet(key: String) -> String? {
-        let rows = unprotectedQuery("SELECT Value FROM Memory WHERE Name=?", [key])
+        let rows = unprotectedQuery("SELECT Value FROM Memory WHERE Name = '\(key)'")
         guard rows.count != 0 else {return nil}
         return rows[0]["Value"] as? String
     }
@@ -457,11 +482,7 @@ public class SQLitePersist: Persist {
         queue.sync {
             var s: OpaquePointer? = nil
             _ = executeSQLite(sqlite: { () -> (Int32) in
-                return sqlite3_prepare(db, "DELETE FROM Memory WHERE Name=?", -1, &s, nil)
-            })
-            let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-            _ = executeSQLite(sqlite: { () -> (Int32) in
-                return sqlite3_bind_text(s, 1, key, -1, SQLITE_TRANSIENT)
+                return sqlite3_prepare(db, "DELETE FROM Memory WHERE Name='\(key)'", -1, &s, nil)
             })
             _ = executeSQLite(sqlite: { () -> (Int32) in
                 return sqlite3_step(s)
