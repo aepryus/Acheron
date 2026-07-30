@@ -25,7 +25,6 @@ public class Basket {
 
     public var discipline: BasketDiscipline = .warning
     private let inTransactKey = DispatchSpecificKey<Bool>()
-    private let transactLock = NSLock()
 
     var cache: SafeMap = SafeMap<Anchor>()
     var onlyToIden: SafeMap = SafeMap<String>()
@@ -35,12 +34,14 @@ public class Basket {
     private var pendingDeletes: Set<String> = []
 
     let queue: DispatchQueue
+    let commitQueue: DispatchQueue
     
     let generateIden:(Domain.Type)->(String) = {(type: Domain.Type) -> (String) in UUID().uuidString }
     
     public init(_ persist: Persist) {
         self.persist = persist
         queue = DispatchQueue(label: self.persist.name)
+        commitQueue = DispatchQueue(label: self.persist.name + ".commit")
         queue.setSpecific(key: inTransactKey, value: true)
         fork = Int(persist.get(key: "fork") ?? "0")!
     }
@@ -206,13 +207,11 @@ public class Basket {
     public func transact(_ closure: ()->()) {
         if onQueue { closure(); return }
 
-        // Pins write order to snapshot order: two serial queues in a relay preserve
-        // exclusivity but not sequence; this lock spans the gap. Reads never take it.
-        transactLock.lock()
-        defer { transactLock.unlock() }
-
-        var stores: [String:[String:Any]] = [:]
-        var deletes: Set<String> = []
+        // The commit rides a ticket enqueued from inside the basket block, so the commit
+        // queue receives work in snapshot order by construction — ordering without a lock,
+        // and the basket queue is free during the disk I/O. The caller still waits for its
+        // own ticket: transact returns only after its commit has landed.
+        var ticket: DispatchWorkItem? = nil
 
         queue.sync {
             autoreleasepool {
@@ -232,6 +231,9 @@ public class Basket {
                     dirtyDomains.forEach { $0.dirtied() }
                 }
 
+                var stores: [String:[String:Any]] = [:]
+                var deletes: Set<String> = []
+
                 for anchor in dirty {
                     if anchor.status == .deleted {
                         if let only = anchor.only { onlyToIden["\(anchor.type!):\(only)"] = nil }
@@ -247,26 +249,31 @@ public class Basket {
                 for (iden, attributes) in pendingStores where stores[iden] == nil && !deletes.contains(iden) { stores[iden] = attributes }
                 pendingStores.removeAll()
                 pendingDeletes.removeAll()
+
+                guard stores.count + deletes.count > 0 else { return }
+
+                let work = DispatchWorkItem { [self] in
+                    let committed = persist.transact { () -> (Bool) in
+                        autoreleasepool {
+                            var ok: Bool = true
+                            for iden in deletes { ok = persist.delete(iden: iden) && ok }
+                            for (iden, attributes) in stores { ok = persist.store(iden: iden, attributes: attributes) && ok }
+                            return ok
+                        }
+                    }
+                    if !committed {
+                        queue.sync {
+                            for (iden, attributes) in stores where pendingStores[iden] == nil { pendingStores[iden] = attributes }
+                            pendingDeletes.formUnion(deletes)
+                        }
+                    }
+                }
+                commitQueue.async(execute: work)
+                ticket = work
             }
         }
 
-        guard stores.count + deletes.count > 0 else { return }
-
-        let committed = persist.transact { () -> (Bool) in
-            autoreleasepool {
-                var ok: Bool = true
-                for iden in deletes { ok = persist.delete(iden: iden) && ok }
-                for (iden, attributes) in stores { ok = persist.store(iden: iden, attributes: attributes) && ok }
-                return ok
-            }
-        }
-
-        if !committed {
-            queue.sync {
-                for (iden, attributes) in stores where pendingStores[iden] == nil { pendingStores[iden] = attributes }
-                pendingDeletes.formUnion(deletes)
-            }
-        }
+        ticket?.wait()
     }
     
     public func clearCache() {
