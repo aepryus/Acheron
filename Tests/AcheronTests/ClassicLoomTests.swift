@@ -137,6 +137,12 @@ final class LoomTests: XCTestCase {
         XCTAssertTrue(found === widget)
     }
 
+    func testAsyncTransact() async {
+        let widget: Widget = Loom.create()
+        await Loom.transact { widget.name = "awaited" }
+        XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "awaited")
+    }
+
     func testDelete() {
         let widget: Widget = Loom.create()
         Loom.transact { widget.name = "gone" }

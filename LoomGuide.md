@@ -103,7 +103,8 @@ let all: [Widget]  = Loom.selectAll()
 ```
 
 Assignment is the API. Setting a field on a clean object marks its anchor dirty;
-`Loom.transact { }` commits every dirty anchor in one SQLite transaction. `transact` is a
+`Loom.transact { }` commits every dirty anchor in one SQLite transaction (from async
+contexts: `await Loom.transact { }` — identical semantics, returns after the commit lands). `transact` is a
 flush point, not a mutation scope — an edit made outside one is logged as a stray (see
 **Discipline**) and swept into the next commit. Nested transacts join the outer commit.
 
@@ -191,8 +192,9 @@ Loom.start(basket: basket, namespaces: ["MyApp"])
 widget.add(gadget)      // classic child wiring is explicit
 ```
 
-Documents are byte-identical across dialects: an app can port from classic to Weave (or
-revert) without touching its stored data. The port is mechanical — `@objc dynamic var` →
+Documents are format-identical across dialects — same keys, same values, same coercions
+(JSON key order is not canonical, so don't content-hash raw documents): an app can port from
+classic to Weave (or revert) without touching its stored data. The port is mechanical — `@objc dynamic var` →
 `@Field var`, delete the lists, register the types.
 
 ## Eras and fallback
@@ -202,6 +204,10 @@ revert) without touching its stored data. The port is mechanical — `@objc dyna
 | Classic | Apple (default) | nothing | ObjC runtime (KVO/KVC) |
 | Weave | all | `traits: ["Weave"]` | Swift macros |
 | Wrap | Linux (default) | nothing | property wrappers (stdlib) |
+
+Each era carries its own test suite: `swift test` exercises classic; `swift test --traits
+Weave` exercises the macro dialect (the larger suite). A bare `swift test` announces which
+era it covered — a green run of one era is not a run of the other.
 
 Every tier is machinery — Loom has never required hand-written persistence boilerplate and
 never will. If macros ever break on a toolchain update, revert your port commit and ride

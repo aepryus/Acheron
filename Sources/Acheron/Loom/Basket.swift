@@ -275,6 +275,14 @@ public class Basket {
 
         ticket?.wait()
     }
+    public func transact(_ closure: @escaping () -> ()) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            DispatchQueue.global().async {
+                self.transact(closure)
+                continuation.resume()
+            }
+        }
+    }
     
     public func clearCache() {
         sync { cache.removeAll() }

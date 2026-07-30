@@ -247,6 +247,12 @@ final class LoomTests: XCTestCase {
         XCTAssertNil(sqlite.attributes(iden: bad.iden))
     }
 
+    func testAsyncTransact() async {
+        let widget: Widget = Loom.create()
+        await Loom.transact { widget.name = "awaited" }
+        XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "awaited")
+    }
+
     func testDelete() {
         let widget: Widget = Loom.create()
         Loom.transact { widget.name = "gone" }
