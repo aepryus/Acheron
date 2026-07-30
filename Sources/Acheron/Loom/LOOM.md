@@ -45,9 +45,10 @@ Each of these is a choice with a force behind it, not an oversight.
    duplicate only-keys) fail fast rather than degrade silently, and the errors carry their
    own diagnosis. Do not convert them to logged-and-ignored.
 5. **The ObjC runtime dependency is a purchase, not a debt.** KVO change capture, KVC
-   loading, and runtime class resolution are what these ~1,500 lines buy. The planned exit is
-   Swift Observation + macros — the same semantics with the ceremony generated at compile
-   time — not a framework swap.
+   loading, and runtime class resolution are what these ~1,500 lines buy. The exit shipped
+   in 2026 as the Weave era (see Eras): the same semantics with the ceremony generated at
+   compile time, opt-in by trait. Classic remains the default; the purchase stands wherever
+   the weave is not enabled.
 6. **The sync columns (`fork`, `vers`, `Server`, `Gone`) are dormant, not dead.** They are
    the client half of a two-phase-commit reconciliation protocol whose mature server
    implementation is the companion Pequod project (per-document optimistic versioning,
@@ -70,6 +71,15 @@ Each of these is a choice with a force behind it, not an oversight.
    loss of every mutation that races an I/O. (The buffer assumes transacts are serial, which
    they are in practice; a contrived concurrent-transact interleaving during a failure could
    retry a stale row.)
+8. **`Loom` is sugar; `Basket` is the unit.** The static facade — `Loom.transact`,
+   `Loom.selectBy`, `Loom.create` — is a convenience over a `Basket` you can construct,
+   inject, and multiply freely; every test in this suite builds its own, and deleting the
+   facade would cost the library nothing but keystrokes. The typical Loom app owns exactly
+   one store for exactly the process lifetime, and at that shape a context threaded through
+   every controller is ceremony with no payoff — `Loom.transact { }` at the call site says
+   everything. Need two stores? Hold two Baskets. Need injection? Inject the Basket. A
+   review that flags "global mutable singleton" is reviewing the sugar, not the
+   architecture.
 
 ## Queries
 
