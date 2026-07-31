@@ -79,9 +79,32 @@ public class ExpandableTableView: AETableView, UITableViewDelegate, UITableViewD
         let closingExpandedView = currentExpandedView
         currentExpandedView = nextExpandedView
 
+        /* pure collapse near the bottom: shrinking content would clamp the offset
+           mid-animation and fight the row shrink. Pad the bottom inset so the
+           collapse plays out in place, then glide down to rest in a second step. */
+        var slidePad: CGFloat = 0
+        if nextExpandedView == nil {
+            slidePad = expandableTableViewDelegate.expandableTableView(self, expansionHeightForRowAt: indexPath)
+            contentInset.bottom += slidePad
+        }
+        let restingBottomInset: CGFloat = adjustedContentInset.bottom - slidePad
+
         beginUpdates()
         CATransaction.setCompletionBlock {
             if self.expandedPath != nil && self.exposeBottom {self.scrollRectToVisible(cell.frame, animated: true)}
+            if slidePad > 0 {
+                let maxY: CGFloat = max(-self.adjustedContentInset.top, self.contentSize.height - self.bounds.height + restingBottomInset)
+                let targetY: CGFloat = min(self.contentOffset.y, maxY)
+                if targetY < self.contentOffset.y {
+                    UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseInOut]) {
+                        self.contentOffset = CGPoint(x: 0, y: targetY)
+                    } completion: { _ in
+                        self.contentInset.bottom -= slidePad
+                    }
+                } else {
+                    self.contentInset.bottom -= slidePad
+                }
+            }
             guard let closingExpandedView = closingExpandedView else { return }
             closingExpandedView.removeFromSuperview()
             self.expandedViews.append(closingExpandedView)
