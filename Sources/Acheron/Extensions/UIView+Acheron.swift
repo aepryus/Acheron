@@ -111,8 +111,13 @@ public extension UIView {
 
     var top: CGFloat { frame.origin.y }
     var bottom: CGFloat { frame.origin.y + frame.size.height }
-    var left: CGFloat { frame.origin.x }
-    var right: CGFloat { frame.origin.x + frame.size.width }
+    /// Mirrored to match the anchors, so chaining reads the same in both
+    /// directions: a view placed by `left(dx: 12)` reports `left == 12` whether
+    /// the app runs LTR or RTL, and `sibling.right+s(12)` lands where you meant.
+    /// Raw `frame.minX` / `frame.maxX` are still there when you want the
+    /// physical edge.
+    var left: CGFloat { Self.layoutIsRTL ? parent.width-frame.maxX : frame.minX }
+    var right: CGFloat { Self.layoutIsRTL ? parent.width-frame.minX : frame.maxX }
     var width: CGFloat { bounds.size.width }
     var height: CGFloat { bounds.size.height }
     
