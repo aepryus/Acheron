@@ -21,8 +21,8 @@ class MemoryPersist: Persist {
         guard let key = typeToOnly[type] else { return nil }
         return rows.values.first { $0["type"] as? String == type && $0[key] as? String == only }
     }
-    override func store(iden: String, attributes: [String:Any]) { rows[iden] = attributes }
-    override func delete(iden: String) { rows.removeValue(forKey: iden) }
+    override func store(iden: String, attributes: [String:Any]) -> Bool { rows[iden] = attributes; return true }
+    override func delete(iden: String) -> Bool { rows.removeValue(forKey: iden); return true }
     override func set(key: String, value: String) { kv[key] = value }
     override func get(key: String) -> String? { kv[key] }
 }
