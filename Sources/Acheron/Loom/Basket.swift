@@ -10,7 +10,16 @@
 
 import Foundation
 
+/// How strictly this basket's anchors must honor the transact boundary. A mutation of a
+/// persisted Anchor outside a transact is a bug — `.warning` (the default) logs each one;
+/// `.strict` reprises the 2003 Java rule and fails fast; `.tolerant` silences the check.
+/// The basket-wide sweep still commits strays either way: staleness, not loss.
+public enum BasketDiscipline { case tolerant, warning, strict }
+
 public class Basket: NSObject {
+
+    public var discipline: BasketDiscipline = .warning
+    private let inTransactKey = DispatchSpecificKey<Bool>()
     let persist: Persist
 
     var blocks: [String:[(Domain)->()]] = [:]
@@ -29,10 +38,14 @@ public class Basket: NSObject {
     public init(_ persist: Persist) {
         self.persist = persist
         queue = DispatchQueue(label: self.persist.name)
+        queue.setSpecific(key: inTransactKey, value: true)
         fork = Int(persist.get(key: "fork") ?? "0")!
     }
     
     public func associate(type: String, only: String) { persist.associate(type: type, only: only) }
+    public func index(type: String, field: String) { persist.index(type: type, field: field) }
+
+    private var onQueue: Bool { DispatchQueue.getSpecific(key: inTransactKey) == true }
     public func only(type: String) -> String? { persist.only(type: type) }
         
     private func load(_ attributes: [String:Any], cls: Anchor.Type) -> Anchor {
@@ -46,7 +59,8 @@ public class Basket: NSObject {
         return anchor
     }
     private func load(_ attributes: [String:Any]) -> Anchor {
-        let cls = Loom.classFromName(attributes["type"] as! String) as! Anchor.Type
+        guard let type = attributes["type"] as? String else { fatalError("Loom: document \(attributes["iden"] ?? "?") has no type field; the row is malformed") }
+        guard let cls = Loom.classFromName(type) as? Anchor.Type else { fatalError("Loom: no Anchor class registered for type '\(type)'; if the class was renamed, documents of this type can no longer load") }
         return load(attributes, cls: cls)
     }
     public func inject(_ attributes: [String:Any]) -> Anchor {
@@ -146,8 +160,20 @@ public class Basket: NSObject {
         return attributes
     }
     
-    func dirtyAnchor(_ anchor: Anchor) { dirty.insert(anchor) }
+    private func enforceDiscipline(_ anchor: Anchor) {
+        guard discipline != .tolerant else { return }
+        guard !onQueue else { return }
+        let message = "Loom: [\(anchor.type ?? "?")] \(anchor.iden ?? "?") was modified outside of a transact. Wrap the mutation in Loom.transact { }."
+        if discipline == .strict { fatalError(message) }
+        print(message + " The change is in the dirty set and will persist with the next transact's sweep.")
+    }
+
+    func dirtyAnchor(_ anchor: Anchor) {
+        enforceDiscipline(anchor)
+        dirty.insert(anchor)
+    }
     func deleteAnchor(_ anchor: Anchor) {
+        enforceDiscipline(anchor)
         dirty.insert(anchor)
         cache.removeValue(forKey: anchor.iden)
     }
@@ -182,6 +208,8 @@ public class Basket: NSObject {
     }
     
     public func transact(_ closure: ()->()) {
+        if onQueue { closure(); return }
+
         var dirty = Set<Anchor>()
         
         var editedAnchors = Set<Anchor>()

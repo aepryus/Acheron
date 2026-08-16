@@ -203,6 +203,40 @@ final class LoomTests: XCTestCase {
         XCTAssertNotEqual(copy.gadgets.first?.iden, gadget.iden)
     }
 
+// Discipline ======================================================================================
+    func testStrayIsLoggedAndStillCommits() {
+        basket.discipline = .warning
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.name = "v1" }
+        widget.name = "stray"                       // outside a transact: logged, not lost
+        Loom.transact {}
+        XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "stray")
+    }
+    func testTolerantIsSilent() {
+        basket.discipline = .tolerant
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.name = "v1" }
+        widget.name = "quiet"
+        Loom.transact {}
+        XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "quiet")
+    }
+    func testNestedTransactJoinsTheOuterCommit() {
+        let widget: Widget = Loom.create()
+        Loom.transact {
+            widget.name = "outer"
+            Loom.transact { widget.flightNo = 9 }   // inline, not a deadlock
+            Loom.transact {}
+        }
+        XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "outer")
+        XCTAssertEqual(persist.rows[widget.iden]?["flightNo"] as? Int, 9)
+    }
+    func testMutationInsideTransactIsNotAStray() {
+        basket.discipline = .strict                 // would crash on a stray
+        let widget: Widget = Loom.create()
+        Loom.transact { widget.name = "legit" }
+        XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "legit")
+    }
+
 // Sync columns ====================================================================================
     func testForkAndVersPersist() {
         let widget: Widget = Loom.create()
