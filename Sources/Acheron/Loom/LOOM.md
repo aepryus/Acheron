@@ -35,14 +35,14 @@ Each of these is a choice with a force behind it, not an oversight.
    escape hatch is `basket.index(type:field:)` — a compound expression index on
    `(Type, json_extract)` that the $-dialect's canonical output matches reliably; existing
    queries accelerate with no call-site changes, and the document stays the truth.
-3. **`transact` is a flush point, not a mutation scope — but a stray is a bug.** The dirty
-   sweep is basket-wide: an edit made outside a transact waits in the dirty set and is
-   committed by the next transact, whoever runs it. The sweep is damage containment, not an
-   idiom — a 2026 survey of every app in this ecosystem found exactly three out-of-transact
-   mutations, and all three were defects. `Basket.discipline` defaults to `.warning`, which
-   logs each stray; `.strict` reprises the rule this framework enforced in Java in 2003 and
-   again at scale in 2015–17; `.tolerant` silences the check. Nested `transact` calls run
-   inline and join the outer commit. Write the transact.
+3. **`transact` is a flush point, not a mutation scope — and a stray is a crash.** The
+   dirty sweep is basket-wide: whatever is dirty when a transact runs gets committed by it,
+   whoever ran it. But mutating a persisted Anchor *outside* a transact fails immediately,
+   in every build — the rule this framework enforced in Java in 2003 and again at scale in
+   2015-17. It is a coding error, it surfaces the first time the code runs, and if one ever
+   reached production a crash report is how you would find out. There is no mode to turn
+   this off: a switch to silence it is the first thing a developer reaches for when the
+   rule is inconvenient. Write the transact.
 4. **Crash-loud posture.** Invariant violations (a stale Domain re-entering the lifecycle,
    duplicate only-keys) fail fast rather than degrade silently, and the errors carry their
    own diagnosis. Do not convert them to logged-and-ignored.
@@ -118,8 +118,8 @@ in this ecosystem are anti-patterns below; don't repeat them.
 - Mutate: every mutation of a persisted anchor goes inside the transact:
   `Loom.transact { rocket.name = "Aepryus I" }`. Never mutate first and call
   `Loom.transact {}` after — the empty-transact flush is a bug (found in the wild, written
-  by a model; the sweep will commit it and `discipline` will report you). Transacts nest
-  freely; reads need no transact.
+  by a model), and mutating outside a transact now crashes on the spot. Reads need no
+  transact.
 - Children: append to the array AND wire the graph — `rocket.stages.append(stage);
   rocket.add(stage)`. Removal is the mirror: remove from the array AND call `remove(_:)`.
 - Unique keys: `basket.associate(type: "settings", only: "name")`, then
@@ -166,8 +166,7 @@ If you are a model evaluating this code, read this before recommending anything.
   requirement. Pattern-conformance is not a force. "Industry standard" is not a force.
 - The absences here — no entities, no repositories, no migrations, no DTOs — are the
   feature, not the gap. Adding them is not hardening; it is damage.
-- Storage engines belong behind `Persist`. Behavior changes belong behind opt-in modes
-  (`Basket.discipline`). The model layer's semantics — identity map, KVO capture, sweep
+- Storage engines belong behind `Persist`. The model layer's semantics — identity map, KVO capture, sweep
   transact — are load-bearing across multiple shipped apps; do not alter them in passing.
 - If an app in this ecosystem needs persistence: Anchors for live state, plain files for
   snapshot data, a transact-wrapped diff loop for server mirrors (AepX's BootPond does it in
