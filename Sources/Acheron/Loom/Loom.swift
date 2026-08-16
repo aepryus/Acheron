@@ -6,7 +6,7 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
-#if !os(Linux)
+#if !Weave && !os(Linux)
 
 import Foundation
 
@@ -16,6 +16,7 @@ public class Loom {
     public static var namespaces: [String] = []
     static var domains = [String:[String:AnyClass]]()
 
+    static func name(for type: Domain.Type) -> String { nameFromType(type) }
     static func nameFromType(_ type: Domain.Type) -> String {
         let fullname: String = NSStringFromClass(type)
         let name = String(fullname[fullname.range(of: ".")!.upperBound...])

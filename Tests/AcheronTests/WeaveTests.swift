@@ -2,16 +2,15 @@
 //  LoomTests.swift
 //  Acheron
 //
-//  Characterization tests — these describe Loom as it already behaves.
-//  They pass against the source unmodified.
+//  The same behaviors, in the macro dialect.
 //
 
-#if !Weave && !os(Linux)
+#if Weave
 
 import XCTest
 @testable import Acheron
 
-class MemoryPersist: Persist {
+class WeaveMemoryPersist: Persist {
     var rows: [String:[String:Any]] = [:]
     var kv: [String:String] = [:]
 
@@ -27,29 +26,34 @@ class MemoryPersist: Persist {
     override func get(key: String) -> String? { kv[key] }
 }
 
-class Gadget: Domain {
-    @objc dynamic var label: String = ""
-    override var properties: [String] { super.properties + ["label"] }
-}
-class Widget: Anchor {
-    @objc dynamic var name: String = ""
-    @objc dynamic var flightNo: Int = 0
-    @objc dynamic var when: Date = Date()
-    @objc dynamic var gadgets: [Gadget] = []
-    override var properties: [String] { super.properties + ["name", "flightNo", "when"] }
-    override var children: [String] { ["gadgets"] }
+enum Rating: String, Packable { case unknown, good, great }
+struct Spec: Codable, Packable, Equatable {
+    var thrust: Double = 0
+    var name: String = ""
 }
 
-final class LoomTests: XCTestCase {
-    var persist: MemoryPersist!
+@Domain class Gadget: Domain {
+    @Field var label: String = ""
+}
+@Domain class Widget: Anchor {
+    @Field var name: String = ""
+    @Field var flightNo: Int = 0
+    @Field var when: Date = Date()
+    @Field var rating: Rating = .unknown
+    @Field var spec: Spec = Spec()
+    @Child var gadgets: [Gadget] = []
+}
+
+final class WeaveTests: XCTestCase {
+    var persist: WeaveMemoryPersist!
     var basket: Basket!
 
     override func setUp() {
         super.setUp()
-        persist = MemoryPersist("test")
+        persist = WeaveMemoryPersist("test")
         basket = Basket(persist)
         Loom.basket = basket
-        Loom.namespaces = ["AcheronTests"]
+        Loom.register([Widget.self, Gadget.self])
     }
 
     private func widgetWithGadget() -> (Widget, Gadget) {
@@ -57,7 +61,6 @@ final class LoomTests: XCTestCase {
         let gadget = Gadget()
         Loom.transact {
             widget.gadgets.append(gadget)
-            widget.add(gadget)
         }
         return (widget, gadget)
     }
@@ -72,7 +75,6 @@ final class LoomTests: XCTestCase {
             let gadget = Gadget()
             gadget.label = "leg"
             widget.gadgets.append(gadget)
-            widget.add(gadget)
         }
         basket.clearCache()
         let reloaded: Widget = Loom.selectBy(iden: iden)!
@@ -156,10 +158,7 @@ final class LoomTests: XCTestCase {
     /// stale-object guard.
     func testRemoveRetiresTheChild() {
         let (widget, gadget) = widgetWithGadget()
-        Loom.transact {
-            widget.gadgets.removeAll { $0 === gadget }
-            widget.remove(gadget)
-        }
+        Loom.transact { widget.gadgets.removeAll { $0 === gadget } }
         XCTAssertEqual(gadget.status, DomainStatus.deleted)
         XCTAssertEqual((persist.rows[widget.iden]?["gadgets"] as? [[String:Any]])?.count ?? 0, 0)
     }
@@ -202,6 +201,31 @@ final class LoomTests: XCTestCase {
         XCTAssertNotEqual(copy.iden, widget.iden)
         XCTAssertEqual(copy.gadgets.count, 1)
         XCTAssertNotEqual(copy.gadgets.first?.iden, gadget.iden)
+    }
+
+// Dialect =========================================================================================
+    func testEnumsAndCodableAreFields() {
+        let widget: Widget = Loom.create()
+        Loom.transact {
+            widget.rating = .great
+            widget.spec = Spec(thrust: 9.81, name: "raptor")
+        }
+        XCTAssertEqual(persist.rows[widget.iden]?["rating"] as? String, "great")
+        basket.clearCache()
+        let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
+        XCTAssertEqual(reloaded.rating, Rating.great)
+        XCTAssertEqual(reloaded.spec, Spec(thrust: 9.81, name: "raptor"))
+    }
+    func testAppendWiresTheChild() {
+        let widget: Widget = Loom.create()
+        let gadget = Gadget()
+        Loom.transact { widget.gadgets.append(gadget) }
+        XCTAssertTrue(gadget.parent === widget)
+    }
+    func testAwaitTransact() async {
+        let widget: Widget = Loom.create()
+        await Loom.transact { widget.name = "awaited" }
+        XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "awaited")
     }
 
 // Sync ============================================================================================
