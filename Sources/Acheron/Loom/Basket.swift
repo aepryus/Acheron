@@ -11,6 +11,7 @@
 import Foundation
 
 public class Basket: NSObject {
+
     let persist: Persist
 
     var blocks: [String:[(Domain)->()]] = [:]
@@ -33,6 +34,7 @@ public class Basket: NSObject {
     }
     
     public func associate(type: String, only: String) { persist.associate(type: type, only: only) }
+    public func index(type: String, field: String) { persist.index(type: type, field: field) }
     public func only(type: String) -> String? { persist.only(type: type) }
         
     private func load(_ attributes: [String:Any], cls: Anchor.Type) -> Anchor {
@@ -146,7 +148,10 @@ public class Basket: NSObject {
         return attributes
     }
     
-    func dirtyAnchor(_ anchor: Anchor) { dirty.insert(anchor) }
+    func dirtyAnchor(_ anchor: Anchor) {
+        dispatchPrecondition(condition: .onQueue(queue))
+        dirty.insert(anchor)
+    }
     func deleteAnchor(_ anchor: Anchor) {
         dirty.insert(anchor)
         cache.removeValue(forKey: anchor.iden)

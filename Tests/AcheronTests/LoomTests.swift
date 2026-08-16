@@ -123,9 +123,10 @@ final class LoomTests: XCTestCase {
         let widget: Widget = Loom.create()
         Loom.transact { widget.name = "v1" }
         XCTAssertEqual(widget.status, DomainStatus.clean)
-        widget.name = "v2"
-        XCTAssertEqual(widget.status, DomainStatus.dirty)
-        Loom.transact {}
+        Loom.transact {
+            widget.name = "v2"
+            XCTAssertEqual(widget.status, DomainStatus.dirty)
+        }
         XCTAssertEqual(persist.rows[widget.iden]?["name"] as? String, "v2")
     }
     func testChildEditDirtiesTheAnchor() {
@@ -201,6 +202,15 @@ final class LoomTests: XCTestCase {
         XCTAssertNotEqual(copy.iden, widget.iden)
         XCTAssertEqual(copy.gadgets.count, 1)
         XCTAssertNotEqual(copy.gadgets.first?.iden, gadget.iden)
+    }
+
+// Sync ============================================================================================
+    func testInjectRunsInsideATransact() {
+        let attributes: [String:Any] = ["iden":"inj-1", "type":"widget", "name":"beamed", "flightNo":3]
+        var injected: Widget! = nil
+        Loom.transact { injected = basket.inject(attributes) as? Widget }
+        XCTAssertEqual(injected.name, "beamed")
+        XCTAssertEqual(persist.rows["inj-1"]?["name"] as? String, "beamed")
     }
 
 // Sync columns ====================================================================================
