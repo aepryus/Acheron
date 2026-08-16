@@ -24,6 +24,7 @@ A lightweight threadsafe no SQL ORM.
 * Dependencies: Odds and Ends
 * Classes: Anchor, Basket, Domain, Persist, Loom, SQLitePersist
 * Lines: 1189
+* [LoomGuide.md](LoomGuide.md) — how to use it; [LOOM.md](Sources/Acheron/Loom/LOOM.md) — why it is what it is
 
 
 ## AepLayout
