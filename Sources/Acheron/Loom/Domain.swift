@@ -301,7 +301,7 @@ open class Domain: NSObject {
         let style = mirror.displayStyle
         return style == .optional
     }
-    public func load(attributes: [String:Any], replicate: Bool = false) {
+    open func load(attributes: [String:Any], replicate: Bool = false) {
         // Properties
         for keyPath in properties {
             guard !(replicate && keyPath == "iden") else { iden = UUID().uuidString; continue }
