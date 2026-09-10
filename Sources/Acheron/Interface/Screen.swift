@@ -18,7 +18,7 @@ public class Screen {
     /// of any `Screen` member, since `width`/`height` are captured in `init`.
     public static var iPadPortrait: Bool = false
 
-    static let current: Screen = Screen()
+    static var current: Screen = Screen()
     
     public enum Model {
         case iPhone, iPad, mac, other
@@ -56,8 +56,10 @@ public class Screen {
     let height: CGFloat
     var s: CGFloat = 1
     let scaler: CGFloat
+    private var referenceIPhone: CGFloat = 375
+    private var referenceIPad: CGFloat = 768
     
-    init() {
+    init(macSize: CGSize? = nil) {
         #if targetEnvironment(macCatalyst)
         
         if UIScreen.main.bounds.width <= 1800 {
@@ -69,8 +71,9 @@ public class Screen {
         model = .mac
         dimensions = .dim1194x834
         ratio = .rat143
-        width = UIApplication.shared.windows.first?.width ?? 1194 / scaler
-        height = UIApplication.shared.windows.first?.height ?? 834 / scaler
+        let window: CGSize? = macSize ?? UIApplication.shared.windows.first?.bounds.size
+        width = window?.width ?? 1194 / scaler
+        height = window?.height ?? 834 / scaler
         s = 790 / 748 / scaler
         
         #else
@@ -141,9 +144,21 @@ public class Screen {
     }
     
     func setReferenceWidth(iPhone: CGFloat, iPad: CGFloat) {
+        referenceIPhone = iPhone
+        referenceIPad = iPad
         if model == .iPhone || Screen.iPadPortrait { s = width / iPhone }
         else { s = height / iPad }
     }
+    
+#if targetEnvironment(macCatalyst)
+    /// The Mac window changed size: rebuild `width`, `height` and `s` for it,
+    /// keeping the reference widths already set. Callers relayout afterwards.
+    public static func resize(to size: CGSize) {
+        let fresh: Screen = Screen(macSize: size)
+        fresh.setReferenceWidth(iPhone: current.referenceIPhone, iPad: current.referenceIPad)
+        current = fresh
+    }
+#endif
     
 // Static ==========================================================================================
     public static var model: Model { current.model }
