@@ -65,9 +65,13 @@ public class Loom {
         return cls
     }
     public static func arrayClassForKeyPath(keyPath: String, parent: AnyObject) -> AnyClass? {
-        let mirror: Mirror = Mirror(reflecting: parent)
-        for property in mirror.children {
-            guard property.label! == keyPath else {continue}
+        // A Mirror shows only its own class's stored properties: walk the superclasses too, so a
+        // Domain subclass unpacks the arrays its superclass declares (a Member's Mech resultChains).
+        var mirror: Mirror? = Mirror(reflecting: parent)
+        var children: [Mirror.Child] = []
+        while let m = mirror { children += m.children; mirror = m.superclassMirror }
+        for property in children {
+            guard property.label == keyPath else {continue}
             var className = "\(Swift.type(of: property.value))"
             if className.starts(with: "Array<") {
                 className.removeLast(1)
