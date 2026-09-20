@@ -10,9 +10,22 @@
 
 import UIKit
 
+/// A view that sets the scale of everything beneath it: a view's `s` is that of its nearest
+/// ScaleRoot ancestor (itself included), like tintColor — Screen.s when there is none.
+public protocol ScaleRoot: AnyObject {
+    var scaleFactor: CGFloat { get }
+}
+
 public extension UIView {
     
-    var s: CGFloat { Screen.s }
+    var s: CGFloat {
+        var view: UIView? = self
+        while let current = view {
+            if let root = current as? ScaleRoot { return root.scaleFactor }
+            view = current.superview
+        }
+        return Screen.s
+    }
     func s(_ x: CGFloat) -> CGFloat { round(x*s*Screen.scale)/Screen.scale }
     
     private var parent: CGSize {
