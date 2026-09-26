@@ -43,11 +43,19 @@ public class Loom {
 
     private static var types: [String: Domain.Type] = [:]
 
+    /// Names of the registered types, worked out once at registration; every query asks for one.
+    private static var names: [ObjectIdentifier: String] = [:]
+
     public static func register(_ list: [Domain.Type]) {
-        list.forEach { types[name(for: $0)] = $0 }
+        list.forEach {
+            let name: String = spell($0)
+            types[name] = $0
+            names[ObjectIdentifier($0)] = name
+        }
     }
     static func nameFromType(_ type: Domain.Type) -> String { name(for: type) }
-    static func name(for type: Domain.Type) -> String {
+    static func name(for type: Domain.Type) -> String { names[ObjectIdentifier(type)] ?? spell(type) }
+    private static func spell(_ type: Domain.Type) -> String {
         let name = String(describing: type)
         return name[0...0].lowercased() + name[1...]
     }
@@ -297,6 +305,16 @@ open class Domain: Hashable {
         if let optional = value as? LoomOptional { return optional.loomWrapped }
         return value
     }
+    /// The converters a woven class uses for its scalar fields. The general `loomConvert` below has
+    /// to establish the field's type as it runs — a conformance lookup for Optional, then a walk down
+    /// Date, Packable, Domain, Int, Double, Bool — for every field of every document. Where the type
+    /// was written down, the macro calls one of these instead, and the same answers cost a single cast.
+    @inline(__always) public func loomString(_ raw: Any?) -> String? { raw as? String }
+    @inline(__always) public func loomInt(_ raw: Any?) -> Int? { (raw as? Int) ?? (raw as? NSNumber)?.intValue }
+    @inline(__always) public func loomDouble(_ raw: Any?) -> Double? { (raw as? Double) ?? (raw as? NSNumber)?.doubleValue }
+    @inline(__always) public func loomBool(_ raw: Any?) -> Bool? { (raw as? Bool) ?? (raw as? NSNumber)?.boolValue }
+    @inline(__always) public func loomDate(_ raw: Any?) -> Date? { Loom.date(from: raw) }
+
     public func loomConvert<T>(_ raw: Any?, current: T, parent: Domain) -> T {
         if let optionalType = T.self as? LoomOptional.Type {
             guard let raw, !(raw is NSNull) else { return optionalType.loomNil as! T }

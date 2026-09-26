@@ -114,13 +114,27 @@ public class Basket: NSObject {
         guard let attributes = persist.selectOne(where: field, is: value, type: Loom.nameFromType(type)) else { return nil }
         return cache[attributes["iden"] as! String] ?? load(attributes, cls: type)
     }
+    /// A query's rows, by iden, taken from the identity map where they are already live; only the rows
+    /// not yet loaded are read from the store and built. A table asking each of its rows for its
+    /// children would otherwise re-read and re-parse every matching document on every ask, to find
+    /// objects it was already holding.
+    private func resolve(_ idens: [String], type: Anchor.Type) -> [Anchor] {
+        let held: [Anchor?] = cache.values(for: idens)
+        var missing: [String] = []
+        for (iden, anchor) in zip(idens, held) where anchor == nil { missing.append(iden) }
+        guard !missing.isEmpty else { return held.map { $0! } }
+        var loaded: [String:Anchor] = [:]
+        for attributes in persist.attributes(idens: missing) {
+            guard let iden = attributes["iden"] as? String else { continue }
+            loaded[iden] = cache[iden] ?? load(attributes, cls: type)
+        }
+        return zip(idens, held).compactMap { $1 ?? loaded[$0] }
+    }
     public func select(where field: String, is value: String, type: Anchor.Type) -> [Domain] {
-        let array = persist.select(where: field, is: value, type: Loom.nameFromType(type))
-        return convert(array: array, type:type)
+        resolve(persist.idens(where: field, is: value, type: Loom.nameFromType(type)), type: type)
     }
     public func selectAll(_ type: Anchor.Type) -> [Anchor] {
-        let array = persist.selectAll(type: Loom.nameFromType(type))
-        return convert(array: array, type: type)
+        resolve(persist.idens(type: Loom.nameFromType(type)), type: type)
     }
     public func selectForked() -> [Anchor] {
         let array = persist.selectForked()

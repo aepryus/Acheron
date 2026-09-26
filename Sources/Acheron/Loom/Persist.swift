@@ -35,6 +35,17 @@ open class Persist {
     open func attributes(iden: String) -> [String:Any]? { nil }
     open func attributes(type: String, only: String) -> [String:Any]? { nil }
 
+    /// Which rows a query matches, by iden. The basket already holds most of what it asks for as live
+    /// objects; knowing the idens lets it read documents only for the rows it does not. These defaults
+    /// derive the idens from the documents, so any Persist works; one that can answer from an index
+    /// should override them.
+    open func idens(where field: String, is value: String?, type: String) -> [String] {
+        select(where: field, is: value, type: type).compactMap { $0["iden"] as? String }
+    }
+    open func idens(type: String) -> [String] { selectAll(type: type).compactMap { $0["iden"] as? String } }
+    /// The documents for these idens, in any order; an iden with no document is left out.
+    open func attributes(idens: [String]) -> [[String:Any]] { idens.compactMap { attributes(iden: $0) } }
+
     /// Default no-op; `SQLitePersist` removes duplicate rows sharing `Type` + `Only`.
     open func deduplicateDocumentsWithSharedOnlyKey(type: String) {}
     

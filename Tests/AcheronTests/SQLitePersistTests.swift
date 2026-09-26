@@ -48,6 +48,18 @@ final class SQLitePersistTests: XCTestCase {
     }
 
 // index hatch =====================================================================================
+    func testIdensAnswerWithoutDocuments() {
+        seed("a", ["iden":"a", "type":"widget", "name":"x"])
+        seed("b", ["iden":"b", "type":"widget", "name":"y"])
+        seed("c", ["iden":"c", "type":"widget", "name":"x"])
+        seed("d", ["iden":"d", "type":"gadget", "name":"x"])
+        XCTAssertEqual(Set(persist.idens(where: "name", is: "x", type: "widget")), ["a", "c"])
+        XCTAssertEqual(persist.idens(where: "name", is: nil, type: "widget"), [])
+        XCTAssertEqual(Set(persist.idens(type: "widget")), ["a", "b", "c"])
+        XCTAssertEqual(persist.idens(where: "bad'field", is: "x", type: "widget"), [])
+        let documents = persist.attributes(idens: ["c", "missing", "a"])
+        XCTAssertEqual(Set(documents.compactMap { $0["iden"] as? String }), ["a", "c"])
+    }
     func testIndexIsAdoptedByThePlanner() {
         for i in 0..<200 { seed("w\(i)", ["iden":"w\(i)", "type":"widget", "flightNo":i]) }
 

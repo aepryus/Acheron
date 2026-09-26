@@ -6,7 +6,15 @@ import SwiftSyntaxMacros
 struct WovenField {
     let name: String
     let isKids: Bool
+    /// The type as written, when it was written: `loomSet` uses it to convert without asking at runtime.
+    let type: String?
 }
+
+/// The scalar types a document can hold. Anything else — a Domain, a Packable, an array, a field
+/// with no written type — goes through the general `loomConvert`, which works the type out as it runs.
+let loomScalars: [String: String] = [
+    "String": "loomString", "Int": "loomInt", "Double": "loomDouble", "Bool": "loomBool", "Date": "loomDate",
+]
 
 func wovenFields(of declaration: some DeclGroupSyntax) -> [WovenField] {
     var fields: [WovenField] = []
@@ -21,10 +29,21 @@ func wovenFields(of declaration: some DeclGroupSyntax) -> [WovenField] {
         guard let kind else { continue }
         for binding in varDecl.bindings {
             guard let pattern = binding.pattern.as(IdentifierPatternSyntax.self) else { continue }
-            fields.append(WovenField(name: pattern.identifier.text, isKids: kind == "Child"))
+            let type: String? = binding.typeAnnotation?.type.trimmedDescription
+            fields.append(WovenField(name: pattern.identifier.text, isKids: kind == "Child", type: type))
         }
     }
     return fields
+}
+
+/// What `loomSet` assigns for one field. A written scalar type converts directly; everything else
+/// keeps the general path.
+func conversion(of f: WovenField) -> String {
+    guard !f.isKids, let type = f.type else { return "loomConvert(value, current: \(f.name), parent: self)" }
+    let optional: Bool = type.hasSuffix("?")
+    let bare: String = optional ? String(type.dropLast()) : type
+    guard let converter = loomScalars[bare] else { return "loomConvert(value, current: \(f.name), parent: self)" }
+    return optional ? "\(converter)(value)" : "\(converter)(value) ?? \(f.name)"
 }
 
 public struct DomainMacro: MemberMacro {
@@ -38,6 +57,7 @@ public struct DomainMacro: MemberMacro {
         var decls: [DeclSyntax] = []
 
         if !props.isEmpty {
+            // the list never changes, and `load` walks it for every document: work it out once
             let list = props.map { "\"\($0)\"" }.joined(separator: ", ")
             decls.append("override \(raw: access)var properties: [String] { super.properties + [\(raw: list)] }")
         }
@@ -46,7 +66,7 @@ public struct DomainMacro: MemberMacro {
         var setCases: [String] = []
         for f in fields {
             getCases.append("case \"\(f.name)\": return \(f.name)")
-            setCases.append("case \"\(f.name)\": \(f.name) = loomConvert(value, current: \(f.name), parent: self)")
+            setCases.append("case \"\(f.name)\": \(f.name) = \(conversion(of: f))")
         }
         if !fields.isEmpty {
             decls.append("""

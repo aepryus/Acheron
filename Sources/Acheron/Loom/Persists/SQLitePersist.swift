@@ -43,7 +43,10 @@ public class SQLitePersist: Persist {
 
         createTables()
     }
-    deinit { sqlite3_close(db) }
+    deinit {
+        prepared.values.forEach { sqlite3_finalize($0) }
+        sqlite3_close(db)
+    }
     private func createDocument() {
         execute("CREATE TABLE IF NOT EXISTS Document (Iden TEXT PRIMARY KEY, Type TEXT, Only TEXT, JSON TEXT, Fork INTEGER)")
         execute("CREATE INDEX IF NOT EXISTS DocumentType ON Document (Type)")
@@ -70,15 +73,7 @@ public class SQLitePersist: Persist {
             return []
         }
 
-        let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-        for (i, param) in params.enumerated() {
-            switch param {
-                case let value as Int:    _ = sqlite3_bind_int64(s, Int32(i+1), Int64(value))
-                case let value as Double: _ = sqlite3_bind_double(s, Int32(i+1), value)
-                case let value as String: _ = sqlite3_bind_text(s, Int32(i+1), value, -1, SQLITE_TRANSIENT)
-                default:                  _ = sqlite3_bind_null(s, Int32(i+1))
-            }
-        }
+        bind(s, params)
 
         var result: [[String:Any]] = []
         while true {
@@ -102,6 +97,52 @@ public class SQLitePersist: Persist {
         }
 
         sqlite3_finalize(s)
+        return result
+    }
+    private func bind(_ s: OpaquePointer?, _ params: [Any]) {
+        let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+        for (i, param) in params.enumerated() {
+            switch param {
+                case let value as Int:    _ = sqlite3_bind_int64(s, Int32(i+1), Int64(value))
+                case let value as Double: _ = sqlite3_bind_double(s, Int32(i+1), value)
+                case let value as String: _ = sqlite3_bind_text(s, Int32(i+1), value, -1, SQLITE_TRANSIENT)
+                default:                  _ = sqlite3_bind_null(s, Int32(i+1))
+            }
+        }
+    }
+    /// Statements the lean reads have prepared, kept for reuse: preparing one has the planner weigh
+    /// every expression index on Document, which costs more than running it. `prepare_v2` statements
+    /// re-prepare themselves if the schema changes underneath them. Only touched on `queue`.
+    private var prepared: [String:OpaquePointer] = [:]
+    /// The first column of every row as a string: no row dictionaries, no JSON.
+    private func strings(_ query: String, _ params: [Any] = []) -> [String] {
+        var result: [String] = []
+        queue.sync {
+            let s: OpaquePointer
+            if let held = prepared[query] {
+                s = held
+                sqlite3_reset(s)
+                sqlite3_clear_bindings(s)
+            } else {
+                var made: OpaquePointer? = nil
+                guard sqlite3_prepare_v2(db, query, -1, &made, nil) == SQLITE_OK, let made else {
+                    logError(message: "prepare failed [\(String(cString: sqlite3_errmsg(db)))] in [\(query)]")
+                    return
+                }
+                prepared[query] = made
+                s = made
+            }
+            bind(s, params)
+            while true {
+                let step = sqlite3_step(s)
+                guard step == SQLITE_ROW else {
+                    if step != SQLITE_DONE { logError(message: "step returned [\(step)] in [\(query)]") }
+                    break
+                }
+                if let text = sqlite3_column_text(s, 0) { result.append(String(cString: text)) }
+            }
+            sqlite3_reset(s)
+        }
         return result
     }
     private func query(_ query: String, _ params: [Any] = []) -> [[String:Any]] {
@@ -147,6 +188,24 @@ public class SQLitePersist: Persist {
     public override func select(where field: String, is value: String?, type: String) -> [[String:Any]] {
         guard clean(field) else { logError(message: "select: field '\(field)' has characters outside [A-Za-z0-9_]; no rows returned"); return [] }
         return documents("SELECT JSON FROM Document WHERE Type=? AND json_extract(JSON,'$.\(field)') IS ?", [type, value as Any? ?? NSNull()])
+    }
+    public override func idens(where field: String, is value: String?, type: String) -> [String] {
+        guard clean(field) else { logError(message: "idens: field '\(field)' has characters outside [A-Za-z0-9_]; no rows returned"); return [] }
+        return strings("SELECT Iden FROM Document WHERE Type=? AND json_extract(JSON,'$.\(field)') IS ?", [type, value as Any? ?? NSNull()])
+    }
+    public override func idens(type: String) -> [String] {
+        strings("SELECT Iden FROM Document WHERE Type=?", [type])
+    }
+    public override func attributes(idens: [String]) -> [[String:Any]] {
+        var result: [[String:Any]] = []
+        var i: Int = 0
+        while i < idens.count {
+            let chunk: ArraySlice<String> = idens[i..<min(i + 500, idens.count)]
+            let marks: String = Array(repeating: "?", count: chunk.count).joined(separator: ",")
+            result += documents("SELECT JSON FROM Document WHERE Iden IN (\(marks))", Array(chunk))
+            i += 500
+        }
+        return result
     }
     public override func selectOne(where field: String, is value: String, type: String) -> [String:Any]? {
         guard clean(field) else { logError(message: "selectOne: field '\(field)' has characters outside [A-Za-z0-9_]; no rows returned"); return nil }

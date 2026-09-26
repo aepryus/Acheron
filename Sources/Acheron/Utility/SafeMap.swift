@@ -19,6 +19,9 @@ public class SafeMap<T> {
         get { queue.sync { map[key] } }
     }
 
+    /// Many keys under one lock, in the order given.
+    public func values(for keys: [String]) -> [T?] { queue.sync { keys.map { map[$0] } } }
+
     public var values: [T] { queue.sync { Array(map.values) } }
     public var count: Int { queue.sync { map.count } }
 

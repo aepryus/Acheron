@@ -15,6 +15,9 @@ class WeaveMemoryPersist: Persist {
     var kv: [String:String] = [:]
 
     override func selectAll(type: String) -> [[String:Any]] { rows.values.filter { $0["type"] as? String == type } }
+    override func select(where field: String, is value: String?, type: String) -> [[String:Any]] {
+        rows.values.filter { $0["type"] as? String == type && $0[field] as? String == value }
+    }
     override func attributes(iden: String) -> [String:Any]? { rows[iden] }
     override func attributes(type: String, only: String) -> [String:Any]? {
         guard let key = typeToOnly[type] else { return nil }
@@ -99,6 +102,29 @@ final class WeaveTests: XCTestCase {
         let a: Widget = Loom.selectBy(iden: widget.iden)!
         let b: Widget = Loom.selectBy(iden: widget.iden)!
         XCTAssertTrue(a === b && a === widget)
+    }
+    func testQueriesResolveThroughTheIdentityMap() {
+        let a: Widget = Loom.create()
+        let b: Widget = Loom.create()
+        let c: Widget = Loom.create()
+        Loom.transact { a.name = "x"; b.name = "y"; c.name = "x" }
+
+        // live rows come back as the objects already held
+        let first: [Widget] = Loom.select(where: "name", is: "x")
+        XCTAssertEqual(first.count, 2)
+        XCTAssertTrue(first.contains { $0 === a } && first.contains { $0 === c })
+
+        // rows not yet loaded are read and built once, then held
+        basket.clearCache()
+        let rebuilt: [Widget] = Loom.select(where: "name", is: "x")
+        XCTAssertEqual(Set(rebuilt.map { $0.iden }), [a.iden, c.iden])
+        XCTAssertFalse(rebuilt.contains { $0 === a })
+        let again: [Widget] = Loom.select(where: "name", is: "x")
+        XCTAssertTrue(zip(rebuilt.sorted { $0.iden < $1.iden }, again.sorted { $0.iden < $1.iden }).allSatisfy { $0 === $1 })
+
+        let all: [Widget] = Loom.selectAll()
+        XCTAssertEqual(all.count, 3)
+        XCTAssertTrue(all.contains { $0 === rebuilt[0] })
     }
     func testHydrationMergesIntoLiveChildren() {
         let (widget, gadget) = widgetWithGadget()
