@@ -10,13 +10,14 @@
 
 import UIKit
 
-public extension UIView {
-    
+extension UIView {
     /// The scale of a point in this view, and a length in it landed on a device pixel — overridable, so
     /// a view can route its subclasses to the scale of its own kind.
     @objc open var s: CGFloat { Screen.s }
     @objc open func s(_ x: CGFloat) -> CGFloat { round(x*s*Screen.scale)/Screen.scale }
-    
+}
+
+public extension UIView {
     private var parent: CGSize {
         if let parent = superview {
             return parent.bounds.size

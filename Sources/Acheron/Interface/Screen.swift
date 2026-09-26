@@ -71,7 +71,7 @@ public class Screen {
         model = .mac
         dimensions = .dim1194x834
         ratio = .rat143
-        let window: CGSize? = macSize ?? UIApplication.shared.windows.first?.bounds.size
+        let window: CGSize? = macSize ?? UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).flatMap({ $0.windows }).first?.bounds.size
         width = window?.width ?? 1194 / scaler
         height = window?.height ?? 834 / scaler
         s = 790 / 748 / scaler
