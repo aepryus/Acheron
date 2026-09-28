@@ -64,6 +64,11 @@ enum Rating: String, Packable { case unknown, good, great }
 `Int`, `Double`, `Bool`, `Date`, optionals, `[String]`, enums and `Codable` structs (add
 `Packable`), and custom types implementing `Packable`'s `init?(String)` / `pack()`.
 
+The two dialects write the same document: an enum that isn't `Packable` is stored as its raw
+value (Classic's `@objc` enum), an empty `@Child` list is left out, and a key the document lacks
+leaves the field at its default. A `didSet` on a woven field runs as it would on a plain property;
+`willSet` is refused.
+
 ## Boot
 
 ```swift

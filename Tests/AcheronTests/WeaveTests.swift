@@ -46,6 +46,15 @@ struct Spec: Codable, Packable, Equatable {
     @Field var spec: Spec = Spec()
     @Child var gadgets: [Gadget] = []
 }
+enum Stage: Int { case pad, flight, landed }
+@Domain class Probe: Domain {
+    @Field var stage: Stage = .pad
+    @Field var callsign: String? = "alpha"
+    @Child var parts: [Gadget] = []
+    @Field var name: String = "" {
+        didSet { if name == "" { name = oldValue } }
+    }
+}
 
 final class WeaveTests: XCTestCase {
     var persist: WeaveMemoryPersist!
@@ -56,7 +65,7 @@ final class WeaveTests: XCTestCase {
         persist = WeaveMemoryPersist("test")
         basket = Basket(persist)
         Loom.basket = basket
-        Loom.register([Widget.self, Gadget.self])
+        Loom.register([Widget.self, Gadget.self, Probe.self])
     }
 
     private func widgetWithGadget() -> (Widget, Gadget) {
@@ -275,6 +284,36 @@ final class WeaveTests: XCTestCase {
         let reloaded: Widget = Loom.selectBy(iden: widget.iden)!
         XCTAssertEqual(reloaded.fork, 4)
         XCTAssertEqual(reloaded.vers, 7)
+    }
+
+// Classic parity ==================================================================================
+    func testIntEnumIsANumber() {
+        let probe = Probe()
+        probe.stage = .landed
+        let attributes: [String:Any] = probe.unload()
+        XCTAssertEqual(attributes["stage"] as? Int, 2)
+        let reloaded = Loom.domain(attributes: ["iden":"p-1", "type":"probe", "stage":NSNumber(value: 1)]) as! Probe
+        XCTAssertEqual(reloaded.stage, .flight)
+    }
+    func testEmptyChildrenAreLeftOut() {
+        let probe = Probe()
+        XCTAssertNil(probe.unload()["parts"])
+        probe.parts.append(Gadget())
+        XCTAssertEqual((probe.unload()["parts"] as? [[String:Any]])?.count, 1)
+    }
+    func testAFieldKeepsItsObserver() {
+        let probe = Probe()
+        probe.name = "voyager"
+        probe.name = ""
+        XCTAssertEqual(probe.name, "voyager")
+        probe.name += " 2"
+        XCTAssertEqual(probe.name, "voyager 2")
+        XCTAssertEqual(probe.unload()["name"] as? String, "voyager 2")
+    }
+    func testAnAbsentKeyKeepsTheDefault() {
+        let probe = Loom.domain(attributes: ["iden":"p-2", "type":"probe"]) as! Probe
+        XCTAssertEqual(probe.callsign, "alpha")
+        XCTAssertEqual(probe.stage, .pad)
     }
 }
 

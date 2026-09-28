@@ -339,10 +339,16 @@ open class Domain: Hashable {
             load(domain)
             return domain
         }
+        if let rawType = type as? any RawRepresentable.Type { return loomRaw(rawType, raw) ?? current }
         if type == Int.self { return (raw as? Int) ?? (raw as? NSNumber)?.intValue }
         if type == Double.self { return (raw as? Double) ?? (raw as? NSNumber)?.doubleValue }
         if type == Bool.self { return (raw as? Bool) ?? (raw as? NSNumber)?.boolValue }
         return raw
+    }
+    /// An enum that isn't Packable is kept as its raw value, as Classic kept an `@objc` enum: a number.
+    private func loomRaw<R: RawRepresentable>(_ type: R.Type, _ raw: Any) -> R? {
+        if R.RawValue.self == Int.self, let int = (raw as? Int) ?? (raw as? NSNumber)?.intValue { return R(rawValue: int as! R.RawValue) }
+        return (raw as? R.RawValue).flatMap { R(rawValue: $0) }
     }
     public func loomConvert<T: Domain>(_ raw: Any?, current: [T], parent: Domain) -> [T] {
         loomChildren(raw, current: current, parent: parent)
@@ -450,6 +456,8 @@ open class Domain: Hashable {
                 attributes[keyPath] = value.map { $0.unload() }
             } else if let value = value as? [Packable] {
                 attributes[keyPath] = value.map { $0.pack() }
+            } else if let value = value as? any RawRepresentable {
+                attributes[keyPath] = value.rawValue
             } else if let value {
                 attributes[keyPath] = value
             }
@@ -477,14 +485,15 @@ open class Domain: Hashable {
         hydrating = true
         defer { hydrating = false }
         if replicate { iden = UUID().uuidString }
+        // a key the document doesn't have leaves the field as it is, as in Classic: an older document
+        // keeps the defaults its object was made with
         for keyPath in properties {
-            guard !(replicate && keyPath == "iden") else { continue }
-            var raw = attributes[keyPath]
-            if let loader = self.loader(keyPath: keyPath), let value = raw { raw = loader(value) }
-            loomSet(keyPath, raw)
+            guard !(replicate && keyPath == "iden"), let value = attributes[keyPath] else { continue }
+            loomSet(keyPath, loader(keyPath: keyPath).map { $0(value) } ?? value)
         }
         for keyPath in children {
-            loomSet(keyPath, attributes[keyPath])
+            guard let value = attributes[keyPath] else { continue }
+            loomSet(keyPath, value)
         }
         replicating = false
         load()
