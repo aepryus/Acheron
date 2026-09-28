@@ -6,9 +6,14 @@
 //  Copyright © 2019 Aepryus Software. All rights reserved.
 //
 
-#if !os(Linux)
+#if !os(Linux) || Weave
 
 import Foundation
+
+#if os(Linux)
+// Foundation on Linux keeps no autorelease pools; the body is the whole of it
+func autoreleasepool<T>(invoking body: () throws -> T) rethrows -> T { try body() }
+#endif
 
 public class Basket: NSObject {
 

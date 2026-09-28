@@ -7,6 +7,9 @@
 //
 
 import Foundation
+#if canImport(FoundationXML)
+import FoundationXML
+#endif
 
 public extension String {
     subscript(i: Int) -> Character {                                        // [a]
@@ -89,7 +92,6 @@ public extension String {
     static func uuid() -> String { UUID().uuidString }
     static let notLocalized: String = "\u{0}!nl!\u{0}"
     
-#if !os(Linux)
     func xmlToAttributes() -> [String:Any] {
         let parser: XMLParser = XMLParser(data: data(using: .utf8)!)
         let delegate: XMLtoAttributes = XMLtoAttributes()
@@ -97,7 +99,6 @@ public extension String {
         parser.parse()
         return delegate.result
     }
-#endif
 }
 
 #if canImport(UIKit)

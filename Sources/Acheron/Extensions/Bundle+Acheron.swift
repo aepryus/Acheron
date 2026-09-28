@@ -12,7 +12,7 @@ public extension Bundle {
     // Search order for String.localized; main first so apps override their packages.
     static let localizations: [Bundle] = {
         var bundles: [Bundle] = [.main]
-        let urls: [URL] = main.urls(forResourcesWithExtension: "bundle", subdirectory: nil) ?? []
+        let urls: [URL] = main.paths(forResourcesOfType: "bundle", inDirectory: nil).map { URL(fileURLWithPath: $0) }
         urls.sorted { $0.lastPathComponent < $1.lastPathComponent }.forEach {
             if let bundle = Bundle(url: $0) { bundles.append(bundle) }
         }
