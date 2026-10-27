@@ -261,7 +261,16 @@ public class Basket: NSObject {
             })
         }
     }
-    
+    public func transact(_ closure: @escaping ()->()) async {
+        nonisolated(unsafe) let basket = self       // transact serializes on queue
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            DispatchQueue.global().async {
+                basket.transact(closure)
+                continuation.resume()
+            }
+        }
+    }
+
     public func clearCache() {
         queue.sync { cache.removeAll() }
     }
