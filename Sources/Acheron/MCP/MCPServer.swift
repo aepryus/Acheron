@@ -16,10 +16,13 @@
 //  A Catalyst or iOS app needs com.apple.security.network.server in its sandbox to listen.
 //
 
-#if canImport(Network)
 import Foundation
+#if canImport(Network)
 import Network
+#endif
 
+/// The tools are the app's whether an MCP client calls them or the app's own AI does, so they build on every
+/// platform; the server only where Network does.
 public struct MCPTool {
     public let name: String
     public let description: String
@@ -43,6 +46,7 @@ public struct MCPError: LocalizedError {
     public var errorDescription: String? { message }
 }
 
+#if canImport(Network)
 public final class MCPServer {
     public let name: String
     public let version: String
