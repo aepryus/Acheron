@@ -76,20 +76,52 @@ public final class MCPServer {
         parameters.requiredLocalEndpoint = .hostPort(host: .ipv4(.loopback), port: port)
         parameters.allowLocalEndpointReuse = true
         let listener: NWListener = try NWListener(using: parameters)
+        queue.async {
+            self.listener?.cancel()
+            self.generation += 1
+            self.failures = 0
+            self.run(listener, parameters)
+        }
+    }
+    public func stop() {
+        queue.async {
+            self.generation += 1
+            self.listener?.cancel()
+            self.listener = nil
+        }
+    }
+
+    // on the queue, as the listener's handlers are
+    private var generation: Int = 0      // a start or stop since a retry was scheduled cancels it
+    private var failures: Int = 0
+    /// A listener that fails is tried again until it starts: an app relaunched before its last instance has let go of the
+    /// port gets "Address already in use", and a listener given up on then leaves it with no server until it restarts.
+    private func run(_ listener: NWListener, _ parameters: NWParameters) {
         listener.newConnectionHandler = { [weak self] (connection: NWConnection) in
             guard let self else { connection.cancel(); return }
             connection.start(queue: self.queue)
             self.serve(connection, Data())
         }
-        listener.stateUpdateHandler = { [name] (state: NWListener.State) in
-            if case .failed(let error) = state { print("[ \(name) MCP ] \(error)") }
+        listener.stateUpdateHandler = { [weak self, weak listener, name] (state: NWListener.State) in
+            guard let self else { return }
+            switch state {
+                case .ready:
+                    if self.failures > 0 { print("[ \(name) MCP ] listening, after \(self.failures) tries") }
+                    self.failures = 0
+                case .failed(let error):
+                    listener?.cancel()
+                    if self.failures == 0 { print("[ \(name) MCP ] \(error) — trying again until it starts") }
+                    self.failures += 1
+                    let generation: Int = self.generation
+                    self.queue.asyncAfter(deadline: .now() + min(30, 2 * Double(self.failures))) { [weak self] in
+                        guard let self, self.generation == generation, let listener: NWListener = try? NWListener(using: parameters) else { return }
+                        self.run(listener, parameters)
+                    }
+                default: break
+            }
         }
         listener.start(queue: queue)
         self.listener = listener
-    }
-    public func stop() {
-        listener?.cancel()
-        listener = nil
     }
 
 // HTTP ============================================================================================
