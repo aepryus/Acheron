@@ -151,11 +151,13 @@ public class Screen {
     }
     
 #if targetEnvironment(macCatalyst)
-    /// The Mac window changed size: rebuild `width`, `height` and `s` for it,
-    /// keeping the reference widths already set. Callers relayout afterwards.
+    /// The Mac window changed size: rebuild `width` and `height` for it. `s` stays the Mac's own, as at
+    /// launch, however tall the window: setReferenceWidth would make it the window's height over the iPad's.
+    /// Callers relayout afterwards.
     public static func resize(to size: CGSize) {
         let fresh: Screen = Screen(macSize: size)
-        fresh.setReferenceWidth(iPhone: current.referenceIPhone, iPad: current.referenceIPad)
+        fresh.referenceIPhone = current.referenceIPhone
+        fresh.referenceIPad = current.referenceIPad
         current = fresh
     }
 #endif
